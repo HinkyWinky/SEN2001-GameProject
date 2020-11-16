@@ -1,0 +1,26 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+namespace Game.UI
+{
+    public class LoadingPanel : Panel
+    {
+        public LoadingBar loadingBar;
+
+        public override void Activate(bool value)
+        {
+            gameObject.SetActive(value);
+        }
+
+        public override IEnumerator OpenAnimation()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public override IEnumerator CloseAnimation()
+        {
+            throw new System.NotImplementedException();
+        }
+    }
+}

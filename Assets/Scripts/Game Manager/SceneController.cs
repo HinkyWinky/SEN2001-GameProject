@@ -6,70 +6,71 @@ using UnityEngine.SceneManagement;
 
 public class SceneController : MonoBehaviour
 {
-    [SerializeField] private string mainMenuSceneName = "MainMenu";
-    public string MainMenuSceneName => mainMenuSceneName;
+    public SceneData gameManagerSceneData;
+    public SceneData mainMenuSceneData;
+    public List<SceneData> levelsSceneData = new List<SceneData>();
 
-    public IEnumerator LoadScene(int sceneIndex)
+    private void SetActiveScene(SceneData sceneData)
     {
-        AsyncOperation operation = SceneManager.LoadSceneAsync(sceneIndex, LoadSceneMode.Single);
-        while (!operation.isDone)
-        {
-            yield return null;
-        }
-        Debug.Log("SCENE LOADED: " + SceneManager.GetSceneByBuildIndex(sceneIndex).name);
+        SceneManager.SetActiveScene(SceneManager.GetSceneByBuildIndex(sceneData.BuildIndex));
+        Debug.Log("ACTIVE SCENE SET: " + sceneData.name);
     }
-
-    public IEnumerator LoadScene(string sceneName)
+    private IEnumerator LoadScene(SceneData sceneData)
     {
-        AsyncOperation operation = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Single);
+        AsyncOperation operation = SceneManager.LoadSceneAsync(sceneData.BuildIndex, LoadSceneMode.Single);
         while (!operation.isDone)
         {
             yield return null;
         }
-        Debug.Log("SCENE LOADED: " + sceneName);
+        Debug.Log("SCENE LOADED: " + sceneData.name);
     }
-
-    public IEnumerator LoadSceneAdditive(int sceneIndex, bool setSceneActive, bool setSceneDatabase)
+    private IEnumerator LoadSceneAdditive(SceneData sceneData, bool setSceneActive, bool setSceneDatabase, bool unloadActiveScene)
     {
-        AsyncOperation operation = SceneManager.LoadSceneAsync(sceneIndex, LoadSceneMode.Additive);
-        while (!operation.isDone)
+        GameManager.Cur.EventController.onSceneLoadStarted?.Invoke();
+
+        Scene preActiveScene = SceneManager.GetActiveScene();
+        SetActiveScene(gameManagerSceneData);
+
+        if (unloadActiveScene)
         {
+            if (preActiveScene.isLoaded)
+            {
+                string sceneName = preActiveScene.name;
+                AsyncOperation unloadOperation = SceneManager.UnloadSceneAsync(preActiveScene.buildIndex);
+                while (!unloadOperation.isDone)
+                {
+                    float unloadProgress = Mathf.Clamp01(unloadOperation.progress) * 0.5f / 0.9f;
+                    GameManager.Cur.gameManagerCanvas.loadingPanel.loadingBar.bar.value = unloadProgress;
+                    yield return null;
+                }
+                Debug.Log("SCENE UNLOADED: " + sceneName);
+            }
+        }
+
+        AsyncOperation loadOperation = SceneManager.LoadSceneAsync(sceneData.BuildIndex, LoadSceneMode.Additive);
+        while (!loadOperation.isDone)
+        {
+            float loadProgress = Mathf.Clamp01(loadOperation.progress) * 0.5f / 0.9f + 0.5f;
+            GameManager.Cur.gameManagerCanvas.loadingPanel.loadingBar.bar.value = loadProgress;
             yield return null;
         }
-        Debug.Log("SCENE LOADED: " + SceneManager.GetSceneByBuildIndex(sceneIndex).name);
+        Debug.Log("SCENE LOADED: " + sceneData.Name);
 
         if (setSceneActive)
-            SetActiveScene(sceneIndex);
+            SetActiveScene(sceneData);
 
         if (setSceneDatabase)
             GameManager.Cur.SetSceneDatabase();
+
+        GameManager.Cur.EventController.onSceneLoaded?.Invoke();
     }
 
-    public IEnumerator LoadSceneAdditive(string sceneName, bool setSceneActive, bool setSceneDatabase)
+    public IEnumerator LoadMainMenuScene(bool unloadActiveScene)
     {
-        AsyncOperation operation = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
-        while (!operation.isDone)
-        {
-            yield return null;
-        }
-        Debug.Log("SCENE LOADED: " + sceneName);
-
-        if (setSceneActive)
-            SetActiveScene(sceneName);
-
-        if (setSceneDatabase)
-            GameManager.Cur.SetSceneDatabase();
+        yield return StartCoroutine(LoadSceneAdditive(mainMenuSceneData, true, true, unloadActiveScene));
     }
-
-    public void SetActiveScene(int sceneIndex)
+    public IEnumerator LoadLevelScene(int levelNo, bool unloadActiveScene)
     {
-        SceneManager.SetActiveScene(SceneManager.GetSceneByBuildIndex(sceneIndex));
-        Debug.Log("ACTIVE SCENE SET: " + SceneManager.GetSceneByBuildIndex(sceneIndex).name);
-    }
-
-    public void SetActiveScene(string sceneName)
-    {
-        SceneManager.SetActiveScene(SceneManager.GetSceneByName(sceneName));
-        Debug.Log("ACTIVE SCENE SET: " + sceneName);
+        yield return StartCoroutine(LoadSceneAdditive(levelsSceneData[levelNo - 1], true, true, unloadActiveScene));
     }
 }

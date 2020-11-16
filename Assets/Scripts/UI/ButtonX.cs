@@ -3,7 +3,7 @@ using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-namespace UI
+namespace Game.UI
 {
     [AddComponentMenu("UI/ButtonX")]
     public class ButtonX : Button, IElementUI
@@ -27,12 +27,12 @@ namespace UI
 
         private void ButtonDown()
         {
-
+            GameManager.Cur.Canvas.ActivateUIInput(false);
         }
 
         private void ButtonUp()
         {
-
+            GameManager.Cur.Canvas.ActivateUIInput(true);
         }
 
         public void Activate(bool value)

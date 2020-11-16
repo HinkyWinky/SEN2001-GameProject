@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace UI
+namespace Game.UI
 {
     public interface IElementUI
     {
