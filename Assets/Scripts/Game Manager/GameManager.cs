@@ -1,17 +1,20 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using Game.UI;
+﻿using Game.UI;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager Cur { get; private set; }
+
+    [SerializeField] private bool editorModeOn = false;
+    public bool EditorModeOn => editorModeOn;
+
     public Database Database { get; private set; }
     public EventController EventController { get; private set; }
     public AudioController AudioController { get; private set; }
     public StateController StateController { get; private set; }
     public SceneController SceneController { get; private set; }
+    public InputController InputController { get; private set; }
 
     public SceneDatabase SceneDatabase { get; private set; }
     public CanvasX Canvas { get; private set; }
@@ -37,20 +40,17 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public GameManagerCanvas gameManagerCanvas;
-    public Camera gameManagerCamera;
+    [SerializeField] private GameManagerCanvas gameManagerCanvas = default;
+    public GameManagerCanvas GameManagerCanvas => gameManagerCanvas;
+    [SerializeField] private Camera gameManagerCamera = default;
 
     private void Awake()
     {
         // Only one instance of the GameManager can exist.
         if (Cur == null)
-        {
             Cur = this;
-        }
         else
-        {
             Destroy(gameObject);
-        }
 
         // Get all components of this game object.
         if (Database == null)
@@ -63,18 +63,32 @@ public class GameManager : MonoBehaviour
             StateController = GetComponent<StateController>();
         if (SceneController == null)
             SceneController = GetComponent<SceneController>();
+        if (InputController == null)
+            InputController = GetComponent<InputController>();
 
-        // Creating save file`s directory.
+        // If open scene count is more than 1, unload all scenes and load the GameManager scene.
+        #if UNITY_EDITOR
+        if (SceneManager.sceneCount > 1)
+        {
+            Debug.Log("RESTARTING: Game Manager!");
+            SceneManager.LoadScene(SceneController.gameManagerSceneData.BuildIndex, LoadSceneMode.Single);
+            return;
+        }
+        #endif
+
+        // Create save files` directory.
         Storage.CreateGameDirectories();
-
-        // Loading saved data on the start of the game.
+        // Load the saved data at the start of the game.
         Database.Load(Database.LevelsFile);
         Database.Load(Database.OptionsFile);
     }
 
     private void Start()
     {
-        StartCoroutine(SceneController.LoadMainMenuScene(false));
+        if (EditorModeOn)
+            StartCoroutine(SceneController.LoadLevelScene(1, false)); // Load the Level1 scene at the start of the game.
+        else
+            StartCoroutine(SceneController.LoadMainMenuScene(false)); // Load the MainMenu scene at the start of the game.
     }
 
     public void SetSceneDatabase()

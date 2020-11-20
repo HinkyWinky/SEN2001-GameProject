@@ -39,8 +39,11 @@ public class SceneController : MonoBehaviour
                 AsyncOperation unloadOperation = SceneManager.UnloadSceneAsync(preActiveScene.buildIndex);
                 while (!unloadOperation.isDone)
                 {
-                    float unloadProgress = Mathf.Clamp01(unloadOperation.progress) * 0.5f / 0.9f;
-                    GameManager.Cur.gameManagerCanvas.loadingPanel.loadingBar.bar.value = unloadProgress;
+                    if (GameManager.Cur.GameManagerCanvas != null)
+                    {
+                        float unloadProgress = Mathf.Clamp01(unloadOperation.progress) * 0.5f / 0.9f;
+                        GameManager.Cur.GameManagerCanvas.loadingPanel.loadingBar.bar.value = unloadProgress;
+                    }
                     yield return null;
                 }
                 Debug.Log("SCENE UNLOADED: " + sceneName);
@@ -50,8 +53,11 @@ public class SceneController : MonoBehaviour
         AsyncOperation loadOperation = SceneManager.LoadSceneAsync(sceneData.BuildIndex, LoadSceneMode.Additive);
         while (!loadOperation.isDone)
         {
-            float loadProgress = Mathf.Clamp01(loadOperation.progress) * 0.5f / 0.9f + 0.5f;
-            GameManager.Cur.gameManagerCanvas.loadingPanel.loadingBar.bar.value = loadProgress;
+            if (GameManager.Cur.GameManagerCanvas != null)
+            {
+                float loadProgress = Mathf.Clamp01(loadOperation.progress) * 0.5f / 0.9f + 0.5f;
+                GameManager.Cur.GameManagerCanvas.loadingPanel.loadingBar.bar.value = loadProgress;
+            }
             yield return null;
         }
         Debug.Log("SCENE LOADED: " + sceneData.Name);

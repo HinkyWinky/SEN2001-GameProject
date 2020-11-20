@@ -7,4 +7,7 @@ public class SceneDatabase : MonoBehaviour
 {
     [SerializeField] private CanvasX canvas = default;
     public CanvasX Canvas => canvas;
+
+    [SerializeField] private PlayerController playerController = default;
+    public PlayerController PlayerController => playerController;
 }
