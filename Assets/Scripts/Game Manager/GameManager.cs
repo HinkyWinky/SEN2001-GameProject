@@ -18,6 +18,9 @@ public class GameManager : MonoBehaviour
 
     public SceneDatabase SceneDatabase { get; private set; }
     public CanvasX Canvas { get; private set; }
+    public CameraController CamController { get; private set; }
+    public Player Player { get; private set; }
+    public Enemy Enemy { get; private set; }
 
     public MainMenuCanvas MainMenuCanvas
     {
@@ -99,11 +102,28 @@ public class GameManager : MonoBehaviour
             Debug.Log("SCENE DATABASE: found");
 
             if (SceneDatabase.Canvas != null)
+            {
                 Canvas = SceneDatabase.Canvas;
+            }
+            if (SceneDatabase.CameraController != null)
+            {
+                CamController = SceneDatabase.CameraController;
+                Debug.Log("CAMERA CONTROLLER: found");
+            }
+            if (SceneDatabase.Player != null)
+            {
+                Player = SceneDatabase.Player;
+                Debug.Log("PLAYER: found");
+            }
+            if (SceneDatabase.Enemy != null)
+            {
+                Enemy = SceneDatabase.Enemy;
+                Debug.Log("ENEMY: found");
+            }
+
 
             if (MainMenuCanvas != null)
                 Debug.Log("MAIN MENU CANVAS: found");
-
             if (LevelCanvas != null)
                 Debug.Log("LEVEL CANVAS: found");
         }

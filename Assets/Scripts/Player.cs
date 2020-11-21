@@ -1,46 +1,42 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
-public class PlayerController : MonoBehaviour
+public class Player : MonoBehaviour
 {
     [SerializeField, Range(0f, 100f)] private float maxSpeed = 5f; // max speed while moving
     [SerializeField, Range(0f, 100f)] private float maxAcceleration = 30f; // max acceleration while moving
-    [SerializeField] private float rotationSpeed = 0.1f; // rotation speed while rotating
     [SerializeField, Range(0f, 1f)] private float bounciness = 0.5f; // bounciness constant
     [SerializeField] private Rect allowedArea = new Rect(-5f, -5f, 10f, 10f); // borders that the player can reach
 
     // inputs
-    private Vector2 AxisInputs => GameManager.Cur.InputController.AxisInputs;
+    private Vector3 AxisInputs => new Vector3(GameManager.Cur.InputController.AxisInputs.x, 0, GameManager.Cur.InputController.AxisInputs.y);
+    private Vector3 FixedAxisInputs => (AxisInputs.x * CamController.virtualCam.transform.right) + (AxisInputs.z * CamController.virtualCam.transform.forward);
     // movement
     private Vector3 velocity;
     private Vector3 displacement;
-   
+    private float curAngle;
+
+    private float speed;
+
+    private CameraController CamController => GameManager.Cur.CamController;
+    private Enemy Enemy => GameManager.Cur.Enemy;
+
     private void Update()
     {
-        // Rotate the player if there is user axisInputs.
-        if (AxisInputs != Vector2.zero)
-        {
-            Rotate(AxisInputs);
-        }
-        Move(AxisInputs);
-    }
-    
-    private void Rotate(Vector2 axisInputs)
-    {
-        float targetAngle = Mathf.Atan2(axisInputs.x, axisInputs.y) * Mathf.Rad2Deg; // Calculate the targetAngle with the axisInputs.
-        float currentAngle = transform.eulerAngles.y; // Set the currentAngle
-        float newAngle = Mathf.MoveTowardsAngle(currentAngle, targetAngle, rotationSpeed * Time.deltaTime); // Calculate the newAngle to rotate from currentAngle to targetAngle in every frame.
-        transform.eulerAngles = new Vector3(0, newAngle, 0); // Set the player direction angle to the newAngle.
+        // Rotate the player. The player always looks at the enemy. 
+        transform.LookAt(Enemy.transform);
+
+        // Move the player.
+        Move(FixedAxisInputs);
     }
 
-    private void Move(Vector2 axisInputs)
+    private void Move(Vector3 axisInputs)
     {
-        Vector3 desiredVelocity = new Vector3(axisInputs.x, 0, axisInputs.y) * maxSpeed; // Calculate the desiredVelocity with the axisInputs.
+        Vector3 desiredVelocity = axisInputs * maxSpeed; // Calculate the desiredVelocity with the axisInputs.
         float maxSpeedChange = maxAcceleration * Time.deltaTime; // Calculate the maxSpeedChange in one frame.
 
-        // Change the velocity to the desiredVelocity by increasing or decreasing with the maxSpeedChange.
-        velocity.x = Mathf.MoveTowards(velocity.x, desiredVelocity.x, maxSpeedChange);
-        velocity.z = Mathf.MoveTowards(velocity.z, desiredVelocity.z, maxSpeedChange);
-
+        velocity.x = Mathf.MoveTowards(velocity.x, desiredVelocity.x, maxSpeedChange); // Change the speed to the desiredSpeed by increasing or decreasing with the maxSpeedChange.
+        velocity.z = Mathf.MoveTowards(velocity.z, desiredVelocity.z, maxSpeedChange); // Change the speed to the desiredSpeed by increasing or decreasing with the maxSpeedChange.
         displacement = velocity * Time.deltaTime; // Calculate the displacement in one frame.
         Vector3 newPos = transform.localPosition + displacement; // Calculate the newPos (new position) of the player by adding the displacement to its current position.
 

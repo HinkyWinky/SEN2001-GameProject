@@ -24,7 +24,7 @@ public class SceneController : MonoBehaviour
         }
         Debug.Log("SCENE LOADED: " + sceneData.name);
     }
-    private IEnumerator LoadSceneAdditive(SceneData sceneData, bool setSceneActive, bool setSceneDatabase, bool unloadActiveScene)
+    private IEnumerator LoadSceneAdditive(SceneData sceneData, bool setSceneActive, bool unloadActiveScene)
     {
         GameManager.Cur.EventController.onSceneLoadStarted?.Invoke();
 
@@ -65,18 +65,15 @@ public class SceneController : MonoBehaviour
         if (setSceneActive)
             SetActiveScene(sceneData);
 
-        if (setSceneDatabase)
-            GameManager.Cur.SetSceneDatabase();
-
         GameManager.Cur.EventController.onSceneLoaded?.Invoke();
     }
 
     public IEnumerator LoadMainMenuScene(bool unloadActiveScene)
     {
-        yield return StartCoroutine(LoadSceneAdditive(mainMenuSceneData, true, true, unloadActiveScene));
+        yield return StartCoroutine(LoadSceneAdditive(mainMenuSceneData, true, unloadActiveScene));
     }
     public IEnumerator LoadLevelScene(int levelNo, bool unloadActiveScene)
     {
-        yield return StartCoroutine(LoadSceneAdditive(levelsSceneData[levelNo - 1], true, true, unloadActiveScene));
+        yield return StartCoroutine(LoadSceneAdditive(levelsSceneData[levelNo - 1], true, unloadActiveScene));
     }
 }
