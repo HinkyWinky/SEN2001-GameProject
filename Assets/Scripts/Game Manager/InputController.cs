@@ -4,14 +4,16 @@ public class InputController : MonoBehaviour
 {
     private Vector2 axisInputs;
     public Vector2 AxisInputs => axisInputs;
-
-    public bool jumpInput = false;
-    public bool rollInput = false;
+    [HideInInspector] public bool jumpInput = false;
+    [HideInInspector] public bool rollInput = false;
+    [HideInInspector] public bool attackInput = false;
 
     private void Update()
     {
         SetAxisInputs(); // Set axisInputs with the user input (wasd and controller`s analog).
         SetJumpInput();
+        SetRollInput();
+        SetAttackInput();
     }
 
     private void SetAxisInputs()
@@ -23,6 +25,15 @@ public class InputController : MonoBehaviour
     private void SetJumpInput()
     {
         jumpInput |= Input.GetKeyDown(KeyCode.Space);
-        rollInput |= Input.GetKeyDown(KeyCode.LeftShift);
+    }
+
+    private void SetRollInput()
+    {
+        rollInput |= Input.GetKeyDown(KeyCode.N);
+    }
+
+    private void SetAttackInput()
+    {
+        attackInput |= Input.GetKeyDown(KeyCode.B);
     }
 }

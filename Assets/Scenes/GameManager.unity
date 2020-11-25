@@ -845,6 +845,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 98279d6a129194e4789f327c7831f5f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  jumpInput: 0
+  rollInput: 0
 --- !u!114 &4657706661598815085
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -892,6 +894,7 @@ MonoBehaviour:
   editorModeOn: 1
   gameManagerCanvas: {fileID: 1172453501}
   gameManagerCamera: {fileID: 1105044140}
+  frameRateSetting: 1
 --- !u!114 &4657706661598815088
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -1,4 +1,5 @@
-﻿using Game.UI;
+﻿using System;
+using Game.UI;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -47,6 +48,9 @@ public class GameManager : MonoBehaviour
     public GameManagerCanvas GameManagerCanvas => gameManagerCanvas;
     [SerializeField] private Camera gameManagerCamera = default;
 
+    private enum FrameRateSetting {DEFAULT, RATE_30, RATE_45, RATE_60}
+    [SerializeField] private FrameRateSetting frameRateSetting = FrameRateSetting.DEFAULT;
+
     private void Awake()
     {
         // Only one instance of the GameManager can exist.
@@ -92,6 +96,19 @@ public class GameManager : MonoBehaviour
             StartCoroutine(SceneController.LoadLevelScene(1, false)); // Load the Level1 scene at the start of the game.
         else
             StartCoroutine(SceneController.LoadMainMenuScene(false)); // Load the MainMenu scene at the start of the game.
+
+        SetFrameRate();
+    }
+
+    public void OnSceneLoadStarted()
+    {
+        gameManagerCanvas.Activate(true);
+        gameManagerCamera.gameObject.SetActive(true);
+    }
+    public void OnSceneLoaded()
+    {
+        gameManagerCanvas.Activate(false);
+        gameManagerCamera.gameObject.SetActive(false);
     }
 
     public void SetSceneDatabase()
@@ -121,7 +138,6 @@ public class GameManager : MonoBehaviour
                 Debug.Log("ENEMY: found");
             }
 
-
             if (MainMenuCanvas != null)
                 Debug.Log("MAIN MENU CANVAS: found");
             if (LevelCanvas != null)
@@ -133,15 +149,38 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void OnSceneLoadStarted()
+    #region Frame Rate Settings
+    private void SetFrameRate()
     {
-        gameManagerCanvas.Activate(true);
-        gameManagerCamera.gameObject.SetActive(true);
+        switch (frameRateSetting)
+        {
+            case FrameRateSetting.DEFAULT:
+                DefaultFrameRate();
+                break;
+            case FrameRateSetting.RATE_30:
+                ConstantFrameRate(30);
+                break;
+            case FrameRateSetting.RATE_45:
+                ConstantFrameRate(45);
+                break;
+            case FrameRateSetting.RATE_60:
+                ConstantFrameRate(60);
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
     }
-
-    public void OnSceneLoaded()
+    // Default Frame Rate
+    private void DefaultFrameRate()
     {
-        gameManagerCanvas.Activate(false);
-        gameManagerCamera.gameObject.SetActive(false);
+        QualitySettings.vSyncCount = 1;
+        Application.targetFrameRate = -1;
     }
+    // Cpu Gpu Constant Frame Rate
+    private void ConstantFrameRate(int targetFrameRate)
+    {
+        QualitySettings.vSyncCount = 0;
+        Application.targetFrameRate = targetFrameRate;
+    }
+    #endregion
 }
