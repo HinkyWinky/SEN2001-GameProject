@@ -847,6 +847,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   jumpInput: 0
   rollInput: 0
+  attackInput: 0
+  defenceInput: 0
 --- !u!114 &4657706661598815085
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -894,7 +896,7 @@ MonoBehaviour:
   editorModeOn: 1
   gameManagerCanvas: {fileID: 1172453501}
   gameManagerCamera: {fileID: 1105044140}
-  frameRateSetting: 1
+  frameRateSetting: 3
 --- !u!114 &4657706661598815088
 MonoBehaviour:
   m_ObjectHideFlags: 0

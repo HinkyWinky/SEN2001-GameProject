@@ -181,6 +181,7 @@ public class GameManager : MonoBehaviour
     {
         QualitySettings.vSyncCount = 0;
         Application.targetFrameRate = targetFrameRate;
+        Time.fixedDeltaTime = 1 / (float)targetFrameRate;
     }
     #endregion
 }

@@ -7,6 +7,7 @@ public class InputController : MonoBehaviour
     [HideInInspector] public bool jumpInput = false;
     [HideInInspector] public bool rollInput = false;
     [HideInInspector] public bool attackInput = false;
+    [HideInInspector] public bool defenceInput = false;
 
     private void Update()
     {
@@ -14,6 +15,7 @@ public class InputController : MonoBehaviour
         SetJumpInput();
         SetRollInput();
         SetAttackInput();
+        SetDefenceInput();
     }
 
     private void SetAxisInputs()
@@ -29,11 +31,16 @@ public class InputController : MonoBehaviour
 
     private void SetRollInput()
     {
-        rollInput |= Input.GetKeyDown(KeyCode.N);
+        rollInput |= Input.GetKeyDown(KeyCode.M);
     }
 
     private void SetAttackInput()
     {
         attackInput |= Input.GetKeyDown(KeyCode.B);
+    }
+
+    private void SetDefenceInput()
+    {
+        defenceInput |= Input.GetKey(KeyCode.N);
     }
 }
