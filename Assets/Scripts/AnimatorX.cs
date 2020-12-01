@@ -11,7 +11,12 @@ public class AnimatorX : MonoBehaviour
     private IEnumerator animationCor;
     private WaitForFixedUpdate waitForFixedUpdate;
 
+    private bool isPlaying;
+    public bool IsPlaying => isPlaying;
+
     private string lastAnim = "Idle";
+    private string currentAnim = "Idle";
+    public string CurrentAnim => currentAnim;
 
     private void Awake()
     {
@@ -29,6 +34,8 @@ public class AnimatorX : MonoBehaviour
     }
     private IEnumerator PlayAnimation(string motionName, float animationDuration, bool loop, float fadeDuration)
     {
+        currentAnim = motionName;
+        isPlaying = true;
         float fixedAnimationDuration = animationDuration - (animationDuration * fadeDuration);
 
         float percent = 0f;
@@ -61,12 +68,20 @@ public class AnimatorX : MonoBehaviour
 
             yield return waitForFixedUpdate;
         }
+
+        currentAnim = "";
+        isPlaying = false;
     }
 
     public void StopAnimation()
     {
         if (animationCor != null)
+        {
+            currentAnim = "";
+            isPlaying = false;
             StopCoroutine(animationCor); // Stop the last animation.
+        }
     }
+
     #endregion
 }

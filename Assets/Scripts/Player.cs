@@ -17,24 +17,33 @@ public class Player : MonoBehaviour
 
     // Inspector Variables
     [SerializeField, Range(0.01f, 1f)] private float groundClearance = 0.1f; // height from the ground
-    [SerializeField, Range(0f, 1f), DisableInPlayMode] private float lockedAbilityInputsDuration = 0.2f; // input lock duration after finishing abilities
+    [SerializeField, Range(0.1f, 1f), DisableInPlayMode] private float lockedAbilityInputsDuration = 0.2f; // input lock duration after finishing abilities
+
     [Title("Move", Bold = true)]
     [SerializeField, Range(0f, 100f)] private float maxMoveSpeed = 2.75f; // max speed while moving
     [SerializeField, Range(0f, 100f)] private float maxMoveAcceleration = 40f; // max acceleration while moving
+
     [Title("Rotation", Bold = true)]
     [SerializeField, Range(500f, 3000f), LabelText("Max Rotation Acceleration For 180")]
     private float maxRotationAcceleration = 1000f; // max acceleration for 180 degree while rotating
+
     [Title("Jumping", Bold = true)]
-    [SerializeField, Range(0f, 10f)] private float jumpForce = 2f; // jumpForce while jumping
-    [SerializeField, Range(0f, 10f), DisableInPlayMode] private float jumpHeight = 0.6f; // max height while jumping
+    [SerializeField, Range(0f, 10f)] private float jumpForceXZ = 2f; // jumpForceXZ while jumping
+    [SerializeField, Range(0.2f, 10f)] private float jumpHeight = 0.6f; // max height while jumping
+
     [Title("Rolling", Bold = true)]
-    [SerializeField, Range(0f, 100f)] private float rollMoveDistance = 2f; // roll move distance
-    [SerializeField, Range(0f, 5f)] private float rollMoveDuration = 0.3f; // roll move duration
+    [SerializeField, Range(0f, 10f)] private float rollMoveDistance = 2f; // roll move distance
+    [SerializeField, Range(0.1f, 5f)] private float rollMoveDuration = 0.3f; // roll move duration
     [SerializeField, PropertyRange(0f, "rollMoveDuration"), LabelText("Roll Rotation Duration For 180")]
     private float rollRotationDuration = 0.1f; // roll rotation duration for 180 degree
     [SerializeField, Range(0f, 0.1f), DisableInPlayMode] private float stayStableAfterRollDuration = 0.025f;
+
     [Title("Attacking", Bold = true)]
-    [SerializeField, Range(0f, 10f)] private float attackDuration = 2f; // attack duration
+    [SerializeField, Range(0.2f, 10f)] private float attackDuration = 2f; // attack duration
+
+    [Title("Animations` Durations", Bold = true)]
+    [SerializeField, Range(0f, 10f)] private float idleAnimationDuration = 1.5f;
+    [SerializeField, Range(0f, 10f)] private float moveAnimationDuration = 1f;
 
     // Inputs
     private Vector3 AxisInputs => new Vector3(InputController.AxisInputs.x, 0, InputController.AxisInputs.y); // direct axis inputs
@@ -43,8 +52,8 @@ public class Player : MonoBehaviour
     // Movement
     private Vector3 velocity, desiredMoveVelocity, rollVelocity, desiredRollVelocity, forward, rollDirection;
     private Quaternion rotation = Quaternion.identity;
-    private float JumpSpeed => Mathf.Sqrt(-2f * Physics.gravity.y * jumpHeight);
-    private float JumpTime => -2f * JumpSpeed / Physics.gravity.y;
+    private float JumpSpeedY => Mathf.Sqrt(-2f * Physics.gravity.y * jumpHeight);
+    private float JumpDuration => -2f * JumpSpeedY / Physics.gravity.y;
 
     // Cases
     private enum PlayerStates { IDLE, MOVE, JUMP, ROLL, ATTACK };
@@ -58,6 +67,7 @@ public class Player : MonoBehaviour
     private WaitForFixedUpdate waitForFixedUpdate;
     private WaitForSeconds waitForLockedAbilityInputsDuration, waitForStayStableAfterRollDuration;
 
+    #region Mono
     private void Awake()
     {
         rig = GetComponent<Rigidbody>();
@@ -68,13 +78,11 @@ public class Player : MonoBehaviour
         waitForLockedAbilityInputsDuration = new WaitForSeconds(lockedAbilityInputsDuration);
         waitForStayStableAfterRollDuration = new WaitForSeconds(stayStableAfterRollDuration);
     }
-
     private void Update()
     {
         desiredMoveVelocity = FixedAxisInputs * maxMoveSpeed; // Calculate the desiredMoveVelocity with the axisInputs.
         desiredRollVelocity = FixedAxisInputs.normalized * rollMoveDistance / rollMoveDuration; // Calculate the desiredRollVelocity with the axisInputs.
     }
-
     private void FixedUpdate()
     {
         SetOnGround(); // Check the player is on the ground or not.
@@ -88,6 +96,7 @@ public class Player : MonoBehaviour
         rig.rotation = rotation; // Add the sum of all calculated rotations to the player`s rotation.
         rig.velocity = velocity; // Add the sum of all calculated velocities to the player`s velocity.
     }
+    #endregion
 
     private void MovementUpdate()
     {
@@ -149,13 +158,13 @@ public class Player : MonoBehaviour
         switch (curPlayerState) // Check the current state.
         {
             case PlayerStates.IDLE:
-                animX.StartAnimation("Idle", 1.5f, true, 0.15f);
+                animX.StartAnimation("Idle", idleAnimationDuration, true, 0.15f);
                 break;
             case PlayerStates.MOVE:
-                animX.StartAnimation("Move", 1f, true, 0.15f);
+                animX.StartAnimation("Move", moveAnimationDuration, true, 0.15f);
                 break;
             case PlayerStates.JUMP:
-                animX.StartAnimation("Jump", JumpTime, false, 0.1f);
+                animX.StartAnimation("Jump", JumpDuration, false, 0.1f);
                 break;
             case PlayerStates.ROLL:
                 animX.StartAnimation("Roll", rollMoveDuration, false, 0f);
@@ -180,8 +189,8 @@ public class Player : MonoBehaviour
     {
         ChangePlayerState(PlayerStates.JUMP, false);
 
-        velocity += FixedAxisInputs.normalized * jumpForce - velocity; // Remove the player`s previous velocity.
-        velocity.y += JumpSpeed; // Calculate the required velocity for the target height and add to the player`s velocity.
+        velocity += FixedAxisInputs.normalized * jumpForceXZ - velocity; // Remove the player`s previous velocity.
+        velocity.y += JumpSpeedY; // Calculate the required velocity for the target height and add to the player`s velocity.
     }
 
     private void Roll()
