@@ -791,9 +791,10 @@ GameObject:
   - component: {fileID: 618858250051540223}
   - component: {fileID: 4657706661598815087}
   - component: {fileID: 4657706661598815086}
+  - component: {fileID: 4657706661598815089}
   - component: {fileID: 4657706661598815085}
-  - component: {fileID: 4657706661598815083}
   - component: {fileID: 4657706661598815088}
+  - component: {fileID: 4657706661598815083}
   - component: {fileID: 4657706661598815082}
   - component: {fileID: 4657706661598815084}
   m_Layer: 0
@@ -818,7 +819,7 @@ MonoBehaviour:
   onSceneLoadStarted:
     m_PersistentCalls:
       m_Calls: []
-  onSceneLoaded:
+  onSceneLoadEnded:
     m_PersistentCalls:
       m_Calls: []
 --- !u!114 &4657706661598815083
@@ -896,7 +897,6 @@ MonoBehaviour:
   editorModeOn: 1
   gameManagerCanvas: {fileID: 1172453501}
   gameManagerCamera: {fileID: 1105044140}
-  frameRateSetting: 3
 --- !u!114 &4657706661598815088
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -916,3 +916,16 @@ MonoBehaviour:
   - {fileID: 11400000, guid: ba82778f38f23354891bc7c5dac509fa, type: 2}
   - {fileID: 11400000, guid: 8be9c4cf67e082e4294b73d9a2379e27, type: 2}
   - {fileID: 11400000, guid: 52297ee75c12e2e4ba1a509915c32c55, type: 2}
+--- !u!114 &4657706661598815089
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4657706661598815081}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 836c145d1decc5948973fcae4449c57a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  frameRateSetting: 3

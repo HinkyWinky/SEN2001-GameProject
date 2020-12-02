@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AudioController : MonoBehaviour
+public class AudioCtrl : MonoBehaviour
 {
    
 }

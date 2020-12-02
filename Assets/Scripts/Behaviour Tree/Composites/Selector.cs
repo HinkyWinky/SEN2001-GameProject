@@ -1,20 +1,19 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace BehaviourTree
 {
-    public class Selector : Node
+    public class Selector : Composite
     {
-        protected List<Node> nodes = new List<Node>();
-
-        public Selector(List<Node> nodes)
+        public Selector(List<Node> childNodes)
         {
-            this.nodes = nodes;
+            base.childNodes = childNodes;
         }
 
         // return first success one
         public override NodeStates Evaluate()
         {
-            foreach (Node node in nodes)
+            foreach (Node node in childNodes)
             {
                 switch (node.Evaluate())
                 {
@@ -35,4 +34,3 @@ namespace BehaviourTree
         }
     }
 }
-

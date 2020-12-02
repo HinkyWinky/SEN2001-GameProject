@@ -1,16 +1,13 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using Game.UI;
+﻿using Game.UI;
 using UnityEngine;
 
-public class SceneDatabase : MonoBehaviour
+public class Subscene : MonoBehaviour
 {
     [SerializeField] private CanvasX canvas = default;
     public CanvasX Canvas => canvas;
 
-    [SerializeField] private CameraController cameraController = default;
-    public CameraController CameraController => cameraController;
+    [SerializeField] private CamCtrl camCtrl = default;
+    public CamCtrl CamCtrl => camCtrl;
 
     [SerializeField] private Player player = default;
     public Player Player => player;
@@ -22,7 +19,7 @@ public class SceneDatabase : MonoBehaviour
 
     private void Start()
     {
-        GameManager.Cur.SetSceneDatabase();
+        GameManager.Cur.SetSubscene();
         Debug.Log("LEVEL SCENE: Start()");
     }
 

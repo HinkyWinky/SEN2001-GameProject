@@ -1,17 +1,14 @@
 ﻿using System;
-using Sirenix.OdinInspector;
 
 namespace BehaviourTree
 {
     [Serializable]
-    public class CheckIsHealthFullLeaf : CheckLeaf
+    public class CheckIsMyHealthFull : Leaf
     {
-        [ShowInInspector] private NodeStates State => NodeState;
-
         private int curHealth;
         private int maxHealth;
 
-        public void SetFieldsOnUpdate(int currentHealth, int maximumHealth)
+        public void UpdateLeaf(int currentHealth, int maximumHealth)
         {
             curHealth = currentHealth;
             maxHealth = maximumHealth;

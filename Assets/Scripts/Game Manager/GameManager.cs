@@ -1,5 +1,4 @@
-﻿using System;
-using Game.UI;
+﻿using Game.UI;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -10,16 +9,17 @@ public class GameManager : MonoBehaviour
     [SerializeField] private bool editorModeOn = false;
     public bool EditorModeOn => editorModeOn;
 
-    public Database Database { get; private set; }
-    public EventController EventController { get; private set; }
-    public AudioController AudioController { get; private set; }
-    public StateController StateController { get; private set; }
-    public SceneController SceneController { get; private set; }
-    public InputController InputController { get; private set; }
+    public GameDatabase GameDatabase { get; private set; }
+    public EventCtrl EventCtrl { get; private set; }
+    public AudioCtrl AudioCtrl { get; private set; }
+    public StateCtrl StateCtrl { get; private set; }
+    public SceneCtrl SceneCtrl { get; private set; }
+    public InputCtrl InputCtrl { get; private set; }
+    public SettingCtrl SettingCtrl { get; private set; }
 
-    public SceneDatabase SceneDatabase { get; private set; }
+    public Subscene Subscene { get; private set; }
     public CanvasX Canvas { get; private set; }
-    public CameraController CamController { get; private set; }
+    public CamCtrl CamCtrl { get; private set; }
     public Player Player { get; private set; }
     public Enemy Enemy { get; private set; }
 
@@ -33,12 +33,12 @@ public class GameManager : MonoBehaviour
             return null;
         }
     }
-    public LevelCanvas LevelCanvas
+    public SceneCanvas SceneCanvas
     {
         get
         {
-            if (Canvas as LevelCanvas != null)
-                return Canvas as LevelCanvas;
+            if (Canvas as SceneCanvas != null)
+                return Canvas as SceneCanvas;
 
             return null;
         }
@@ -48,11 +48,9 @@ public class GameManager : MonoBehaviour
     public GameManagerCanvas GameManagerCanvas => gameManagerCanvas;
     [SerializeField] private Camera gameManagerCamera = default;
 
-    private enum FrameRateSetting {DEFAULT, RATE_30, RATE_45, RATE_60}
-    [SerializeField] private FrameRateSetting frameRateSetting = FrameRateSetting.DEFAULT;
-
     private void Awake()
     {
+
         // Only one instance of the GameManager can exist.
         if (Cur == null)
             Cur = this;
@@ -60,128 +58,110 @@ public class GameManager : MonoBehaviour
             Destroy(gameObject);
 
         // Get all components of this game object.
-        if (Database == null)
-            Database = GetComponent<Database>();
-        if (EventController == null)
-            EventController = GetComponent<EventController>();
-        if (AudioController == null)
-            AudioController = GetComponent<AudioController>();
-        if (StateController == null)
-            StateController = GetComponent<StateController>();
-        if (SceneController == null)
-            SceneController = GetComponent<SceneController>();
-        if (InputController == null)
-            InputController = GetComponent<InputController>();
+        if (GameDatabase == null)
+            GameDatabase = GetComponent<GameDatabase>();
+        if (EventCtrl == null)
+            EventCtrl = GetComponent<EventCtrl>();
+        if (AudioCtrl == null)
+            AudioCtrl = GetComponent<AudioCtrl>();
+        if (StateCtrl == null)
+            StateCtrl = GetComponent<StateCtrl>();
+        if (SceneCtrl == null)
+            SceneCtrl = GetComponent<SceneCtrl>();
+        if (InputCtrl == null)
+            InputCtrl = GetComponent<InputCtrl>();
+        if (SettingCtrl == null)
+            SettingCtrl = GetComponent<SettingCtrl>();
 
         // If open scene count is more than 1, unload all scenes and load the GameManager scene.
         #if UNITY_EDITOR
-        if (SceneManager.sceneCount > 1)
+        if (UnityEngine.SceneManagement.SceneManager.sceneCount > 1)
         {
             Debug.Log("RESTARTING: Game Manager!");
-            SceneManager.LoadScene(SceneController.gameManagerSceneData.BuildIndex, LoadSceneMode.Single);
+            UnityEngine.SceneManagement.SceneManager.LoadScene(SceneCtrl.gameManagerSceneData.BuildIndex, LoadSceneMode.Single);
             return;
         }
         #endif
 
+        GameManager.Cur.StateCtrl.ChangeGameState(GameState.LOADING);
+
         // Create save files` directory.
         Storage.CreateGameDirectories();
         // Load the saved data at the start of the game.
-        Database.Load(Database.LevelsFile);
-        Database.Load(Database.OptionsFile);
+        GameDatabase.Load(GameDatabase.LevelsFile);
+        GameDatabase.Load(GameDatabase.OptionsFile);
     }
 
     private void Start()
     {
         if (EditorModeOn)
-            StartCoroutine(SceneController.LoadLevelScene(1, false)); // Load the Level1 scene at the start of the game.
+            StartCoroutine(SceneCtrl.LoadLevelScene(1, false)); // Load the Level1 scene at the start of the game.
         else
-            StartCoroutine(SceneController.LoadMainMenuScene(false)); // Load the MainMenu scene at the start of the game.
+            StartCoroutine(SceneCtrl.LoadMainMenuScene(false)); // Load the MainMenu scene at the start of the game.
 
-        SetFrameRate();
+        SettingCtrl.SetFrameRate();
     }
 
     public void OnSceneLoadStarted()
     {
+        GameManager.Cur.StateCtrl.ChangeGameState(GameState.LOADING);
+
         gameManagerCanvas.Activate(true);
         gameManagerCamera.gameObject.SetActive(true);
     }
-    public void OnSceneLoaded()
+    public void OnSceneLoadEnded()
     {
         gameManagerCanvas.Activate(false);
         gameManagerCamera.gameObject.SetActive(false);
+
+        switch (SceneCtrl.CurSceneType)
+        {
+            case SceneType.MAINMENU:
+                GameManager.Cur.StateCtrl.ChangeGameState(GameState.MAINMENU);
+                break;
+            case SceneType.LEVEL:
+                GameManager.Cur.StateCtrl.ChangeGameState(GameState.PLAY);
+                break;
+        }
     }
 
-    public void SetSceneDatabase()
+    public void SetSubscene()
     {
-        if (GameObject.FindGameObjectWithTag("Scene Database") != null)
+        if (GameObject.FindGameObjectWithTag("Subscene") != null)
         {
-            SceneDatabase = GameObject.FindGameObjectWithTag("Scene Database").GetComponent<SceneDatabase>();
-            Debug.Log("SCENE DATABASE: found");
+            Subscene = GameObject.FindGameObjectWithTag("Subscene").GetComponent<Subscene>();
+            Debug.Log("SUBSCENE: found");
 
-            if (SceneDatabase.Canvas != null)
+            if (Subscene.Canvas != null)
             {
-                Canvas = SceneDatabase.Canvas;
+                Canvas = Subscene.Canvas;
             }
-            if (SceneDatabase.CameraController != null)
+            if (Subscene.CamCtrl != null)
             {
-                CamController = SceneDatabase.CameraController;
-                Debug.Log("CAMERA CONTROLLER: found");
+                CamCtrl = Subscene.CamCtrl;
+                Debug.Log("CAM CTRL: found");
             }
-            if (SceneDatabase.Player != null)
+            if (Subscene.Player != null)
             {
-                Player = SceneDatabase.Player;
+                Player = Subscene.Player;
                 Debug.Log("PLAYER: found");
             }
-            if (SceneDatabase.Enemy != null)
+            if (Subscene.Enemy != null)
             {
-                Enemy = SceneDatabase.Enemy;
+                Enemy = Subscene.Enemy;
                 Debug.Log("ENEMY: found");
             }
 
             if (MainMenuCanvas != null)
                 Debug.Log("MAIN MENU CANVAS: found");
-            if (LevelCanvas != null)
+            if (SceneCanvas != null)
                 Debug.Log("LEVEL CANVAS: found");
+
+            GameManager.Cur.EventCtrl.onSceneLoadEnded?.Invoke();
         }
         else
         {
-            Debug.Log("SCENE DATABASE: Not found");
+            Debug.LogWarning("SUBSCENE: Not found");
         }
     }
-
-    #region Frame Rate Settings
-    private void SetFrameRate()
-    {
-        switch (frameRateSetting)
-        {
-            case FrameRateSetting.DEFAULT:
-                DefaultFrameRate();
-                break;
-            case FrameRateSetting.RATE_30:
-                ConstantFrameRate(30);
-                break;
-            case FrameRateSetting.RATE_45:
-                ConstantFrameRate(45);
-                break;
-            case FrameRateSetting.RATE_60:
-                ConstantFrameRate(60);
-                break;
-            default:
-                throw new ArgumentOutOfRangeException();
-        }
-    }
-    // Default Frame Rate
-    private void DefaultFrameRate()
-    {
-        QualitySettings.vSyncCount = 1;
-        Application.targetFrameRate = -1;
-    }
-    // Cpu Gpu Constant Frame Rate
-    private void ConstantFrameRate(int targetFrameRate)
-    {
-        QualitySettings.vSyncCount = 0;
-        Application.targetFrameRate = targetFrameRate;
-        Time.fixedDeltaTime = 1 / (float)targetFrameRate;
-    }
-    #endregion
 }

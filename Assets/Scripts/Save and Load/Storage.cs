@@ -35,7 +35,7 @@ public static class Storage
         }
     }
 
-    public static void SaveGame(Database callFrom, SaveFile file)
+    public static void SaveGame(GameDatabase callFrom, SaveFile file)
     {
         string fileDirectory = FileName(file.name, file.type);
 
@@ -53,7 +53,7 @@ public static class Storage
             Debug.LogWarning("Storage.SaveGame(): Failed! (Reason: " + e.Message + ")");
         }
     }
-    public static void LoadGame(Database callFrom, SaveFile file)
+    public static void LoadGame(GameDatabase callFrom, SaveFile file)
     {
         string fileDirectory = FileName(file.name, file.type);
         try

@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class InputController : MonoBehaviour
+public class InputCtrl : MonoBehaviour
 {
     private Vector2 axisInputs;
     public Vector2 AxisInputs => axisInputs;

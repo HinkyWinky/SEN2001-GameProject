@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Game.UI
 {
-    public class LevelCanvas : CanvasX
+    public class SceneCanvas : CanvasX
     {
         public PausePanel pausePanel;
 

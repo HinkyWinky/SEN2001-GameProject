@@ -1,15 +1,12 @@
 ﻿using System.Collections.Generic;
-using UnityEngine;
 
 namespace BehaviourTree
 {
-    public class Sequence : Node
+    public class Sequence : Composite
     {
-        protected List<Node> nodes = new List<Node>();
-
-        public Sequence(List<Node> nodes)
+        public Sequence(List<Node> childNodesList)
         {
-            this.nodes = nodes;
+            childNodes = childNodesList;
         }
 
         // return all of them if all of them are success
@@ -17,7 +14,7 @@ namespace BehaviourTree
         {
             bool anyChildRunning = false;
 
-            foreach (Node node in nodes)
+            foreach (Node node in childNodes)
             {
                 switch (node.Evaluate())
                 {

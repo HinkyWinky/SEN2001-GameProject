@@ -55,7 +55,7 @@ namespace Game.UI
         }
         private void LevelButtonOnUp(int levelNo)
         {
-            StartCoroutine(GameManager.Cur.SceneController.LoadLevelScene(levelNo, true));
+            StartCoroutine(GameManager.Cur.SceneCtrl.LoadLevelScene(levelNo, true));
         }
         #endregion
 

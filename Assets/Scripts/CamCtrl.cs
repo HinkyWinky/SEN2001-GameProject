@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using Cinemachine;
 using UnityEngine;
 
-public class CameraController : MonoBehaviour
+public class CamCtrl : MonoBehaviour
 {
     public Camera mainCam;
     public CinemachineVirtualCamera virtualCam;
@@ -17,5 +17,6 @@ public class CameraController : MonoBehaviour
     {
         fixedVirtualCamForwardVector = Vector3.ProjectOnPlane(VirtualCamTransform.forward, Vector3.up).normalized;
         fixedVirtualCamRightVector = Vector3.ProjectOnPlane(VirtualCamTransform.right, Vector3.up).normalized;
+        //virtualCam.AddCinemachineComponent<>();
     }
 }

@@ -1,17 +1,15 @@
 ﻿namespace BehaviourTree
 {
-    public class Inverter : Node
+    public class Inverter : Decorator
     {
-        private Node node;
-
         public Inverter(Node node)
         {
-            this.node = node;
+            childNode = node;
         }
 
         public override NodeStates Evaluate()
         {
-            switch (node.Evaluate())
+            switch (childNode.Evaluate())
             {
                 case NodeStates.FAILURE:
                     nodeState = NodeStates.SUCCESS;

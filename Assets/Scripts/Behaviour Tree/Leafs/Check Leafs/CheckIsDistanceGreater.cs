@@ -1,25 +1,22 @@
 ﻿using System;
-using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.AI;
 
 namespace BehaviourTree
 {
     [Serializable]
-    public class CheckGreaterDistanceLeaf : CheckLeaf
+    public class CheckIsDistanceGreater : Leaf
     {
-        [ShowInInspector] private NodeStates State => NodeState;
-
-        [SerializeField] private float distance = 4f;
+        [SerializeField, Range(0.1f, 50f)] private float distance = 4f;
 
         private NavMeshAgent agent;
         private Vector3 targetPos;
 
-        public void SetFieldsOnStart(NavMeshAgent navMeshAgent)
+        public void StartLeaf(NavMeshAgent navMeshAgent)
         {
             agent = navMeshAgent;
         }
-        public void SetFieldsOnUpdate(Vector3 targetPosition)
+        public void UpdateLeaf(Vector3 targetPosition)
         {
             targetPos = targetPosition;
         }

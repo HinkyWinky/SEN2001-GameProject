@@ -1,11 +1,14 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class SceneController : MonoBehaviour
+public class SceneCtrl : MonoBehaviour
 {
+    private SceneType curSceneType;
+    [ShowInInspector, ReadOnly] public SceneType CurSceneType => curSceneType;
+
     public SceneData gameManagerSceneData;
     public SceneData mainMenuSceneData;
     public List<SceneData> levelsSceneData = new List<SceneData>();
@@ -26,7 +29,7 @@ public class SceneController : MonoBehaviour
     }
     private IEnumerator LoadSceneAdditive(SceneData sceneData, bool setSceneActive, bool unloadActiveScene)
     {
-        GameManager.Cur.EventController.onSceneLoadStarted?.Invoke();
+        GameManager.Cur.EventCtrl.onSceneLoadStarted?.Invoke();
 
         Scene preActiveScene = SceneManager.GetActiveScene();
         SetActiveScene(gameManagerSceneData);
@@ -51,6 +54,7 @@ public class SceneController : MonoBehaviour
         }
 
         AsyncOperation loadOperation = SceneManager.LoadSceneAsync(sceneData.BuildIndex, LoadSceneMode.Additive);
+        loadOperation.allowSceneActivation = false;
         while (!loadOperation.isDone)
         {
             if (GameManager.Cur.GameManagerCanvas != null)
@@ -58,22 +62,27 @@ public class SceneController : MonoBehaviour
                 float loadProgress = Mathf.Clamp01(loadOperation.progress) * 0.5f / 0.9f + 0.5f;
                 GameManager.Cur.GameManagerCanvas.loadingPanel.loadingBar.bar.value = loadProgress;
             }
+
+            if (loadOperation.progress >= 0.9f)
+            {
+                Debug.Log("SCENE LOADED: " + sceneData.Name);
+                loadOperation.allowSceneActivation = true;
+            }
             yield return null;
         }
-        Debug.Log("SCENE LOADED: " + sceneData.Name);
 
         if (setSceneActive)
             SetActiveScene(sceneData);
-
-        GameManager.Cur.EventController.onSceneLoaded?.Invoke();
     }
 
     public IEnumerator LoadMainMenuScene(bool unloadActiveScene)
     {
+        curSceneType = SceneType.MAINMENU;
         yield return StartCoroutine(LoadSceneAdditive(mainMenuSceneData, true, unloadActiveScene));
     }
     public IEnumerator LoadLevelScene(int levelNo, bool unloadActiveScene)
     {
+        curSceneType = SceneType.LEVEL;
         yield return StartCoroutine(LoadSceneAdditive(levelsSceneData[levelNo - 1], true, unloadActiveScene));
     }
 }

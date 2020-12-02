@@ -1,14 +1,11 @@
-﻿namespace BehaviourTree
-{
-    public enum NodeStates { FAILURE, RUNNING, SUCCESS };
+﻿using UnityEngine;
 
-    [System.Serializable]
+namespace BehaviourTree
+{
     public abstract class Node
     {
         protected NodeStates nodeState;
         public NodeStates NodeState => nodeState;
-
-        public Node() { }
 
         public abstract NodeStates Evaluate();
     }

@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using Sirenix.OdinInspector;
 using UnityEngine;
 
-public class StateController : MonoBehaviour
+public class StateCtrl : MonoBehaviour
 {
-    public GameState CurGameState { get; private set; }
+    [ShowInInspector, ReadOnly] public GameState CurGameState { get; private set; }
 
     public bool GameRunning { get; private set; }
 

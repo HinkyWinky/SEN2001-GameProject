@@ -6,7 +6,7 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     // Components of other game objects
-    private InputController InputController => GameManager.Cur.InputController;
+    private InputCtrl InputCtrl => GameManager.Cur.InputCtrl;
     private Enemy Enemy => GameManager.Cur.Enemy;
     private Vector3 EnemyPos => Enemy.transform.position;
     
@@ -16,6 +16,7 @@ public class Player : MonoBehaviour
     private AnimatorX animX;
 
     // Inspector Variables
+    [SerializeField, Min(0)] private int maxHealth = 3;
     [SerializeField, Range(0.01f, 1f)] private float groundClearance = 0.1f; // height from the ground
     [SerializeField, Range(0.1f, 1f), DisableInPlayMode] private float lockedAbilityInputsDuration = 0.2f; // input lock duration after finishing abilities
 
@@ -45,8 +46,20 @@ public class Player : MonoBehaviour
     [SerializeField, Range(0f, 10f)] private float idleAnimationDuration = 1.5f;
     [SerializeField, Range(0f, 10f)] private float moveAnimationDuration = 1f;
 
+    [SerializeField]private int health = 3;
+    public int Health
+    {
+        get => health;
+        set
+        {
+            if (value < 0) { health = 0; }
+            else if (value > maxHealth) { health = maxHealth; }
+            else { health = value; }
+        }
+    }
+
     // Inputs
-    private Vector3 AxisInputs => new Vector3(InputController.AxisInputs.x, 0, InputController.AxisInputs.y); // direct axis inputs
+    private Vector3 AxisInputs => new Vector3(InputCtrl.AxisInputs.x, 0, InputCtrl.AxisInputs.y); // direct axis inputs
     private Vector3 FixedAxisInputs => (AxisInputs.x * Vector3.Cross(Vector3.up,forward)) + (AxisInputs.z * forward); // axis inputs according to the player rotation
     
     // Movement
@@ -106,23 +119,23 @@ public class Player : MonoBehaviour
             // The player moves if the axis inputs are different than zero.
             Move();
             // The player jumps if the jump input button is clicked by the user.
-            if (InputController.jumpInput)
+            if (InputCtrl.jumpInput)
             {
-                InputController.jumpInput = false;
+                InputCtrl.jumpInput = false;
                 Jump();
             }
             // The player rolls if the roll input button is clicked by the user.
-            if (InputController.rollInput && !lockedAbilityInputs)
+            if (InputCtrl.rollInput && !lockedAbilityInputs)
             {
-                InputController.rollInput = false;
+                InputCtrl.rollInput = false;
                 if (desiredRollVelocity.magnitude >= 0.1f) // Run the function If there is axis inputs.
                     Roll();
             }
         }
         // The player attacks if the attack input button is clicked by the user.
-        if (InputController.attackInput && !lockedAbilityInputs)
+        if (InputCtrl.attackInput && !lockedAbilityInputs)
         {
-            InputController.attackInput = false;
+            InputCtrl.attackInput = false;
             Attack();
         }
         Rotate(); // The player rotates according to the player animation state.
@@ -198,7 +211,7 @@ public class Player : MonoBehaviour
         ChangePlayerState(PlayerStates.ROLL, true);
         LockAbilityInputs();
 
-        // Start Roll Coroutine
+        // StartLeaf Roll Coroutine
         if (abilityCor != null)
             StopCoroutine(abilityCor);
         abilityCor = RollCor();
@@ -226,7 +239,7 @@ public class Player : MonoBehaviour
         ChangePlayerState(PlayerStates.ATTACK, true);
         LockAbilityInputs();
 
-        // Start Attack Coroutine
+        // StartLeaf Attack Coroutine
         if (abilityCor != null)
             StopCoroutine(abilityCor);
         abilityCor = AttackCor();

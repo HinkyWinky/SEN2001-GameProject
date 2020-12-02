@@ -1,33 +1,21 @@
 ﻿using System;
-using Sirenix.OdinInspector;
 using UnityEngine;
-using UnityEngine.AI;
 
 namespace BehaviourTree
 {
-    [Serializable]
-    public class CheckSmallerDistanceLeaf : CheckLeaf
+    [Serializable] public class CheckIsPlayerHealthSmaller : Leaf
     {
-        [ShowInInspector] private NodeStates State => NodeState;
+        [SerializeField, Min(1)] private int compareHealth = 3;
+        private int playerHealth;
 
-        [SerializeField] private float distance = 4f;
-
-        private NavMeshAgent agent;
-        private Vector3 targetPos;
-
-        public void SetFieldsOnStart(NavMeshAgent navMeshAgent)
+        public void UpdateLeaf(int playerHealthValue)
         {
-            agent = navMeshAgent;
-        }
-        public void SetFieldsOnUpdate(Vector3 targetPosition)
-        {
-            targetPos = targetPosition;
+            playerHealth = playerHealthValue;
         }
 
         private NodeStates Check()
         {
-            float targetDistance = Vector3.Distance(agent.transform.position, targetPos);
-            return targetDistance < distance ? NodeStates.SUCCESS : NodeStates.FAILURE;
+            return playerHealth < compareHealth ? NodeStates.SUCCESS : NodeStates.FAILURE;
         }
 
         public override NodeStates Evaluate()
@@ -50,3 +38,4 @@ namespace BehaviourTree
         }
     }
 }
+

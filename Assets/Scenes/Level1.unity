@@ -743,7 +743,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 8
   m_IsActive: 1
 --- !u!4 &487146378
 Transform:
@@ -999,7 +999,7 @@ GameObject:
   m_Name: Eyes
   m_TagString: Untagged
   m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
+  m_NavMeshLayer: 1
   m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &691002149
@@ -1076,7 +1076,8 @@ GameObject:
   - component: {fileID: 860276339}
   - component: {fileID: 860276338}
   - component: {fileID: 860276332}
-  - component: {fileID: 860276333}
+  - component: {fileID: 860276335}
+  - component: {fileID: 860276334}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Untagged
@@ -1094,8 +1095,8 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 0.5
-  m_Speed: 2
-  m_Acceleration: 8
+  m_Speed: 1.5
+  m_Acceleration: 50
   avoidancePriority: 50
   m_AngularSpeed: 180
   m_StoppingDistance: 0
@@ -1106,22 +1107,35 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
---- !u!114 &860276333
-MonoBehaviour:
+--- !u!65 &860276334
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 860276331}
+  m_Material: {fileID: 13400000, guid: 4cb6329b292e175458a06c1da0bede23, type: 2}
+  m_IsTrigger: 0
   m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fdab27335eff9044fa6aa8f21ab2dc16, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  checkGreaterDistanceLeaf:
-    distance: 4
-  actionMoveLeaf:
-    stopDistance: 3
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0.5, z: 0}
+--- !u!54 &860276335
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 860276331}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 126
+  m_CollisionDetection: 0
 --- !u!4 &860276336
 Transform:
   m_ObjectHideFlags: 0
@@ -1149,8 +1163,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0892b671865af4340a9ceeaab287cbad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 3
+  evaluateDeltaTime: 1
   maxHealth: 3
+  actionMove1:
+    stopDistanceThreshold: 1
+  actionAttack1:
+    attackDistanceThreshold: 1.5
+    animationMotionName: Attack
+    animationDuration: 1
+    animationFadeDuration: 0
+  actionMove2:
+    stopDistanceThreshold: 6
 --- !u!114 &860276338
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1196,7 +1219,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 8
   m_IsActive: 1
 --- !u!4 &878048272
 Transform:
@@ -1378,7 +1401,6 @@ GameObject:
   - component: {fileID: 925868848}
   - component: {fileID: 925868847}
   - component: {fileID: 925868846}
-  - component: {fileID: 925868849}
   m_Layer: 0
   m_Name: Mesh
   m_TagString: Untagged
@@ -1663,19 +1685,6 @@ MonoBehaviour:
   m_SelectedFaces: 
   m_SelectedEdges: []
   m_SelectedVertices: 
---- !u!65 &925868849
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 925868844}
-  m_Material: {fileID: 13400000, guid: 4cb6329b292e175458a06c1da0bede23, type: 2}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0.5, z: 0}
 --- !u!1 &1002929078
 GameObject:
   m_ObjectHideFlags: 0
@@ -1881,7 +1890,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh17188
+  m_Name: pb_Mesh17212
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -2146,7 +2155,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 8
   m_IsActive: 1
 --- !u!4 &1448715561
 Transform:
@@ -2305,7 +2314,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 8
   m_IsActive: 1
 --- !u!4 &1617225688
 Transform:
@@ -2398,7 +2407,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 8
   m_IsActive: 1
 --- !u!4 &1704406916
 Transform:
@@ -2438,8 +2447,8 @@ GameObject:
   - component: {fileID: 1737434025}
   - component: {fileID: 1737434024}
   m_Layer: 0
-  m_Name: Scene Database
-  m_TagString: Scene Database
+  m_Name: Subscene
+  m_TagString: Subscene
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2457,7 +2466,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   canvas: {fileID: 2048850096}
-  cameraController: {fileID: 1696741976}
+  camCtrl: {fileID: 1696741976}
   player: {fileID: 6384577058315362560}
   enemy: {fileID: 860276337}
 --- !u!4 &1737434025
@@ -2480,7 +2489,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh17282
+  m_Name: pb_Mesh37566
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -2815,6 +2824,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f807dab3d86cae14e872172da9feb6e9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  maxHealth: 3
   groundClearance: 0.1
   lockedAbilityInputsDuration: 0.1
   maxMoveSpeed: 2.75
@@ -2829,6 +2839,7 @@ MonoBehaviour:
   attackDuration: 0.4
   idleAnimationDuration: 1.5
   moveAnimationDuration: 1
+  health: 3
 --- !u!54 &6384577058315362561
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -2843,7 +2854,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 80
+  m_Constraints: 112
   m_CollisionDetection: 0
 --- !u!95 &6384577058315362562
 Animator:

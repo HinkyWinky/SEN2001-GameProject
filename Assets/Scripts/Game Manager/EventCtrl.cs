@@ -1,25 +1,24 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Events;
 
-public class EventController : MonoBehaviour
+public class EventCtrl : MonoBehaviour
 {
     private GameManager Mng => GameManager.Cur;
 
-    public UnityEvent onSceneLoadStarted;
-    public UnityEvent onSceneLoaded;
+    [HideInInspector] public UnityEvent onSceneLoadStarted;
+    [HideInInspector] public UnityEvent onSceneLoadEnded;
 
     private void Start()
     {
         onSceneLoadStarted.AddListener(OnSceneLoadStarted);
-        onSceneLoaded.AddListener(OnSceneLoaded);
+        onSceneLoadEnded.AddListener(OnSceneLoadEnded);
         onSceneLoadStarted.AddListener(Mng.OnSceneLoadStarted);
-        onSceneLoaded.AddListener(Mng.OnSceneLoaded);
+        onSceneLoadEnded.AddListener(Mng.OnSceneLoadEnded);
     }
     private void OnDestroy()
     {
         onSceneLoadStarted.RemoveAllListeners();
-        onSceneLoaded.RemoveAllListeners();
+        onSceneLoadEnded.RemoveAllListeners();
     }
 
     public void OnSceneLoadStarted()
@@ -27,8 +26,8 @@ public class EventController : MonoBehaviour
         Debug.Log("EVENT: OnSceneLoadStarted");
     }
 
-    public void OnSceneLoaded()
+    public void OnSceneLoadEnded()
     {
-        Debug.Log("EVENT: OnSceneLoaded");
+        Debug.Log("EVENT: OnSceneLoadEnded");
     }
 }

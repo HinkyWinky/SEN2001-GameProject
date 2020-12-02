@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Database : MonoBehaviour
+public class GameDatabase : MonoBehaviour
 {
     // Save Files Data
     [Header("Save Files` Data")]
@@ -13,7 +13,7 @@ public class Database : MonoBehaviour
     public SaveFile OptionsFile => optionsFile;
 
     #region Save Load
-    // This method is called by Storage class after user calls Save() method in Database class.
+    // This method is called by Storage class after user calls Save() method in GameDatabase class.
     // Put all save logic into this method.
     public void SaveData(DataWriter writer, SaveFile file)
     {
@@ -32,10 +32,10 @@ public class Database : MonoBehaviour
         }
         else
         {
-            Debug.Log("FILE: " + "Database has no name of the " + file.name + " file!");
+            Debug.Log("FILE: " + "GameDatabase has no name of the " + file.name + " file!");
         }
     }
-    // This method is called by Storage class after user calls Load() method in Database class.
+    // This method is called by Storage class after user calls Load() method in GameDatabase class.
     // Put all load logic into this method.
     public void LoadData(DataReader reader, SaveFile file)
     {

@@ -37,7 +37,7 @@ namespace Game.UI
         }
         private void ReturnMainMenuButtonOnUp()
         {
-            StartCoroutine(GameManager.Cur.SceneController.LoadMainMenuScene(true));
+            StartCoroutine(GameManager.Cur.SceneCtrl.LoadMainMenuScene(true));
         }
         #endregion
 

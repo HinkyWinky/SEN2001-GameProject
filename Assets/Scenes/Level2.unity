@@ -748,8 +748,8 @@ GameObject:
   - component: {fileID: 1737434025}
   - component: {fileID: 1737434024}
   m_Layer: 0
-  m_Name: Scene Database
-  m_TagString: Scene Database
+  m_Name: Subscene
+  m_TagString: Subscene
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -767,6 +767,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   canvas: {fileID: 2048850096}
+  camCtrl: {fileID: 0}
+  player: {fileID: 0}
+  enemy: {fileID: 0}
 --- !u!4 &1737434025
 Transform:
   m_ObjectHideFlags: 0

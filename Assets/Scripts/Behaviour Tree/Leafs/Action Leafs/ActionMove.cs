@@ -1,53 +1,39 @@
 ﻿using System;
-using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.AI;
 
 namespace BehaviourTree
 {
     [Serializable]
-    public class ActionMoveLeaf : ActionLeaf
+    public class ActionMove : Leaf
     {
-        [ShowInInspector] private NodeStates State => NodeState;
-
-        [SerializeField] private float stopDistance = 3f;
+        [SerializeField, Range(0.05f, 50f)] private float stopDistanceThreshold = 1f;
 
         private NavMeshAgent agent;
         private Vector3 targetPos;
         private Vector3 destination;
         private NavMeshPath path;
 
-        public void SetFieldsOnStart(NavMeshAgent navMeshAgent, ref NavMeshPath navMeshPath)
+        public void StartLeaf(NavMeshAgent navMeshAgent, ref NavMeshPath navMeshPath)
         {
             agent = navMeshAgent;
             path = navMeshPath;
         }
-        public void SetFieldsOnUpdate(Vector3 targetPosition)
+        public void UpdateLeaf(Vector3 targetPosition)
         {
             targetPos = targetPosition;
         }
 
         private NodeStates Action()
         {
-            return Move();
-        }
+            destination = targetPos + (agent.transform.position - targetPos).normalized * stopDistanceThreshold;  
+            if (!(Vector3.Distance(agent.transform.position, targetPos) > stopDistanceThreshold)) return NodeStates.SUCCESS;
 
-        private NodeStates Move()
-        {
-            Vector3 direction = (agent.transform.position - targetPos).normalized;
-            Vector3 targetPosition = targetPos + direction * stopDistance;
-            agent.CalculatePath(targetPosition, path);
-            if (path.status == NavMeshPathStatus.PathComplete)
-            {
-                if (Vector3.Distance(destination, targetPos) > stopDistance)
-                {
-                    destination = targetPosition;
-                    agent.SetDestination(destination);
-                    return NodeStates.RUNNING;
-                }
-                return NodeStates.SUCCESS;
-            }
-            return NodeStates.FAILURE;
+            agent.CalculatePath(destination, path);
+            if (path.status != NavMeshPathStatus.PathComplete) return NodeStates.FAILURE;
+
+            agent.SetDestination(destination);
+            return NodeStates.RUNNING;
         }
 
         public override NodeStates Evaluate()
