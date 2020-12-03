@@ -5,16 +5,17 @@ using UnityEngine.AI;
 
 namespace BehaviourTree
 {
-    [Serializable]
-    public class ActionMove : ActionLeaf
+    [Serializable] public class ActionDash : ActionLeaf
     {
+        [SerializeField, Range(0.1f, 10f)] private float dashSpeed = 4f;
         [SerializeField, Range(0.15f, 50f)] private float stopDistance = 1f;
         [SerializeField, Range(0.01f, 0.2f)] private float errorDistanceThreshold = 0.1f;
+
         private Vector3 targetPos;
         private Vector3 destination;
         private Vector3 firstTargetPos;
 
-        private IEnumerator moveToTargetPos;
+        private IEnumerator dashToTargetPos;
 
         protected override NodeStates Action()
         {
@@ -22,16 +23,17 @@ namespace BehaviourTree
             {
                 firstTargetPos = targetPos;
                 destination = firstTargetPos + (brain.rig.transform.position - firstTargetPos).normalized * stopDistance;
+
                 NavMesh.SamplePosition(destination, out NavMeshHit hit, 10f, 1);
                 if (hit.hit)
                     destination = hit.position;
                 else
                     return NodeStates.FAILURE;
 
-                if (moveToTargetPos != null)
-                    brain.StopCoroutine(moveToTargetPos);
-                moveToTargetPos = CoroutineUtils.LerpRigidbody(brain.rig, destination, brain.moveSpeed);
-                brain.StartCoroutine(moveToTargetPos);
+                if (dashToTargetPos != null)
+                    brain.StopCoroutine(dashToTargetPos);
+                dashToTargetPos = CoroutineUtils.LerpRigidbody(brain.rig, destination, dashSpeed);
+                brain.StartCoroutine(dashToTargetPos);
                 return NodeStates.RUNNING;
             }
 

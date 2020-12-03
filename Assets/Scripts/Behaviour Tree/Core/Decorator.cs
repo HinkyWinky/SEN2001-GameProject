@@ -4,6 +4,6 @@
     {
         protected Node childNode;
 
-        public abstract override NodeStates Evaluate();
+        protected override void OnReset() { }
     }
 }

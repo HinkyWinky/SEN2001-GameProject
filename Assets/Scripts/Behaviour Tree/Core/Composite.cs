@@ -1,14 +1,21 @@
 ﻿using System.Collections.Generic;
-using Sirenix.OdinInspector;
 
 namespace BehaviourTree
 {
     public abstract class Composite : Node
     {
-        [ShowInInspector, PropertyOrder(-1)] protected NodeStates State => NodeState;
+        protected int curChildIndex = 0;
 
         protected List<Node> childNodes;
 
-        public abstract override NodeStates Evaluate();
+        protected override void OnReset()
+        {
+            curChildIndex = 0;
+
+            for (int i = 0; i < childNodes.Count; i++)
+            {
+                childNodes[i].Reset();
+            }
+        }
     }
 }

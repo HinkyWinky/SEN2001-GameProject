@@ -1,22 +1,75 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace BehaviourTree
 {
+    [Serializable]
     public abstract class BehaviourBrain : MonoBehaviour
     {
-        protected Composite rootNode;
+        public Player Player => GameManager.Cur.Player;
 
-        [SerializeField, Range(0.0333f, 10f)] protected float evaluateDeltaTime = 0.1f;
+        [Title("Behaviour Tree")]
+        [SerializeField] protected bool isEvaluateAtStart = false;
+        [SerializeField, Range(0.0333f, 10f), HideInPlayMode] protected float evaluateDeltaTime = 0.1f;
+        [SerializeField, ReadOnly] protected bool isEvaluating;
+        [Range(0f, 5f)] public float moveSpeed = 0.5f;
+
+        [HideInInspector] public Animator anim;
+        [HideInInspector] public AnimatorX animX;
+        [HideInInspector] public Rigidbody rig;
         protected WaitForSeconds waitTimeEvaluateDeltaTime;
+        protected Composite rootNode;
+        protected IEnumerator evaluateBehaviourTree;
 
         public virtual void Awake()
         {
+            TryGetComponent(out anim);
+            TryGetComponent(out animX);
+            TryGetComponent(out rig);
+
             waitTimeEvaluateDeltaTime = new WaitForSeconds(evaluateDeltaTime);
         }
 
-        public abstract void StartBehaviourTree();
-        public abstract void UpdateBehaviourTree();
-        public abstract IEnumerator EvaluateBehaviourTree();
+        /// <summary>
+        /// Create tree inside it.
+        /// Call leaf`s StartLeaf() inside it.
+        /// Call inside the Start() of child class.
+        /// </summary>
+        protected abstract void BuildBehaviourTree();
+
+        /// <summary>
+        /// Call leafs` UpdateLeaf() inside it.
+        /// Call inside the loop of the EvaluateBehaviourTree().
+        /// </summary>
+        protected abstract void UpdateBehaviourTree();
+
+        /// <summary>
+        /// Call the StartEvaluateBehaviourTree() instead of this.
+        /// </summary>
+        protected abstract IEnumerator EvaluateBehaviourTree();
+
+        /// <summary>
+        /// Call to start EvaluateBehviourTree() coroutine. 
+        /// </summary>
+        protected void StartEvaluateBehaviourTree()
+        {
+            StopEvaluateBehaviourTree();
+
+            isEvaluating = true;
+            evaluateBehaviourTree = EvaluateBehaviourTree();
+            StartCoroutine(evaluateBehaviourTree);
+        }
+
+        /// <summary>
+        /// Call to stop EvaluateBehviourTree() coroutine. 
+        /// </summary>
+        protected void StopEvaluateBehaviourTree()
+        {
+            if (evaluateBehaviourTree != null)
+                StopCoroutine(evaluateBehaviourTree);
+            isEvaluating = false;
+        }
     }
 }

@@ -45,6 +45,8 @@ public class AnimatorX : MonoBehaviour
             while (percent <= 1f)
             {
                 percent += Time.deltaTime / fadeDuration;
+                //if (percent > 1f)
+                //    percent = 1f;
                 anim.CrossFade(motionName, fadeDuration);
                 yield return null;
             }
@@ -63,6 +65,8 @@ public class AnimatorX : MonoBehaviour
         while (percent <= 1f)
         {
             percent += Time.deltaTime / fixedAnimationDuration;
+            //if (percent > 1f)
+            //    percent = 1f;
             anim.SetFloat(motionName, percent);
 
             // if the loop is true, keep running the while loop

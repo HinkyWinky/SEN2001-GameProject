@@ -1,36 +1,33 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace BehaviourTree
 {
     public class Selector : Composite
     {
-        public Selector(List<Node> childNodes)
+        public Selector(List<Node> childNodesList)
         {
-            base.childNodes = childNodes;
+            childNodes = childNodesList;
         }
 
-        // return first success one
-        public override NodeStates Evaluate()
+        public override NodeStates OnEvaluate()
         {
-            foreach (Node node in childNodes)
+            if (curChildIndex >= childNodes.Count)
             {
-                switch (node.Evaluate())
-                {
-                    case NodeStates.FAILURE:
-                        continue;
-                    case NodeStates.RUNNING:
-                        nodeState = NodeStates.RUNNING;
-                        return nodeState;
-                    case NodeStates.SUCCESS:
-                        nodeState = NodeStates.SUCCESS;
-                        return nodeState;
-                    default:
-                        continue;
-                }
+                return NodeStates.FAILURE;
             }
-            nodeState = NodeStates.FAILURE;
-            return nodeState;
+
+            NodeStates childNodeState = childNodes[curChildIndex].Evaluate();
+
+            switch (childNodeState)
+            {
+                case NodeStates.FAILURE:
+                    curChildIndex++;
+                    break;
+                case NodeStates.SUCCESS:
+                    return NodeStates.SUCCESS;
+            }
+
+            return NodeStates.RUNNING;
         }
     }
 }

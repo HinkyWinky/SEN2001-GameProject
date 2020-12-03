@@ -1,11 +1,15 @@
-﻿using Sirenix.OdinInspector;
+﻿using UnityEngine;
 
 namespace BehaviourTree
 {
     public abstract class Leaf : Node
     {
-        [ShowInInspector, PropertyOrder(-1)] protected NodeStates State => NodeState;
+        [HideInInspector] protected BehaviourBrain brain;
 
-        public abstract override NodeStates Evaluate();
+        public virtual void StartLeaf(BehaviourBrain behaviourBrain)
+        {
+            brain = behaviourBrain;
+        }
+        protected override void OnReset() { }
     }
 }

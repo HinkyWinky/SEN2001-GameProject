@@ -8,6 +8,8 @@ public enum SceneType { MAINMENU, LEVEL };
 
 namespace BehaviourTree
 {
-    public enum NodeStates { FAILURE, RUNNING, SUCCESS };
+    public enum NodeStates { EMPTY, FAILURE, RUNNING, SUCCESS };
+
+    public enum CheckType { IS_EQUAL, IS_GREATER, IS_SMALLER };
 }
 

@@ -1,12 +1,37 @@
-﻿using UnityEngine;
+﻿using System;
+using Sirenix.OdinInspector;
 
 namespace BehaviourTree
 {
+    [Serializable]
     public abstract class Node
     {
-        protected NodeStates nodeState;
-        public NodeStates NodeState => nodeState;
+        protected NodeStates nodeState = NodeStates.EMPTY;
+        [ShowInInspector, ReadOnly, PropertyOrder(-1)] public NodeStates NodeState => nodeState;
 
-        public abstract NodeStates Evaluate();
+        protected int loopCount = 0;
+        public bool IsFirstLoop => loopCount == 0;
+
+        public virtual NodeStates Evaluate()
+        {
+            nodeState = OnEvaluate();
+
+            loopCount++;
+
+            if (nodeState != NodeStates.RUNNING)
+            {
+                Reset();
+            }
+
+            return nodeState;
+        }
+        public abstract NodeStates OnEvaluate();
+
+        public void Reset()
+        {
+            loopCount = 0;
+            OnReset();
+        }
+        protected abstract void OnReset();
     }
 }

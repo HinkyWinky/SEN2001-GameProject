@@ -7,7 +7,7 @@
             childNode = node;
         }
 
-        public override NodeStates Evaluate()
+        public override NodeStates OnEvaluate()
         {
             switch (childNode.Evaluate())
             {

@@ -9,30 +9,25 @@ namespace BehaviourTree
             childNodes = childNodesList;
         }
 
-        // return all of them if all of them are success
-        public override NodeStates Evaluate()
+        public override NodeStates OnEvaluate()
         {
-            bool anyChildRunning = false;
+            NodeStates childNodeState = childNodes[curChildIndex].Evaluate();
 
-            foreach (Node node in childNodes)
+            switch (childNodeState)
             {
-                switch (node.Evaluate())
-                {
-                    case NodeStates.FAILURE:
-                        nodeState = NodeStates.FAILURE;
-                        return nodeState;
-                    case NodeStates.RUNNING:
-                        anyChildRunning = true;
-                        continue;
-                    case NodeStates.SUCCESS:
-                        continue;
-                    default:
-                        nodeState = NodeStates.SUCCESS;
-                        return nodeState;
-                }
+                case NodeStates.FAILURE:
+                    return childNodeState;
+                case NodeStates.SUCCESS:
+                    curChildIndex++;
+                    break;
             }
-            nodeState = anyChildRunning ? NodeStates.RUNNING : NodeStates.SUCCESS;
-            return nodeState;
+
+            if (curChildIndex >= childNodes.Count)
+            {
+                return NodeStates.SUCCESS;
+            }
+
+            return childNodeState == NodeStates.SUCCESS ? OnEvaluate() : NodeStates.RUNNING;
         }
     }
 }

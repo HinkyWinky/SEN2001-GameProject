@@ -3,6 +3,8 @@ using UnityEngine;
 
 public static class CoroutineUtils
 {
+    public static YieldInstruction waitForFixedUpdate = new WaitForFixedUpdate();
+
     public static IEnumerator WaitForSeconds(float seconds)
     {
         float startTime = Time.time;
@@ -21,28 +23,30 @@ public static class CoroutineUtils
         } while (Time.realtimeSinceStartup < startTime + seconds);
     }
 
-    public static IEnumerator MoveTowards(Transform objectToMove, Vector3 targetPos, float duration)
+    public static IEnumerator MoveTowardsRigidbody(Rigidbody rigidbody, Vector3 targetPos, float duration)
     {
-        float counter = 0;
-        while (counter < duration)
+        float percent = 0;
+        while (percent < duration)
         {
-            counter += Time.deltaTime;
-            Vector3 currentPos = objectToMove.position;
-            float time = Vector3.Distance(currentPos, targetPos) / (duration - counter) * Time.deltaTime;
-            objectToMove.position = Vector3.MoveTowards(currentPos, targetPos, time);
-            yield return null;
+            percent += Time.fixedDeltaTime;
+            Vector3 currentPos = rigidbody.position;
+            float time = Vector3.Distance(currentPos, targetPos) / (duration - percent) * Time.deltaTime;
+            rigidbody.position = Vector3.MoveTowards(currentPos, targetPos, time);
+            yield return waitForFixedUpdate;
         }
     }
-
-    public static IEnumerator Lerp(Transform objectToMove, Vector3 targetPos, float duration)
+   
+    public static IEnumerator LerpRigidbody(Rigidbody rigidbody, Vector3 targetPos, float speed)
     {
-        Vector3 startPos = objectToMove.position;
-        float counter = 0;
-        while (counter < duration)
+        Vector3 startPos = rigidbody.position;
+        float percent = 0;
+        while (percent <= 1f)
         {
-            counter += Time.deltaTime;
-            objectToMove.position = Vector3.Lerp(startPos, targetPos, counter / duration);
-            yield return null;
+            percent += Time.fixedDeltaTime * speed;
+            if (percent > 1)
+                percent = 1f;
+            rigidbody.position = Vector3.Lerp(startPos, targetPos, percent);
+            yield return waitForFixedUpdate;
         }
     }
 }
