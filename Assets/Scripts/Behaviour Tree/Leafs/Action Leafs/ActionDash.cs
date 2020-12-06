@@ -22,7 +22,7 @@ namespace BehaviourTree
             if (IsFirstLoop)
             {
                 firstTargetPos = targetPos;
-                destination = firstTargetPos + (brain.rig.transform.position - firstTargetPos).normalized * stopDistance;
+                destination = firstTargetPos + (brain.rig.position - firstTargetPos).normalized * stopDistance;
 
                 NavMesh.SamplePosition(destination, out NavMeshHit hit, 10f, 1);
                 if (hit.hit)
@@ -30,14 +30,21 @@ namespace BehaviourTree
                 else
                     return NodeStates.FAILURE;
 
+                brain.StartRotate(destination);
+
+                float distance = Vector3.Distance(brain.rig.position, destination);
+                float duration = (distance - errorDistanceThreshold) / dashSpeed;
+                brain.animX.StartAnimation("Dash", duration, false, 0f);
+
                 if (dashToTargetPos != null)
                     brain.StopCoroutine(dashToTargetPos);
-                dashToTargetPos = CoroutineUtils.LerpRigidbody(brain.rig, destination, dashSpeed);
+                dashToTargetPos = CoroutineUtils.LerpRigidbody(brain.rig, destination, duration);
                 brain.StartCoroutine(dashToTargetPos);
+
                 return NodeStates.RUNNING;
             }
 
-            float distanceToTargetPos = Vector3.Distance(brain.rig.transform.position, destination);
+            float distanceToTargetPos = Vector3.Distance(brain.rig.position, destination);
             if (distanceToTargetPos < stopDistance + errorDistanceThreshold)
                 return NodeStates.SUCCESS;
 

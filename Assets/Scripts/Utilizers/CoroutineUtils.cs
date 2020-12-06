@@ -36,17 +36,17 @@ public static class CoroutineUtils
         }
     }
    
-    public static IEnumerator LerpRigidbody(Rigidbody rigidbody, Vector3 targetPos, float speed)
+    public static IEnumerator LerpRigidbody(Rigidbody rigidbody, Vector3 targetPos, float duration)
     {
         Vector3 startPos = rigidbody.position;
         float percent = 0;
-        while (percent <= 1f)
+        while (percent < duration)
         {
-            percent += Time.fixedDeltaTime * speed;
-            if (percent > 1)
-                percent = 1f;
-            rigidbody.position = Vector3.Lerp(startPos, targetPos, percent);
+            rigidbody.position = Vector3.Lerp(startPos, targetPos, percent / duration);
+            percent += Time.fixedDeltaTime;
             yield return waitForFixedUpdate;
         }
+        rigidbody.position = targetPos;
+        yield return waitForFixedUpdate;
     }
 }

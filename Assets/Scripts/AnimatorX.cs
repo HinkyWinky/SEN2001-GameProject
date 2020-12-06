@@ -42,14 +42,13 @@ public class AnimatorX : MonoBehaviour
         if (isAnimPlaying && fadeDuration > 0f)
         {
             fixedAnimationDuration = animationDuration - (animationDuration * fadeDuration);
-            while (percent <= 1f)
+            while (percent < fadeDuration)
             {
-                percent += Time.deltaTime / fadeDuration;
-                //if (percent > 1f)
-                //    percent = 1f;
                 anim.CrossFade(motionName, fadeDuration);
+                percent += Time.deltaTime;
                 yield return null;
             }
+            anim.CrossFade(motionName, fadeDuration);
         }
         else
         {
@@ -62,22 +61,18 @@ public class AnimatorX : MonoBehaviour
         lastAnim = motionName;
 
         percent = 0f;
-        while (percent <= 1f)
+        while (percent < fixedAnimationDuration)
         {
-            percent += Time.deltaTime / fixedAnimationDuration;
-            //if (percent > 1f)
-            //    percent = 1f;
-            anim.SetFloat(motionName, percent);
-
+            anim.SetFloat(motionName, percent / fixedAnimationDuration);
+            percent += Time.deltaTime;
             // if the loop is true, keep running the while loop
-            if (loop && percent >= 1f)
+            if (loop && (percent / fixedAnimationDuration >= 1f))
                 percent = 0f;
-
             yield return null;
         }
-
-        // animation is finished
-        currentAnim = "";
+        anim.SetFloat(motionName,1f);
+       // animation is finished
+       currentAnim = "";
         isAnimPlaying = false;
     }
 

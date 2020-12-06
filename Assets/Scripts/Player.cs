@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using Sirenix.OdinInspector;
-using UnityEditor;
 using UnityEngine;
 
 public class Player : MonoBehaviour
@@ -76,8 +75,8 @@ public class Player : MonoBehaviour
     [FoldoutGroup("Read Only Fields"), ShowInInspector, ReadOnly]
     private bool onGround, hitGroundFirstTime, lockedPlayerState, lockedAbilityInputs;
 
+    private IEnumerator rotationCor;
     private IEnumerator abilityCor;
-    private WaitForFixedUpdate waitForFixedUpdate;
     private WaitForSeconds waitForLockedAbilityInputsDuration, waitForStayStableAfterRollDuration;
 
     #region Mono
@@ -87,7 +86,6 @@ public class Player : MonoBehaviour
         tra = GetComponent<Transform>();
         animX = GetComponent<AnimatorX>();
 
-        waitForFixedUpdate = new WaitForFixedUpdate();
         waitForLockedAbilityInputsDuration = new WaitForSeconds(lockedAbilityInputsDuration);
         waitForStayStableAfterRollDuration = new WaitForSeconds(stayStableAfterRollDuration);
     }
@@ -114,7 +112,7 @@ public class Player : MonoBehaviour
     private void MovementUpdate()
     {
         if (lockedPlayerState) return;
-        if (onGround) // Run the function if the player is on the ground.
+        if (onGround)
         {
             // The player moves if the axis inputs are different than zero.
             Move();
@@ -202,8 +200,8 @@ public class Player : MonoBehaviour
     {
         ChangePlayerState(PlayerStates.JUMP, false);
 
-        velocity += FixedAxisInputs.normalized * jumpForceXZ - velocity; // Remove the player`s previous velocity.
-        velocity.y += JumpSpeedY; // Calculate the required velocity for the target height and add to the player`s velocity.
+        velocity += FixedAxisInputs.normalized * jumpForceXZ - velocity; // The player cannot move with input and has stable velocity on XZ axis while in the air.
+        velocity.y += JumpSpeedY; // Add force to the player on Y axis for jumping. 
     }
 
     private void Roll()
@@ -219,15 +217,19 @@ public class Player : MonoBehaviour
     }
     private IEnumerator RollCor()
     {
-        rollDirection = desiredRollVelocity.normalized; // Calculate the rolling direction for rotating.
+        rollDirection = desiredRollVelocity.normalized; // Rolling direction calculated with the axis inputs.
         rollVelocity = desiredRollVelocity; // Calculate the initial rolling velocity.
-        float stopTime = Time.time + rollMoveDuration; // Calculate the roll stop time
-        while (Time.time <= stopTime) // rolling
+        float percent = 0f;
+        while (percent < rollMoveDuration) // rolling
         {
-            velocity = rollVelocity; // Set the player`s velocity to the initial rolling velocity.
-            yield return waitForFixedUpdate;
+            velocity = rollVelocity; // The player`s velocity is constant while rolling.
+            percent += Time.fixedDeltaTime;
+            yield return CoroutineUtils.waitForFixedUpdate;
         }
-        velocity = Vector3.zero;
+        velocity = rollVelocity;
+        yield return CoroutineUtils.waitForFixedUpdate;
+
+        velocity = Vector3.zero; // Stop the player a little bit time after rolling completed.
         yield return waitForStayStableAfterRollDuration;
         UnlockPlayerState();
         yield return waitForLockedAbilityInputsDuration;
@@ -247,12 +249,16 @@ public class Player : MonoBehaviour
     }
     private IEnumerator AttackCor()
     {
-        float stopTime = Time.time + attackDuration; // Calculate the attack stop time.
-        while (Time.time <= stopTime) // attacking
+        float percent = 0f;
+        while (percent < attackDuration) // attacking
         {
-            velocity = Vector3.zero; // Set the player`s velocity to zero.
-            yield return waitForFixedUpdate;
+            velocity = Vector3.zero;
+            percent += Time.fixedDeltaTime;
+            yield return CoroutineUtils.waitForFixedUpdate;
         }
+        velocity = Vector3.zero;
+        yield return CoroutineUtils.waitForFixedUpdate;
+
         UnlockPlayerState();
         yield return waitForLockedAbilityInputsDuration;
         UnlockAbilityInputs();
@@ -262,35 +268,40 @@ public class Player : MonoBehaviour
     {
         if (curPlayerState == PlayerStates.ROLL)
         {
-            StartCoroutine(RotateCor(rollRotationDuration, rollDirection));
+            if (rotationCor != null)
+                StopCoroutine(rotationCor);
+            rotationCor = RotateCor(rollRotationDuration, rollDirection);
+            StartCoroutine(rotationCor);
         }
         else
         {
-            var targetRot = Quaternion.LookRotation(forward, Vector3.up); // Look at the enemy`s position.
-            float fixedMaxRotationAcceleration = maxRotationAcceleration * Quaternion.Angle(rotation, targetRot) / 180f;
-            float maxRotationChange = fixedMaxRotationAcceleration * Time.fixedDeltaTime;
-            rotation = Quaternion.RotateTowards(rotation, targetRot, maxRotationChange);
+            var targetRot = Quaternion.LookRotation(forward, Vector3.up); // Calculate target rotation value.
+            float fixedMaxRotationAcceleration = maxRotationAcceleration * Quaternion.Angle(rotation, targetRot) / 180f; // Calculate acceleration value for the angle.
+            float maxRotationChange = fixedMaxRotationAcceleration * Time.fixedDeltaTime; // Calculate acceleration needed for one frame.
+            rotation = Quaternion.RotateTowards(rotation, targetRot, maxRotationChange); // Rotate the player to the target rotation value smoothly.
         }
     }
     private IEnumerator RotateCor(float duration, Vector3 targetDir)
     {
         var startRot = rotation;
-        var targetRot = Quaternion.LookRotation(targetDir, Vector3.up); // Look at the rolling direction.
-        float fixedDuration = duration * Quaternion.Angle(startRot, targetRot) / 180f;
+        var targetRot = Quaternion.LookRotation(targetDir, Vector3.up); // Calculate target rotation value.
+        float fixedDuration = duration * Quaternion.Angle(startRot, targetRot) / 180f; // Calculate the duration value needed to rotate to the target angle.
         float percent = 0f;
-        while (percent <= 1f)
+        while (percent < fixedDuration)
         {
-            percent += Time.deltaTime / fixedDuration;
-            rotation = Quaternion.Lerp(startRot, targetRot, percent);
-            yield return waitForFixedUpdate;
+            rotation = Quaternion.Lerp(startRot, targetRot, percent / fixedDuration); // Rotate the player to the target rotation value.
+            percent += Time.deltaTime;
+            yield return CoroutineUtils.waitForFixedUpdate;
         }
+        rotation = targetRot;
+        yield return CoroutineUtils.waitForFixedUpdate;
     }
     #endregion
 
     #region Environment Methods
     private void SetOnGround()
     {
-        Vector3 startPos = transform.position + Vector3.up * 0.2f; // Starting position of the raycast.
+        Vector3 startPos = rig.position + Vector3.up * 0.2f; // Starting position of the raycast.
         bool isHit = Physics.Raycast(startPos, Vector3.down, out RaycastHit hit, 0.2f + groundClearance); // Cast raycast.
         if (isHit && hit.collider.CompareTag("Ground")) // raycast hits the ground.
         {
@@ -302,8 +313,8 @@ public class Player : MonoBehaviour
     }
     private void SetForward()
     {
-        Vector3 fixedEnemyPos = new Vector3(EnemyPos.x, tra.position.y, EnemyPos.z); // Enemy`s Position on x and z axis.
-        forward = Vector3.Normalize(fixedEnemyPos - tra.position); // Direction from the player`s position to the enemy`s position.
+        Vector3 fixedEnemyPos = new Vector3(EnemyPos.x, rig.position.y, EnemyPos.z); // Enemy`s Position on x and z axis.
+        forward = Vector3.Normalize(fixedEnemyPos - rig.position); // Direction from the player`s position to the enemy`s position.
     }
     #endregion
 
