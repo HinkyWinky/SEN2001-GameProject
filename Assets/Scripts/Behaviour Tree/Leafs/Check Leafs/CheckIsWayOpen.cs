@@ -1,0 +1,39 @@
+﻿using System;
+using BehaviourTree;
+using UnityEngine;
+using UnityEngine.AI;
+
+[Serializable]
+public class CheckIsWayOpen : CheckLeaf
+{
+    [SerializeField, Range(-50f, 50f)] private float stopDistance = 1f;
+    private Vector3 targetPos;
+
+    protected override NodeStates Check()
+    {
+        Vector3 startPos = brain.rig.position;
+        Vector3 destination = targetPos + (startPos - targetPos).normalized * stopDistance;
+
+        NavMesh.SamplePosition(destination, out NavMeshHit hit, 10f, 1);
+        if (hit.hit)
+            destination = hit.position;
+        else
+            return NodeStates.FAILURE;
+
+        NavMesh.CalculatePath(startPos, destination, NavMesh.AllAreas, brain.checkPath);
+        if (brain.checkPath.status == NavMeshPathStatus.PathComplete)
+        {
+            if (brain.checkPath.corners.Length <= 2)
+            {
+                brain.checkPath.ClearCorners();
+                return NodeStates.SUCCESS;
+            }
+        }
+        return NodeStates.FAILURE;
+    }
+
+    public void UpdateLeaf(Vector3 targetPosition)
+    {
+        targetPos = targetPosition;
+    }
+}

@@ -100,8 +100,8 @@ public class Player : MonoBehaviour
         SetForward(); // Set the player`s forward direction.
 
         MovementUpdate(); // All movement logic update.
-        EnvironmentUpdate(); // All environment logic update.
         AnimationUpdate(); // All animation logic update.
+        EnvironmentUpdate(); // All environment logic update.
 
         lastFramePlayerState = curPlayerState; // Set the last frame player state.
         rig.rotation = rotation; // Add the sum of all calculated rotations to the player`s rotation.

@@ -1,8 +1,12 @@
-﻿namespace BehaviourTree
+﻿using System;
+using Sirenix.OdinInspector;
+using UnityEngine;
+
+namespace BehaviourTree
 {
     public abstract class Decorator : Node
     {
-        protected Node childNode;
+        [ShowInInspector, ReadOnly] protected Node childNode;
 
         protected override void OnReset() { }
     }

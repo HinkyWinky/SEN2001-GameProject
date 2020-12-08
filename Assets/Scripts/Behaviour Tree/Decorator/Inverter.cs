@@ -1,5 +1,8 @@
-﻿namespace BehaviourTree
+﻿using System;
+
+namespace BehaviourTree
 {
+    [Serializable]
     public class Inverter : Decorator
     {
         public Inverter(Node node)

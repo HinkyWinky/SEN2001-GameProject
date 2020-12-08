@@ -7,10 +7,11 @@ namespace BehaviourTree
     public class ActionAttack : ActionLeaf
     {
         [SerializeField, Range(0.05f, 50f)] private float attackDistance = 1f;
+        [SerializeField, Range(0.01f, 0.2f)] private float attackDistanceTolerance = 0.1f;
+
         [SerializeField] private string animationMotionName = default;
         [SerializeField, Min(0)] private float animationDuration = 1f;
         [SerializeField, Range(0f, 1f)] private float animationFadeDuration = 0f;
-        [SerializeField, Range(0.01f, 0.2f)] private float distanceThreshold = 0.1f;
 
         private Vector3 targetPos;
 
@@ -19,7 +20,7 @@ namespace BehaviourTree
             if (IsFirstLoop)
             {
                 float distanceToTargetPos = Vector3.Distance(brain.rig.transform.position, targetPos);
-                if (distanceToTargetPos > attackDistance + distanceThreshold)
+                if (distanceToTargetPos > attackDistance + attackDistanceTolerance)
                     return NodeStates.FAILURE;
 
                 brain.animX.StartAnimation(animationMotionName, animationDuration, false, animationFadeDuration);

@@ -22,12 +22,11 @@ namespace BehaviourTree
                     break;
             }
 
-            if (curChildIndex >= childNodes.Count)
-            {
-                return NodeStates.SUCCESS;
-            }
+            if (curChildIndex >= childNodes.Count) return NodeStates.SUCCESS; // all children evaluated
 
-            return childNodeState == NodeStates.SUCCESS ? OnEvaluate() : NodeStates.RUNNING;
+            if (childNodeState == NodeStates.SUCCESS) return OnEvaluate(); // move to the next child
+
+            return NodeStates.RUNNING; // keep waiting for the result of this current child
         }
     }
 }
