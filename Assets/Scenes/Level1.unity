@@ -460,17 +460,9 @@ MonoBehaviour:
   assetGuid: 
   m_Mesh: {fileID: 1123850265}
   m_IsSelectable: 1
-  m_SelectedFaces: 00000000
-  m_SelectedEdges:
-  - a: 0
-    b: 1
-  - a: 2
-    b: 0
-  - a: 1
-    b: 3
-  - a: 3
-    b: 2
-  m_SelectedVertices: 00000000010000000200000003000000
+  m_SelectedFaces: 
+  m_SelectedEdges: []
+  m_SelectedVertices: 
 --- !u!4 &257641431
 Transform:
   m_ObjectHideFlags: 0
@@ -482,6 +474,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
+  - {fileID: 485933740}
   - {fileID: 878048272}
   m_Father: {fileID: 0}
   m_RootOrder: 4
@@ -650,7 +643,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh17262
+  m_Name: pb_Mesh33796
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -913,7 +906,7 @@ GameObject:
   - component: {fileID: 485933737}
   - component: {fileID: 485933736}
   m_Layer: 0
-  m_Name: Cube
+  m_Name: Obstacle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 1
@@ -1203,12 +1196,12 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 485933735}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_Father: {fileID: 257641431}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &487146377
 GameObject:
@@ -1554,7 +1547,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 860276336}
-  - component: {fileID: 860276337}
+  - component: {fileID: 860276333}
   - component: {fileID: 860276339}
   - component: {fileID: 860276338}
   - component: {fileID: 860276335}
@@ -1576,10 +1569,69 @@ CapsuleCollider:
   m_Material: {fileID: 13400000, guid: 4cb6329b292e175458a06c1da0bede23, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 0.5
+  m_Radius: 0.75
   m_Height: 1
   m_Direction: 1
-  m_Center: {x: 0, y: 0.5, z: 0}
+  m_Center: {x: 0, y: 0.75, z: 0}
+--- !u!114 &860276333
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 860276331}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb95f84572d71bb49bc6384a5b90c0cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  moveSpeed: 3
+  rotationDuration: 0.1
+  anim: {fileID: 0}
+  animX: {fileID: 0}
+  rig: {fileID: 0}
+  maxHealth: 3
+  health: 3
+  executeTree:
+    isEvaluating: 0
+    evaluateDeltaTime: 0.2
+    machine: {fileID: 0}
+    checkIsDistance_1:
+      checkType: 1
+      equalThreshold: 0.1
+      distanceValue: 4.5
+    checkIsWayOpen_1:
+      stopDistance: -0.5
+    actionDash_1:
+      dashSpeed: 7.5
+      stopDistance: -0.5
+      stopDistanceTolerance: 0.025
+    actionAttack_2:
+      maxAttackDistance: 2
+      maxAttackDistanceTolerance: 0.2
+      animationMotionName: Attack
+      animationDuration: 1
+      animationFadeDuration: 0
+  findTree:
+    isEvaluating: 0
+    evaluateDeltaTime: 0.2
+    machine: {fileID: 0}
+    checkIsDistance_31:
+      checkType: 1
+      equalThreshold: 0.1
+      distanceValue: 3.25
+    checkIsWayOpen_31:
+      stopDistance: -0.5
+    actionMove_31:
+      stopDistance: 5
+      stopDistanceTolerance: 0.025
+      targetMoveDistanceTolerance: 0.2
+      maxLoopCountDuration: 5
+    actionMove_32:
+      stopDistance: 1.2
+      stopDistanceTolerance: 0.01
+      targetMoveDistanceTolerance: 0.2
+      maxLoopCountDuration: 5
 --- !u!54 &860276335
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1609,66 +1661,8 @@ Transform:
   m_Children:
   - {fileID: 925868845}
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &860276337
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 860276331}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0892b671865af4340a9ceeaab287cbad, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  isEvaluateAtStart: 1
-  isEvaluating: 0
-  evaluateDeltaTime: 0.1
-  moveSpeed: 2
-  rotationDuration: 0.2
-  anim: {fileID: 0}
-  animX: {fileID: 0}
-  rig: {fileID: 0}
-  maxHealth: 3
-  health: 3
-  checkIsDistance_1:
-    checkType: 1
-    equalThreshold: 0.1
-    distanceValue: 6
-  checkIsWayOpen_1:
-    stopDistance: -0.5
-  actionDash_1:
-    dashSpeed: 7
-    stopDistance: -0.5
-    stopDistanceTolerance: 0.05
-  checkIsDistance_2:
-    checkType: 2
-    equalThreshold: 0.1
-    distanceValue: 1.4
-  actionAttack_2:
-    attackDistance: 2
-    attackDistanceTolerance: 0.1
-    animationMotionName: Attack
-    animationDuration: 1
-    animationFadeDuration: 0
-  checkIsDistance_31:
-    checkType: 1
-    equalThreshold: 0.1
-    distanceValue: 3.5
-  checkIsWayOpen_31:
-    stopDistance: -0.5
-  actionMove_31:
-    stopDistance: 6.2
-    stopDistanceTolerance: 0.05
-    targetMoveDistanceTolerance: 0.2
-    maxLoopCountDuration: 5
-  actionMove_32:
-    stopDistance: 1
-    stopDistanceTolerance: 0.05
-    targetMoveDistanceTolerance: 0.2
-    maxLoopCountDuration: 5
 --- !u!114 &860276338
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1710,7 +1704,7 @@ GameObject:
   m_Component:
   - component: {fileID: 878048272}
   m_Layer: 0
-  m_Name: Walls
+  m_Name: Border Walls
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1732,7 +1726,7 @@ Transform:
   - {fileID: 487146378}
   - {fileID: 1704406916}
   m_Father: {fileID: 257641431}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &892732375
 GameObject:
@@ -1911,7 +1905,7 @@ Transform:
   m_GameObject: {fileID: 925868844}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 2, y: 2, z: 2}
   m_Children:
   - {fileID: 2062539684}
   m_Father: {fileID: 860276336}
@@ -2747,7 +2741,7 @@ MonoBehaviour:
   canvas: {fileID: 2048850096}
   camCtrl: {fileID: 1696741976}
   player: {fileID: 6384577058315362560}
-  enemy: {fileID: 860276337}
+  enemy: {fileID: 860276333}
 --- !u!4 &1737434025
 Transform:
   m_ObjectHideFlags: 0
@@ -2970,7 +2964,7 @@ Transform:
   - {fileID: 541562230}
   - {fileID: 117785856}
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6384577058315362558
 GameObject:

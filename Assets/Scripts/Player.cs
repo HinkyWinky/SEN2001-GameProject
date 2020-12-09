@@ -6,7 +6,7 @@ public class Player : MonoBehaviour
 {
     // Components of other game objects
     private InputCtrl InputCtrl => GameManager.Cur.InputCtrl;
-    private Enemy Enemy => GameManager.Cur.Enemy;
+    private Enemy1 Enemy => GameManager.Cur.Enemy;
     private Vector3 EnemyPos => Enemy.transform.position;
     
     // Components of the player
@@ -144,7 +144,7 @@ public class Player : MonoBehaviour
         {
             // vvv...call these lines while the player on the ground...vvv
 
-            // vvv...call these lines one time when the player hits the ground first time...vvv
+            // vvv...call these lines one time when the player hits the ground isUpdatedFirstTime time...vvv
             if (hitGroundFirstTime) return;
             hitGroundFirstTime = true;
             rig.useGravity = false; // Cancel the gravity while the player on the ground.
@@ -155,7 +155,7 @@ public class Player : MonoBehaviour
             // vvv...call these lines while the player in the air...vvv
             velocity = rig.velocity;
 
-            // vvv...call these lines one time when the player jumps first time...vvv
+            // vvv...call these lines one time when the player jumps isUpdatedFirstTime time...vvv
             if (!hitGroundFirstTime) return;
             hitGroundFirstTime = false;
             rig.useGravity = true; // Activate the gravity while the player in the air.

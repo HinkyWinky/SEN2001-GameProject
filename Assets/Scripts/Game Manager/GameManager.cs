@@ -21,7 +21,7 @@ public class GameManager : MonoBehaviour
     public CanvasX Canvas { get; private set; }
     public CamCtrl CamCtrl { get; private set; }
     public Player Player { get; private set; }
-    public Enemy Enemy { get; private set; }
+    public Enemy1 Enemy { get; private set; }
 
     public MainMenuCanvas MainMenuCanvas
     {

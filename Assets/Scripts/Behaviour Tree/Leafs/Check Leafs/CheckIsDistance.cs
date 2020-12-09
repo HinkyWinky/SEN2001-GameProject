@@ -7,6 +7,8 @@ namespace BehaviourTree
     [Serializable]
     public class CheckIsDistance : CheckLeaf
     {
+        private StateMachine Machine => btState.machine;
+
         [SerializeField] private CheckType checkType = default;
         [SerializeField, ShowIf("checkType", CheckType.IS_EQUAL), Range(0.05f, 1f)]
         private float equalThreshold = 0.1f;
@@ -15,15 +17,15 @@ namespace BehaviourTree
 
         protected override  NodeStates Check()
         {
-            float targetDistance = Vector3.Distance(brain.rig.position, targetPos);
+            float distanceToTargetPos = Vector3.Distance(Machine.rig.position, targetPos);
             switch (checkType)
             {
                 case CheckType.IS_GREATER:
-                    return targetDistance > distanceValue ? NodeStates.SUCCESS : NodeStates.FAILURE;
+                    return distanceToTargetPos > distanceValue ? NodeStates.SUCCESS : NodeStates.FAILURE;
                 case CheckType.IS_SMALLER:
-                    return targetDistance < distanceValue ? NodeStates.SUCCESS : NodeStates.FAILURE;
+                    return distanceToTargetPos < distanceValue ? NodeStates.SUCCESS : NodeStates.FAILURE;
                 case CheckType.IS_EQUAL:
-                    if (targetDistance  < distanceValue + equalThreshold && targetDistance > distanceValue - equalThreshold)
+                    if (distanceToTargetPos  < distanceValue + equalThreshold && distanceToTargetPos > distanceValue - equalThreshold)
                         return NodeStates.SUCCESS;
                     else
                         return NodeStates.FAILURE;

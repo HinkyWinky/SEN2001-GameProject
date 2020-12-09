@@ -12,8 +12,8 @@ public class Subscene : MonoBehaviour
     [SerializeField] private Player player = default;
     public Player Player => player;
 
-    [SerializeField] private Enemy enemy = default;
-    public Enemy Enemy => enemy;
+    [SerializeField] private Enemy1 enemy = default;
+    public Enemy1 Enemy => enemy;
 
     private bool firstTime = false;
 

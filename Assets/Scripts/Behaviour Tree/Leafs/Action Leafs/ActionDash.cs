@@ -6,6 +6,8 @@ namespace BehaviourTree
 {
     [Serializable] public class ActionDash : ActionLeaf
     {
+        private StateMachine Machine => btState.machine;
+
         [SerializeField, Range(0.1f, 10f)] private float dashSpeed = 4f;
         [SerializeField, Range(-50f, 50f)] private float stopDistance = 1f;
         [SerializeField, Range(0.01f, 0.2f)] private float stopDistanceTolerance = 0.1f;
@@ -19,7 +21,7 @@ namespace BehaviourTree
             // If the evaluation of the last frame is not running.
             if (IsFirstLoop)
             {
-                Vector3 startPos = brain.rig.position;
+                Vector3 startPos = Machine.rig.position;
                 lastFrameTargetPos = curTargetPos;
                 Vector3 dirToAiFromTargetPos = (startPos - lastFrameTargetPos).normalized;
                 targetDestination = lastFrameTargetPos + dirToAiFromTargetPos * stopDistance;
@@ -34,31 +36,31 @@ namespace BehaviourTree
 
                 StartCoroutineLerpMove(targetDestination, duration);
                 StartCoroutineLerpRotate(targetDestination);
-                brain.animX.StartAnimation("Dash", duration, false, 0f);
+                Machine.animX.StartAnimation("Dash", duration, false, 0f);
 
                 return NodeStates.RUNNING;
             }
 
             // If AI is at the target destination, then return success,
             // else keep moving to the target destination.
-            float distanceToTargetPos = Vector3.Distance(brain.rig.position, targetDestination);
+            float distanceToTargetPos = Vector3.Distance(Machine.rig.position, targetDestination);
             if (distanceToTargetPos <= Mathf.Abs(stopDistance + stopDistanceTolerance)) return NodeStates.SUCCESS;
 
             return NodeStates.RUNNING;
         }
         private void StartCoroutineLerpMove(Vector3 targetPos, float duration)
         {
-            if (brain.moveToTargetPos != null)
-                brain.StopCoroutine(brain.moveToTargetPos);
-            brain.moveToTargetPos = CoroutineUtils.LerpMove(brain.rig, targetPos, duration);
-            brain.StartCoroutine(brain.moveToTargetPos);
+            if (Machine.moveToTargetPos != null)
+                Machine.StopCoroutine(Machine.moveToTargetPos);
+            Machine.moveToTargetPos = CoroutineUtils.LerpMove(Machine.rig, targetPos, duration);
+            Machine.StartCoroutine(Machine.moveToTargetPos);
         }
         private void StartCoroutineLerpRotate(Vector3 targetPos)
         {
-            if (brain.rotateToTargetPos != null)
-                brain.StopCoroutine(brain.rotateToTargetPos);
-            brain.rotateToTargetPos = CoroutineUtils.LerpRotate(brain.rig, targetPos, brain.rotationDuration);
-            brain.StartCoroutine(brain.rotateToTargetPos);
+            if (Machine.rotateToTargetPos != null)
+                Machine.StopCoroutine(Machine.rotateToTargetPos);
+            Machine.rotateToTargetPos = CoroutineUtils.LerpRotate(Machine.rig, targetPos, Machine.rotationDuration);
+            Machine.StartCoroutine(Machine.rotateToTargetPos);
         }
 
         public void UpdateLeaf(Vector3 targetPosition)

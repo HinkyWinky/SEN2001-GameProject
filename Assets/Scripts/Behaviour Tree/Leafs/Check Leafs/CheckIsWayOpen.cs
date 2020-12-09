@@ -6,12 +6,14 @@ using UnityEngine.AI;
 [Serializable]
 public class CheckIsWayOpen : CheckLeaf
 {
+    private StateMachine Machine => btState.machine;
+
     [SerializeField, Range(-50f, 50f)] private float stopDistance = 1f;
     private Vector3 targetPos;
 
     protected override NodeStates Check()
     {
-        Vector3 startPos = brain.rig.position;
+        Vector3 startPos = Machine.rig.position;
         Vector3 destination = targetPos + (startPos - targetPos).normalized * stopDistance;
 
         NavMesh.SamplePosition(destination, out NavMeshHit hit, 10f, 1);
@@ -20,12 +22,12 @@ public class CheckIsWayOpen : CheckLeaf
         else
             return NodeStates.FAILURE;
 
-        NavMesh.CalculatePath(startPos, destination, NavMesh.AllAreas, brain.checkPath);
-        if (brain.checkPath.status == NavMeshPathStatus.PathComplete)
+        NavMesh.CalculatePath(startPos, destination, NavMesh.AllAreas, Machine.checkPath);
+        if (Machine.checkPath.status == NavMeshPathStatus.PathComplete)
         {
-            if (brain.checkPath.corners.Length <= 2)
+            if (Machine.checkPath.corners.Length <= 2)
             {
-                brain.checkPath.ClearCorners();
+                Machine.checkPath.ClearCorners();
                 return NodeStates.SUCCESS;
             }
         }

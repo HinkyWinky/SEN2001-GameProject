@@ -4,11 +4,11 @@ namespace BehaviourTree
 {
     public abstract class Leaf : Node
     {
-        [HideInInspector] protected BehaviourBrain brain;
+        [HideInInspector] protected BehaviourTreeState btState;
 
-        public virtual void StartLeaf(BehaviourBrain behaviourBrain)
+        public virtual void StartLeaf(BehaviourTreeState behaviourTreeState)
         {
-            brain = behaviourBrain;
+            btState = behaviourTreeState;
         }
         protected override void OnReset() { }
     }
