@@ -7,11 +7,7 @@ namespace Game.UI
     public class SceneCanvas : CanvasX
     {
         public PausePanel pausePanel;
-
-        public override void Awake()
-        {
-            base.Awake();
-        }
+        public InGamePanel inGamePanel;
 
         public override void Activate(bool value)
         {

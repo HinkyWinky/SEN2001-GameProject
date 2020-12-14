@@ -50,7 +50,6 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
-
         // Only one instance of the GameManager can exist.
         if (Cur == null)
             Cur = this;
@@ -109,21 +108,6 @@ public class GameManager : MonoBehaviour
         gameManagerCanvas.Activate(true);
         gameManagerCamera.gameObject.SetActive(true);
     }
-    public void OnSceneLoadEnded()
-    {
-        gameManagerCanvas.Activate(false);
-        gameManagerCamera.gameObject.SetActive(false);
-
-        switch (SceneCtrl.CurSceneType)
-        {
-            case SceneType.MAINMENU:
-                GameManager.Cur.StateCtrl.ChangeGameState(GameState.MAINMENU);
-                break;
-            case SceneType.LEVEL:
-                GameManager.Cur.StateCtrl.ChangeGameState(GameState.PLAY);
-                break;
-        }
-    }
 
     public void SetSubscene()
     {
@@ -156,6 +140,19 @@ public class GameManager : MonoBehaviour
                 Debug.Log("MAIN MENU CANVAS: found");
             if (SceneCanvas != null)
                 Debug.Log("LEVEL CANVAS: found");
+
+            gameManagerCanvas.Activate(false);
+            gameManagerCamera.gameObject.SetActive(false);
+
+            switch (SceneCtrl.CurSceneType)
+            {
+                case SceneType.MAINMENU:
+                    GameManager.Cur.StateCtrl.ChangeGameState(GameState.MAINMENU);
+                    break;
+                case SceneType.LEVEL:
+                    GameManager.Cur.StateCtrl.ChangeGameState(GameState.PLAY);
+                    break;
+            }
 
             GameManager.Cur.EventCtrl.onSceneLoadEnded?.Invoke();
         }

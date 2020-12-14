@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.AI;
 
-namespace BehaviourTree
+namespace Game.AI
 {
     [Serializable] public class ActionDash : ActionLeaf
     {
@@ -10,7 +10,7 @@ namespace BehaviourTree
 
         [SerializeField, Range(0.1f, 10f)] private float dashSpeed = 4f;
         [SerializeField, Range(-50f, 50f)] private float stopDistance = 1f;
-        [SerializeField, Range(0.01f, 0.2f)] private float stopDistanceTolerance = 0.1f;
+        [SerializeField, Range(0.01f, 0.05f)] private float stopDistanceTolerance = 0.025f;
 
         private Vector3 curTargetPos;
         private Vector3 lastFrameTargetPos;
@@ -50,10 +50,10 @@ namespace BehaviourTree
         }
         private void StartCoroutineLerpMove(Vector3 targetPos, float duration)
         {
-            if (Machine.moveToTargetPos != null)
-                Machine.StopCoroutine(Machine.moveToTargetPos);
-            Machine.moveToTargetPos = CoroutineUtils.LerpMove(Machine.rig, targetPos, duration);
-            Machine.StartCoroutine(Machine.moveToTargetPos);
+            if (Machine.action != null)
+                Machine.StopCoroutine(Machine.action);
+            Machine.action = CoroutineUtils.LerpMove(Machine.rig, targetPos, duration);
+            Machine.StartCoroutine(Machine.action);
         }
         private void StartCoroutineLerpRotate(Vector3 targetPos)
         {

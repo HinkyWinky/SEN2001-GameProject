@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace BehaviourTree
+namespace Game.AI
 {
     [Serializable] public class CheckIsPlayerHealth : CheckLeaf
     {

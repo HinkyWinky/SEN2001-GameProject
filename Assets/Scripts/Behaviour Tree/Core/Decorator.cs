@@ -2,7 +2,7 @@
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-namespace BehaviourTree
+namespace Game.AI
 {
     public abstract class Decorator : Node
     {

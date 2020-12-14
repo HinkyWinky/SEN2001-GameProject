@@ -2,7 +2,7 @@
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-namespace BehaviourTree
+namespace Game.AI
 {
     [Serializable]
     public class CheckIsDistance : CheckLeaf
@@ -10,8 +10,8 @@ namespace BehaviourTree
         private StateMachine Machine => btState.machine;
 
         [SerializeField] private CheckType checkType = default;
-        [SerializeField, ShowIf("checkType", CheckType.IS_EQUAL), Range(0.05f, 1f)]
-        private float equalThreshold = 0.1f;
+        [SerializeField, ShowIf("checkType", CheckType.IS_EQUAL), Range(0.01f, 0.05f)]
+        private float equalThreshold = 0.025f;
         [SerializeField, Range(0.1f, 50f)] private float distanceValue = 4f;
         private Vector3 targetPos;
 
@@ -21,7 +21,7 @@ namespace BehaviourTree
             switch (checkType)
             {
                 case CheckType.IS_GREATER:
-                    return distanceToTargetPos > distanceValue ? NodeStates.SUCCESS : NodeStates.FAILURE;
+                    return distanceToTargetPos >= distanceValue ? NodeStates.SUCCESS : NodeStates.FAILURE;
                 case CheckType.IS_SMALLER:
                     return distanceToTargetPos < distanceValue ? NodeStates.SUCCESS : NodeStates.FAILURE;
                 case CheckType.IS_EQUAL:

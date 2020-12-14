@@ -1,5 +1,9 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 using UnityEngine.Events;
+
+[System.Serializable]
+public class UnityEventIntInt : UnityEvent<int, int> { }
 
 public class EventCtrl : MonoBehaviour
 {
@@ -7,14 +11,16 @@ public class EventCtrl : MonoBehaviour
 
     [HideInInspector] public UnityEvent onSceneLoadStarted;
     [HideInInspector] public UnityEvent onSceneLoadEnded;
+    [HideInInspector] public UnityEventIntInt onPlayerHealthChange;
 
     private void Start()
     {
-        onSceneLoadStarted.AddListener(OnSceneLoadStarted);
-        onSceneLoadEnded.AddListener(OnSceneLoadEnded);
         onSceneLoadStarted.AddListener(Mng.OnSceneLoadStarted);
-        onSceneLoadEnded.AddListener(Mng.OnSceneLoadEnded);
+        onSceneLoadStarted.AddListener(OnSceneLoadStarted);
+
+        onSceneLoadEnded.AddListener(OnSceneLoadEnded);
     }
+
     private void OnDestroy()
     {
         onSceneLoadStarted.RemoveAllListeners();
@@ -24,10 +30,16 @@ public class EventCtrl : MonoBehaviour
     public void OnSceneLoadStarted()
     {
         Debug.Log("EVENT: OnSceneLoadStarted");
+
+        if (Mng.SceneCtrl.CompareSceneType(SceneType.LEVEL))
+            onPlayerHealthChange.RemoveAllListeners();
     }
 
     public void OnSceneLoadEnded()
     {
         Debug.Log("EVENT: OnSceneLoadEnded");
+
+        if (Mng.SceneCtrl.CompareSceneType(SceneType.LEVEL))
+            onPlayerHealthChange.AddListener(Mng.SceneCanvas.inGamePanel.playerHealthBar.SetValue);
     }
 }

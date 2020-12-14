@@ -1,7 +1,7 @@
 ﻿using System;
 using Sirenix.OdinInspector;
 
-namespace BehaviourTree
+namespace Game.AI
 {
     [Serializable]
     public abstract class Node

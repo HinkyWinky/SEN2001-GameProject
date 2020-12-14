@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.AI;
 
-namespace BehaviourTree
+namespace Game.AI
 {
     [Serializable]
     public class ActionMove : ActionLeaf
@@ -10,11 +10,12 @@ namespace BehaviourTree
         private StateMachine Machine => btState.machine;
 
         [SerializeField, Range(-50f, 50f)] private float stopDistance = 1f;
-        [SerializeField, Range(0.01f, 0.3f)] private float stopDistanceTolerance = 0.1f;
+        [SerializeField, Range(0.01f, 0.05f)] private float stopDistanceTolerance = 0.025f;
         [SerializeField, Range(0f, 1f)] private float targetMoveDistanceTolerance = 0.2f;
         [SerializeField, Min(1f)] private float maxLoopCountDuration = 5f;
-        private Vector3 curtargetPos;
-        private Vector3 lastFrameTargetPos;
+
+        private Vector3 targetTransformPos;
+        private Vector3 lastEvaluateTargetPos;
         private Vector3 targetDestination;
         private float targetDistance;
 
@@ -29,7 +30,7 @@ namespace BehaviourTree
         public override void StartLeaf(BehaviourTreeState behaviourTreeState)
         {
             base.StartLeaf(behaviourTreeState);
-            cornerDistanceTolerance = 0.025f;
+            cornerDistanceTolerance = 0.1f;
             loopCountLimit = maxLoopCountDuration / btState.EvaluateDeltaTime;
         }
 
@@ -40,28 +41,28 @@ namespace BehaviourTree
             if (loopCount > loopCountLimit) return NodeStates.FAILURE;
             // If the current target`s position is not equal to the target`s position of last frame,
             // calculate target destination again.
-            if (lastFrameTargetPos != curtargetPos) 
+            if (lastEvaluateTargetPos != targetTransformPos) 
             {
                 Vector3 startPos = Machine.rig.position;
-                lastFrameTargetPos = curtargetPos;
-                Vector3 dirToAiFromTargetPos = (startPos - lastFrameTargetPos).normalized;
-                Vector3 curDestination = lastFrameTargetPos + dirToAiFromTargetPos * stopDistance;
+                lastEvaluateTargetPos = targetTransformPos;
+                Vector3 dirToAiFromTargetPos = (startPos - lastEvaluateTargetPos).normalized;
+                Vector3 destination = lastEvaluateTargetPos + dirToAiFromTargetPos * stopDistance;
 
-                NavMesh.SamplePosition(curDestination, out NavMeshHit hit, 10f, 1);
-                if (hit.hit) curDestination = hit.position;
+                NavMesh.SamplePosition(destination, out NavMeshHit hit, 10f, 1);
+                if (hit.hit) destination = hit.position;
                 else return NodeStates.FAILURE; // If there is no reachable position for the AI.
 
                 // Calculate the distance between the start position and the target destination.
-                float curDistance = Vector3.Distance(startPos, curDestination);
+                float distance = Vector3.Distance(startPos, destination);
                 // If the calculated distance is greater than move distance tolerance,
                 // then move to the new destination, else keep moving previous last target destination.
-                if (Math.Abs(curDistance - targetDistance) > targetMoveDistanceTolerance)
+                if (Math.Abs(distance - targetDistance) > targetMoveDistanceTolerance)
                 {
-                    targetDistance = curDistance;
-                    targetDestination = curDestination;
+                    targetDistance = distance;
+                    targetDestination = destination;
 
                     NavMesh.CalculatePath(startPos, targetDestination, NavMesh.AllAreas, Machine.checkPath);
-                    if (btState.machine.checkPath.status != NavMeshPathStatus.PathComplete) return NodeStates.RUNNING;
+                    if (btState.machine.checkPath.status != NavMeshPathStatus.PathComplete) return NodeStates.FAILURE;
 
                     // If there is no obstacles on the way, then move directly to the target position,
                     // else start following the path.
@@ -69,7 +70,6 @@ namespace BehaviourTree
                     {
                         isDirectMove = true;
                         StartCoroutineLerpMove(targetDestination, targetDistance / Machine.moveSpeed);
-                        StartCoroutineLerpRotate(targetDestination);
                     }
                     else
                     {
@@ -90,27 +90,18 @@ namespace BehaviourTree
                 }
             }
 
+            // If AI is at the target destination, then return success,
+            float distanceToTargetPos = Vector3.Distance(Machine.rig.position, targetDestination);
+            if (distanceToTargetPos < Mathf.Abs(stopDistance + stopDistanceTolerance)) return NodeStates.SUCCESS;
+
             // If AI is not following the path,
-            if (isDirectMove)
-            {
-                // If AI is at the target destination, then return success,
-                float distanceToTargetPos = Vector3.Distance(Machine.rig.position, targetDestination);
-                if (distanceToTargetPos < Mathf.Abs(stopDistance + stopDistanceTolerance)) return NodeStates.SUCCESS;
+            if (isDirectMove) return NodeStates.RUNNING;
 
-                // else keep moving to the target destination.
-                return NodeStates.RUNNING;
-            }
-
+            if (endCornerIndex == Machine.movePath.corners.Length) return NodeStates.RUNNING;
             // If AI is following the path, then calculate the target path corner is near or not.
             // If the corner is near, then start moving to the next corner,
-            // else keep moving to the corner.
+            // else keep moving to the current corner.
             float distanceToCorner = Vector3.Distance(Machine.rig.position, Machine.movePath.corners[endCornerIndex]);
-            // If this is the last corner, then return success, 
-            if (endCornerIndex == Machine.movePath.corners.Length - 1)
-            {
-                if (distanceToCorner < Mathf.Abs(stopDistance + stopDistanceTolerance)) return NodeStates.SUCCESS;
-            }
-            // else keep moving next corner.
             if (distanceToCorner < cornerDistanceTolerance)
             {
                 startCornerIndex += 1;
@@ -119,7 +110,6 @@ namespace BehaviourTree
                 float cornerDuration = totalDuration * cornerDistance / totalDistance;
                 StartCoroutineLerpMove(Machine.movePath.corners[endCornerIndex], cornerDuration);
                 StartCoroutineLerpRotate(Machine.movePath.corners[endCornerIndex]);
-
                 return NodeStates.RUNNING;
             }
             return NodeStates.RUNNING;
@@ -127,10 +117,10 @@ namespace BehaviourTree
 
         private void StartCoroutineLerpMove(Vector3 targetPos, float duration)
         {
-            if (Machine.moveToTargetPos != null)
-                Machine.StopCoroutine(Machine.moveToTargetPos);
-            Machine.moveToTargetPos = CoroutineUtils.LerpMove(Machine.rig, targetPos, duration);
-            Machine.StartCoroutine(Machine.moveToTargetPos);
+            if (Machine.action != null)
+                Machine.StopCoroutine(Machine.action);
+            Machine.action = CoroutineUtils.LerpMove(Machine.rig, targetPos, duration);
+            Machine.StartCoroutine(Machine.action);
         }
         private void StartCoroutineLerpRotate(Vector3 targetPos)
         {
@@ -142,15 +132,29 @@ namespace BehaviourTree
 
         public void UpdateLeaf(Vector3 targetPosition)
         {
-            curtargetPos = targetPosition;
+            targetTransformPos = targetPosition;
+
+            if (NodeState != NodeStates.RUNNING) return;
+
+            if (isDirectMove)
+            {
+                if (Vector3.Distance(targetDestination, targetTransformPos) < 3f)
+                    Machine.Rotate(targetTransformPos);
+                else
+                    Machine.Rotate(targetDestination);
+            }
         }
 
         protected override void OnReset()
         {
             base.OnReset();
-            lastFrameTargetPos = Vector3.zero;
+            Machine.movePath.ClearCorners();
+            isDirectMove = false;
+            lastEvaluateTargetPos = Vector3.zero;
             targetDestination = Vector3.zero;
             targetDistance = 0;
+            startCornerIndex = 0;
+            endCornerIndex = 0;
         }
     }
 }

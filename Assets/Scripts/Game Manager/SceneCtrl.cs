@@ -7,7 +7,7 @@ using UnityEngine.SceneManagement;
 public class SceneCtrl : MonoBehaviour
 {
     private SceneType curSceneType;
-    [ShowInInspector, ReadOnly] public SceneType CurSceneType => curSceneType;
+    [ShowInInspector, ReadOnly, PropertyOrder(-1)] public SceneType CurSceneType => curSceneType;
 
     public SceneData gameManagerSceneData;
     public SceneData mainMenuSceneData;
@@ -45,7 +45,7 @@ public class SceneCtrl : MonoBehaviour
                     if (GameManager.Cur.GameManagerCanvas != null)
                     {
                         float unloadProgress = Mathf.Clamp01(unloadOperation.progress) * 0.5f / 0.9f;
-                        GameManager.Cur.GameManagerCanvas.loadingPanel.loadingBar.bar.value = unloadProgress;
+                        GameManager.Cur.GameManagerCanvas.loadingPanel.bar.SetValue(unloadProgress);
                     }
                     yield return null;
                 }
@@ -60,7 +60,7 @@ public class SceneCtrl : MonoBehaviour
             if (GameManager.Cur.GameManagerCanvas != null)
             {
                 float loadProgress = Mathf.Clamp01(loadOperation.progress) * 0.5f / 0.9f + 0.5f;
-                GameManager.Cur.GameManagerCanvas.loadingPanel.loadingBar.bar.value = loadProgress;
+                GameManager.Cur.GameManagerCanvas.loadingPanel.bar.SetValue(loadProgress);
             }
 
             if (loadOperation.progress >= 0.9f)
@@ -84,5 +84,10 @@ public class SceneCtrl : MonoBehaviour
     {
         curSceneType = SceneType.LEVEL;
         yield return StartCoroutine(LoadSceneAdditive(levelsSceneData[levelNo - 1], true, unloadActiveScene));
+    }
+
+    public bool CompareSceneType(SceneType sceneType)
+    {
+        return sceneType == CurSceneType;
     }
 }

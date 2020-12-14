@@ -1,4 +1,4 @@
-﻿namespace BehaviourTree
+﻿namespace Game.AI
 {
     public abstract class ActionLeaf : Leaf
     {

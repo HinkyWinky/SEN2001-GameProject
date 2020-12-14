@@ -265,7 +265,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rectTransform: {fileID: 0}
   originalScale: {x: 0, y: 0, z: 0}
-  loadingBar: {fileID: 1282895188}
+  bar: {fileID: 1282895188}
 --- !u!114 &944448939
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -554,7 +554,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dca4d7bc4645a4e4185abb9238f4325c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bar: {fileID: 1282895189}
 --- !u!114 &1282895189
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -820,6 +819,9 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   onSceneLoadEnded:
+    m_PersistentCalls:
+      m_Calls: []
+  onPlayerHealthChange:
     m_PersistentCalls:
       m_Calls: []
 --- !u!114 &4657706661598815083

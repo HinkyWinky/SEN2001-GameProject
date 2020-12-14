@@ -1,5 +1,5 @@
 ﻿using System;
-using BehaviourTree;
+using Game.AI;
 using UnityEngine;
 using UnityEngine.AI;
 

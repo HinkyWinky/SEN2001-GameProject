@@ -1,5 +1,5 @@
 ﻿using System.Collections;
-using BehaviourTree;
+using Game.AI;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -57,6 +57,7 @@ public static class CoroutineUtils
     {
         Vector3 fixedTargetPos = new Vector3(targetPos.x, rigidbody.position.y, targetPos.z); // Target`s Position on x and z axis.
         Vector3 forward = Vector3.Normalize(fixedTargetPos - rigidbody.position); // Direction from the player`s position to the target`s position.
+        if (forward == Vector3.zero) yield break;
 
         var startRot = rigidbody.rotation;
         var targetRot = Quaternion.LookRotation(forward, Vector3.up); // Calculate target rotation value.
@@ -64,7 +65,7 @@ public static class CoroutineUtils
         float percent = 0f;
         while (percent < fixedDuration)
         {
-            rigidbody.rotation = Quaternion.Lerp(startRot, targetRot, percent / fixedDuration); // Rotate the player to the target rotation value.
+            rigidbody.rotation = Quaternion.Slerp(startRot, targetRot, percent / fixedDuration); // Rotate the player to the target rotation value.
             percent += Time.deltaTime;
             yield return CoroutineUtils.waitForFixedUpdate;
         }

@@ -6,7 +6,7 @@ public enum FrameRateSetting { DEFAULT, RATE_30, RATE_45, RATE_60 };
 
 public enum SceneType { MAINMENU, LEVEL };
 
-namespace BehaviourTree
+namespace Game.AI
 {
     public enum NodeStates { EMPTY, FAILURE, RUNNING, SUCCESS };
 

@@ -1,27 +1,29 @@
-﻿using BehaviourTree;
-
-public abstract class State
+﻿namespace Game.AI
 {
-    protected StateMachine stateMachine;
-    protected BehaviourTreeState behaviourTreeState;
-
-    protected bool isUpdatedFirstTime;
-
-    protected State(StateMachine stateMachine, BehaviourTreeState behaviourTreeState)
+    public abstract class State : IState
     {
-        this.stateMachine = stateMachine;
-        this.behaviourTreeState = behaviourTreeState;
-    }
+        protected StateMachine machine;
 
-    public virtual void Enter()
-    {
-        isUpdatedFirstTime = false;
-        behaviourTreeState.StartEvaluateBehaviourTree();
+        public virtual void BuildState(StateMachine stateMachine)
+        {
+            machine = stateMachine;
+        }
+
+        public virtual void StateEnter()
+        {
+            machine.isUpdatedFirstTime = false;
+        }
+
+        public virtual void StateExit()
+        {
+        }
+
+        public virtual void StateUpdate()
+        {
+        }
+
+        public virtual void StateFixedUpdate()
+        {
+        }
     }
-    public virtual void Exit()
-    {
-        behaviourTreeState.StopEvaluateBehaviourTree();
-    }
-    public abstract void Update();
-    public abstract void FixedUpdate();
 }

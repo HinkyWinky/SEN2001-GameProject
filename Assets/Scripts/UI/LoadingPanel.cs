@@ -6,7 +6,7 @@ namespace Game.UI
 {
     public class LoadingPanel : Panel
     {
-        public LoadingBar loadingBar;
+        public Bar bar;
 
         public override void Activate(bool value)
         {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace BehaviourTree
+namespace Game.AI
 {
     [Serializable]
     public class Inverter : Decorator

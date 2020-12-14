@@ -27,6 +27,7 @@ public class AnimatorX : MonoBehaviour
     {
         return currentAnim == motionName;
     }
+
     #region Animation Methods
     public void StartAnimation(string motionName, float duration, bool loop, float fadeDuration)
     {
@@ -55,6 +56,8 @@ public class AnimatorX : MonoBehaviour
             anim.Play(motionName, 0, 0);
         }
 
+        yield return null;
+
         currentAnim = motionName;
         isAnimPlaying = true;
         anim.SetFloat(lastAnim, 0f);
@@ -71,8 +74,8 @@ public class AnimatorX : MonoBehaviour
             yield return null;
         }
         anim.SetFloat(motionName,1f);
-       // animation is finished
-       currentAnim = "";
+        // animation is finished
+        currentAnim = "";
         isAnimPlaying = false;
     }
 

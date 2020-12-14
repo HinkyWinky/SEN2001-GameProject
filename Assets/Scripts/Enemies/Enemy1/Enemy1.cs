@@ -1,11 +1,16 @@
-﻿using Sirenix.OdinInspector;
+﻿using System.Collections;
+using Game.AI;
+using Sirenix.OdinInspector;
 using UnityEngine;
+using UnityEngine.AI;
 
-public class Enemy1 : StateMachine
+public class Enemy1 : StateMachine, IHitable
 {
     [Title("Enemy")]
-    [SerializeField, Min(0)] private int maxHealth = 3;
-    [SerializeField, PropertyRange(0, "maxHealth")] private int health = 3;
+    public Sword sword;
+
+    [SerializeField, Min(0)] private int maxHealth = 100;
+    [SerializeField, PropertyRange(0, "maxHealth")] private int health = 100;
     public int Health
     {
         get => health;
@@ -17,31 +22,52 @@ public class Enemy1 : StateMachine
         }
     }
 
-    [FoldoutGroup("Execute Tree")]
-    public Enemy1_ExecuteTree executeTree;
-    [FoldoutGroup("Find Tree")]
-    public Enemy1_FindTree findTree;
+    public Enemy1_OnHittedState onHittedState;
 
+    public Enemy1_ExecuteTreeState executeTreeState;
+    public Enemy1_FindTreeState findTreeState;
+
+    private void Awake()
+    {
+        TryGetComponent(out anim);
+        TryGetComponent(out animX);
+        TryGetComponent(out rig);
+
+        checkPath = new NavMeshPath();
+        movePath = new NavMeshPath();
+    }
     private void Start()
     {
         animX.StartAnimation("Idle", 1f, true, 0.1f);
 
-        executeTree.BuildBehaviourTree(this);
-        findTree.BuildBehaviourTree(this);
+        executeTreeState.BuildBehaviourTree(this);
+        findTreeState.BuildBehaviourTree(this);
+        onHittedState.BuildState(this);
 
-        stateExecute = new StateExecute(this, executeTree);
-        stateFind = new StateFind(this, findTree);
-
-        StartStateMachine(stateExecute);
+        StartStateMachine(executeTreeState);
     }
-
     private void Update()
     {
-        currentState.Update();
+        currentState.StateUpdate();
     }
-
     private void FixedUpdate()
     {
-        currentState.FixedUpdate();
+        currentState.StateFixedUpdate();
+    }
+
+    public void TakeDamage(int damageValue)
+    {
+        if (!onHittedState.isHitAble) return;
+        //ChangeState(onHittedState);
+        Health -= damageValue;
+    }
+
+    public void IsSwordHitEnable()
+    {
+        sword.IsHitEnable();
+    }
+    public void IsSwordHitDisable()
+    {
+        sword.IsHitDisable();
     }
 }

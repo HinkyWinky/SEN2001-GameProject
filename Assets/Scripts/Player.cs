@@ -1,8 +1,9 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-public class Player : MonoBehaviour
+public class Player : MonoBehaviour, IHitable
 {
     // Components of other game objects
     private InputCtrl InputCtrl => GameManager.Cur.InputCtrl;
@@ -15,7 +16,8 @@ public class Player : MonoBehaviour
     private AnimatorX animX;
 
     // Inspector Variables
-    [SerializeField, Min(0)] private int maxHealth = 3;
+    public Sword sword;
+    [SerializeField, Min(0)] private int maxHealth = 100;
     [SerializeField, Range(0.01f, 1f)] private float groundClearance = 0.1f; // height from the ground
     [SerializeField, Range(0.1f, 1f), DisableInPlayMode] private float lockedAbilityInputsDuration = 0.2f; // input lock duration after finishing abilities
 
@@ -45,7 +47,13 @@ public class Player : MonoBehaviour
     [SerializeField, Range(0f, 10f)] private float idleAnimationDuration = 1.5f;
     [SerializeField, Range(0f, 10f)] private float moveAnimationDuration = 1f;
 
-    [SerializeField]private int health = 3;
+    [Title("TakeDamage", Bold = true)]
+    [SerializeField, Range(0f, 1f)] private float hittedDuration = 0.2f;
+    [SerializeField, Range(0f, 100f)] private float hittedPushSpeed = 20f;
+
+    private bool isHitAble = true;
+
+    private int health = 100;
     public int Health
     {
         get => health;
@@ -66,17 +74,17 @@ public class Player : MonoBehaviour
     private Quaternion rotation = Quaternion.identity;
     private float JumpSpeedY => Mathf.Sqrt(-2f * Physics.gravity.y * jumpHeight);
     private float JumpDuration => -2f * JumpSpeedY / Physics.gravity.y;
+    public Vector3 Forward => forward;
 
     // Cases
-    private enum PlayerStates { IDLE, MOVE, JUMP, ROLL, ATTACK };
-    [FoldoutGroup("Read Only Fields"), ShowInInspector, ReadOnly, LabelText("Current Player State")]
+    private enum PlayerStates { IDLE, MOVE, JUMP, ROLL, ATTACK, TAKE_DAMAGE };
+    [FoldoutGroup("Read Only Fields"), ShowInInspector, ReadOnly, LabelText("Current Player IState")]
     private PlayerStates curPlayerState = PlayerStates.IDLE;
     private PlayerStates lastFramePlayerState = PlayerStates.MOVE;
     [FoldoutGroup("Read Only Fields"), ShowInInspector, ReadOnly]
     private bool onGround, hitGroundFirstTime, lockedPlayerState, lockedAbilityInputs;
 
-    private IEnumerator rotationCor;
-    private IEnumerator abilityCor;
+    private IEnumerator rotationCor, abilityCor;
     private WaitForSeconds waitForLockedAbilityInputsDuration, waitForStayStableAfterRollDuration;
 
     #region Mono
@@ -88,6 +96,10 @@ public class Player : MonoBehaviour
 
         waitForLockedAbilityInputsDuration = new WaitForSeconds(lockedAbilityInputsDuration);
         waitForStayStableAfterRollDuration = new WaitForSeconds(stayStableAfterRollDuration);
+    }
+    private void Start()
+    {
+        GameManager.Cur.EventCtrl.onPlayerHealthChange?.Invoke(Health, maxHealth);
     }
     private void Update()
     {
@@ -183,6 +195,9 @@ public class Player : MonoBehaviour
             case PlayerStates.ATTACK:
                 animX.StartAnimation("Attack", attackDuration, false, 0.1f);
                 break;
+            case PlayerStates.TAKE_DAMAGE:
+                animX.StartAnimation("TakeDamage", hittedDuration, false, 0.1f);
+                break;
         }
     }
 
@@ -241,7 +256,6 @@ public class Player : MonoBehaviour
         ChangePlayerState(PlayerStates.ATTACK, true);
         LockAbilityInputs();
 
-        // StartLeaf Attack Coroutine
         if (abilityCor != null)
             StopCoroutine(abilityCor);
         abilityCor = AttackCor();
@@ -252,8 +266,9 @@ public class Player : MonoBehaviour
         float percent = 0f;
         while (percent < attackDuration) // attacking
         {
-            velocity = Vector3.zero;
             percent += Time.fixedDeltaTime;
+            velocity = Vector3.zero;
+
             yield return CoroutineUtils.waitForFixedUpdate;
         }
         velocity = Vector3.zero;
@@ -264,7 +279,7 @@ public class Player : MonoBehaviour
         UnlockAbilityInputs();
     }
 
-    private void Rotate() // call in FixedUpdate()
+    private void Rotate()
     {
         if (curPlayerState == PlayerStates.ROLL)
         {
@@ -340,4 +355,51 @@ public class Player : MonoBehaviour
         lockedAbilityInputs = false;
     }
     #endregion
+
+    #region Take Damage
+    public void TakeDamage(int damageValue)
+    {
+        if (!isHitAble) return;
+        ChangePlayerState(PlayerStates.TAKE_DAMAGE, true);
+        LockAbilityInputs();
+        isHitAble = false;
+
+        Health -= damageValue;
+        GameManager.Cur.EventCtrl.onPlayerHealthChange?.Invoke(Health, maxHealth);
+
+        if (abilityCor != null)
+            StopCoroutine(abilityCor);
+        abilityCor = TakeDamageCor();
+        StartCoroutine(abilityCor);
+    }
+    private IEnumerator TakeDamageCor()
+    {
+        float percent = 0f;
+        while (percent < hittedDuration)
+        {
+            percent += Time.fixedDeltaTime;
+            velocity = -forward * hittedPushSpeed;
+            yield return CoroutineUtils.waitForFixedUpdate;
+        }
+        velocity = Vector3.zero;
+        yield return CoroutineUtils.waitForFixedUpdate;
+
+        UnlockPlayerState();
+        yield return waitForLockedAbilityInputsDuration;
+        UnlockAbilityInputs();
+
+        isHitAble = true;
+        ChangePlayerState(PlayerStates.IDLE, false);
+    }
+    #endregion
+
+
+    public void IsSwordHitEnable()
+    {
+        sword.IsHitEnable();
+    }
+    public void IsSwordHitDisable()
+    {
+        sword.IsHitDisable();
+    }
 }

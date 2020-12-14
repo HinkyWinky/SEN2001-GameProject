@@ -1,4 +1,5 @@
-﻿using Game.UI;
+﻿using System;
+using Game.UI;
 using UnityEngine;
 
 public class Subscene : MonoBehaviour
@@ -19,16 +20,16 @@ public class Subscene : MonoBehaviour
 
     private void Start()
     {
-        GameManager.Cur.SetSubscene();
         Debug.Log("LEVEL SCENE: Start()");
+        GameManager.Cur.SetSubscene();
     }
 
     private void Update()
     {
         if (!firstTime)
         {
-            Debug.Log("LEVEL SCENE: Update()");
             firstTime = true;
+            Debug.Log("LEVEL SCENE: Update()");
         }
     }
 }

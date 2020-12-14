@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using Game.UI;
-using UnityEngine;
+﻿using System.Collections;
 
 namespace Game.UI
 {
@@ -11,10 +7,6 @@ namespace Game.UI
         public ButtonX returnMainMenuButton;
 
         #region Mono
-        public override void Awake()
-        {
-            base.Awake();
-        }
         private void Start()
         {
             returnMainMenuButton.AddListeners(ReturnMainMenuButtonOnDown, ReturnMainMenuButtonOnUp);

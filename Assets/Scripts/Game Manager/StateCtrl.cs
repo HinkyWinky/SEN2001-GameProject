@@ -5,7 +5,8 @@ public class StateCtrl : MonoBehaviour
 {
     [ShowInInspector, ReadOnly] public GameState CurGameState { get; private set; }
 
-    public bool GameRunning { get; private set; }
+    private bool gameRunning = false;
+    public bool GameRunning => gameRunning;
 
     public void ChangeGameState(GameState state)
     {

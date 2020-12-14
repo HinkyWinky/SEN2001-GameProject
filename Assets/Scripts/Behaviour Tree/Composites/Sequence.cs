@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace BehaviourTree
+namespace Game.AI
 {
     public class Sequence : Composite
     {
