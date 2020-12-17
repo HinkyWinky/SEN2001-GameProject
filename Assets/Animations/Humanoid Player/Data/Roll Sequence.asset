@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c5b48800467114c43afc07e54feadde6, type: 3}
+  m_Name: Roll Sequence
+  m_EditorClassIdentifier: 
+  animsData:
+  - {fileID: 11400000, guid: ca4615fc7a43a6346a8725b41d48eab3, type: 2}
+  - {fileID: 11400000, guid: 9c119cd99e1388e4dafecaf7d3b6193c, type: 2}
+  - {fileID: 11400000, guid: 8a0c7c09efeb9ff40a4848b88a47abe0, type: 2}
+  sequenceName: Roll
+  isLoop: 0
+  duration: 0.7
+  normalizedFadeDuration: 0.1

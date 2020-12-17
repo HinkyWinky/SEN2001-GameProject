@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -16,7 +17,7 @@ public class Player : MonoBehaviour, IHitable
     private AnimatorX animX;
 
     // Inspector Variables
-    public Sword sword;
+    [SerializeField] private Sword sword = default;
     [SerializeField, Min(0)] private int maxHealth = 100;
     [SerializeField, Range(0.01f, 1f)] private float groundClearance = 0.1f; // height from the ground
     [SerializeField, Range(0.1f, 1f), DisableInPlayMode] private float lockedAbilityInputsDuration = 0.2f; // input lock duration after finishing abilities
@@ -25,35 +26,41 @@ public class Player : MonoBehaviour, IHitable
     [SerializeField, Range(0f, 100f)] private float maxMoveSpeed = 2.75f; // max speed while moving
     [SerializeField, Range(0f, 100f)] private float maxMoveAcceleration = 40f; // max acceleration while moving
 
-    [Title("Rotation", Bold = true)]
+    [Title("Rotate", Bold = true)]
     [SerializeField, Range(500f, 3000f), LabelText("Max Rotation Acceleration For 180")]
     private float maxRotationAcceleration = 1000f; // max acceleration for 180 degree while rotating
 
-    [Title("Jumping", Bold = true)]
+    [Title("Jump", Bold = true)]
     [SerializeField, Range(0f, 10f)] private float jumpForceXZ = 2f; // jumpForceXZ while jumping
     [SerializeField, Range(0.2f, 10f)] private float jumpHeight = 0.6f; // max height while jumping
 
-    [Title("Rolling", Bold = true)]
-    [SerializeField, Range(0f, 10f)] private float rollMoveDistance = 2f; // roll move distance
+    [Title("Roll", Bold = true)]
     [SerializeField, Range(0.1f, 5f)] private float rollMoveDuration = 0.3f; // roll move duration
+    [SerializeField, Range(0f, 10f)] private float rollMoveDistance = 2f; // roll move distance
     [SerializeField, PropertyRange(0f, "rollMoveDuration"), LabelText("Roll Rotation Duration For 180")]
     private float rollRotationDuration = 0.1f; // roll rotation duration for 180 degree
     [SerializeField, Range(0f, 0.1f), DisableInPlayMode] private float stayStableAfterRollDuration = 0.025f;
 
-    [Title("Attacking", Bold = true)]
-    [SerializeField, Range(0.2f, 10f)] private float attackDuration = 2f; // attack duration
-
-    [Title("Animations` Durations", Bold = true)]
-    [SerializeField, Range(0f, 10f)] private float idleAnimationDuration = 1.5f;
-    [SerializeField, Range(0f, 10f)] private float moveAnimationDuration = 1f;
-
-    [Title("TakeDamage", Bold = true)]
-    [SerializeField, Range(0f, 1f)] private float hittedDuration = 0.2f;
+    [Title("Take Damage", Bold = true)]
     [SerializeField, Range(0f, 100f)] private float hittedPushSpeed = 20f;
 
-    private bool isHitAble = true;
+    [Title("Animations", Bold = true)]
+    [SerializeField, Range(0f, 100f)] private float maxInputAcceleration = 40f; // max acceleration while moving
 
     private int health = 100;
+    private float animInputX, animInputZ, rollAnimDuration;
+    private Vector3 velocity, desiredMoveVelocity, rollVelocity, desiredRollVelocity, forward, rollDirection;
+    private Quaternion rotation = Quaternion.identity;
+    private IEnumerator rotationCor, abilityCor;
+    private WaitForSeconds waitForLockedAbilityInputsDuration, waitForStayStableAfterRollDuration;
+    private AnimData curAnimData;
+
+    [FoldoutGroup("Read Only Fields"), ShowInInspector, ReadOnly, LabelText("Current Player IState")]
+    private PlayerStates curPlayerState = PlayerStates.IDLE;
+    private PlayerStates lastFramePlayerState = PlayerStates.JUMP;
+    [FoldoutGroup("Read Only Fields"), ShowInInspector, ReadOnly]
+    private bool onGround, hitGroundFirstTime, lockedPlayerState, lockedAbilityInputs, isHitAble;
+
     public int Health
     {
         get => health;
@@ -64,28 +71,11 @@ public class Player : MonoBehaviour, IHitable
             else { health = value; }
         }
     }
-
-    // Inputs
+    public Vector3 Forward => forward;
     private Vector3 AxisInputs => new Vector3(InputCtrl.AxisInputs.x, 0, InputCtrl.AxisInputs.y); // direct axis inputs
     private Vector3 FixedAxisInputs => (AxisInputs.x * Vector3.Cross(Vector3.up,forward)) + (AxisInputs.z * forward); // axis inputs according to the player rotation
-    
-    // Movement
-    private Vector3 velocity, desiredMoveVelocity, rollVelocity, desiredRollVelocity, forward, rollDirection;
-    private Quaternion rotation = Quaternion.identity;
     private float JumpSpeedY => Mathf.Sqrt(-2f * Physics.gravity.y * jumpHeight);
     private float JumpDuration => -2f * JumpSpeedY / Physics.gravity.y;
-    public Vector3 Forward => forward;
-
-    // Cases
-    private enum PlayerStates { IDLE, MOVE, JUMP, ROLL, ATTACK, TAKE_DAMAGE };
-    [FoldoutGroup("Read Only Fields"), ShowInInspector, ReadOnly, LabelText("Current Player IState")]
-    private PlayerStates curPlayerState = PlayerStates.IDLE;
-    private PlayerStates lastFramePlayerState = PlayerStates.MOVE;
-    [FoldoutGroup("Read Only Fields"), ShowInInspector, ReadOnly]
-    private bool onGround, hitGroundFirstTime, lockedPlayerState, lockedAbilityInputs;
-
-    private IEnumerator rotationCor, abilityCor;
-    private WaitForSeconds waitForLockedAbilityInputsDuration, waitForStayStableAfterRollDuration;
 
     #region Mono
     private void Awake()
@@ -96,15 +86,20 @@ public class Player : MonoBehaviour, IHitable
 
         waitForLockedAbilityInputsDuration = new WaitForSeconds(lockedAbilityInputsDuration);
         waitForStayStableAfterRollDuration = new WaitForSeconds(stayStableAfterRollDuration);
+        isHitAble = true;
     }
     private void Start()
     {
         GameManager.Cur.EventCtrl.onPlayerHealthChange?.Invoke(Health, maxHealth);
+        AnimSequenceData rollSequence = animX.ReturnAnimSequenceData("Roll");
+        rollAnimDuration = (rollSequence.Length * rollMoveDuration) / rollSequence.ReturnAnimData("Roll").Length;
     }
     private void Update()
     {
         desiredMoveVelocity = FixedAxisInputs * maxMoveSpeed; // Calculate the desiredMoveVelocity with the axisInputs.
         desiredRollVelocity = FixedAxisInputs.normalized * rollMoveDistance / rollMoveDuration; // Calculate the desiredRollVelocity with the axisInputs.
+
+        MoveBlendTreeUpdate();
     }
     private void FixedUpdate()
     {
@@ -121,6 +116,7 @@ public class Player : MonoBehaviour, IHitable
     }
     #endregion
 
+    
     private void MovementUpdate()
     {
         if (lockedPlayerState) return;
@@ -177,26 +173,29 @@ public class Player : MonoBehaviour, IHitable
     {
         // Call this method one time when the state is changed.
         if (lastFramePlayerState == curPlayerState) return;
-
+        if (curPlayerState == PlayerStates.MOVE && lastFramePlayerState == PlayerStates.IDLE) return;
+        if (curPlayerState == PlayerStates.IDLE && lastFramePlayerState == PlayerStates.MOVE) return;
         switch (curPlayerState) // Check the current state.
         {
             case PlayerStates.IDLE:
-                animX.StartAnimation("Idle", idleAnimationDuration, true, 0.15f);
-                break;
             case PlayerStates.MOVE:
-                animX.StartAnimation("Move", moveAnimationDuration, true, 0.15f);
+                curAnimData = animX.ReturnAnimData("Move");
+                animX.StartAnimation(curAnimData.Name, curAnimData.duration, curAnimData.isLoop, curAnimData.normalizedFadeDuration);
                 break;
             case PlayerStates.JUMP:
-                animX.StartAnimation("Jump", JumpDuration, false, 0.1f);
+                curAnimData = animX.ReturnAnimData("Jump");
+                animX.StartAnimation(curAnimData.Name, JumpDuration, curAnimData.isLoop, curAnimData.normalizedFadeDuration);
                 break;
             case PlayerStates.ROLL:
-                animX.StartAnimation("Roll", rollMoveDuration, false, 0f);
+                animX.StartAnimationSequence("Roll", rollAnimDuration);
                 break;
             case PlayerStates.ATTACK:
-                animX.StartAnimation("Attack", attackDuration, false, 0.1f);
+                curAnimData = animX.ReturnAnimData("Attack");
+                animX.StartAnimation(curAnimData.Name, curAnimData.duration, curAnimData.isLoop, curAnimData.normalizedFadeDuration);
                 break;
             case PlayerStates.TAKE_DAMAGE:
-                animX.StartAnimation("TakeDamage", hittedDuration, false, 0.1f);
+                curAnimData = animX.ReturnAnimData("Take Damage");
+                animX.StartAnimation(curAnimData.Name, curAnimData.duration, curAnimData.isLoop, curAnimData.normalizedFadeDuration);
                 break;
         }
     }
@@ -205,7 +204,6 @@ public class Player : MonoBehaviour, IHitable
     private void Move()
     {
         ChangePlayerState(new Vector3(rig.velocity.x, 0, rig.velocity.z).magnitude <= 0f ? PlayerStates.IDLE : PlayerStates.MOVE, false);
-
         float maxSpeedChange = maxMoveAcceleration * Time.fixedDeltaTime;
         velocity.x = Mathf.MoveTowards(velocity.x, desiredMoveVelocity.x, maxSpeedChange);
         velocity.z = Mathf.MoveTowards(velocity.z, desiredMoveVelocity.z, maxSpeedChange);
@@ -234,16 +232,24 @@ public class Player : MonoBehaviour, IHitable
     {
         rollDirection = desiredRollVelocity.normalized; // Rolling direction calculated with the axis inputs.
         rollVelocity = desiredRollVelocity; // Calculate the initial rolling velocity.
-        float percent = 0f;
-        while (percent < rollMoveDuration) // rolling
+        yield return new WaitUntil(() => animX.CurrentAnim == "Roll Start");
+        while (animX.CurrentAnim == "Roll Start")
         {
-            velocity = rollVelocity; // The player`s velocity is constant while rolling.
-            percent += Time.fixedDeltaTime;
+            velocity = Vector3.zero;
             yield return CoroutineUtils.waitForFixedUpdate;
         }
-        velocity = rollVelocity;
-        yield return CoroutineUtils.waitForFixedUpdate;
-
+        yield return new WaitUntil(()=>animX.CurrentAnim == "Roll");
+        while (animX.CurrentAnim == "Roll") // rolling
+        {
+            velocity = rollVelocity; // The player`s velocity is constant while rolling.
+            yield return CoroutineUtils.waitForFixedUpdate;
+        }
+        yield return new WaitUntil(() => animX.CurrentAnim == "Roll End");
+        while (animX.CurrentAnim == "Roll End") // rolling
+        {
+            velocity = Vector3.zero; // The player`s velocity is constant while rolling.
+            yield return CoroutineUtils.waitForFixedUpdate;
+        }
         velocity = Vector3.zero; // Stop the player a little bit time after rolling completed.
         yield return waitForStayStableAfterRollDuration;
         UnlockPlayerState();
@@ -264,7 +270,8 @@ public class Player : MonoBehaviour, IHitable
     private IEnumerator AttackCor()
     {
         float percent = 0f;
-        while (percent < attackDuration) // attacking
+        float duration = animX.ReturnAnimData("Attack").duration;
+        while (percent < duration) // attacking
         {
             percent += Time.fixedDeltaTime;
             velocity = Vector3.zero;
@@ -354,6 +361,23 @@ public class Player : MonoBehaviour, IHitable
     {
         lockedAbilityInputs = false;
     }
+
+    private void MoveBlendTreeUpdate()
+    {
+        if (curPlayerState == PlayerStates.MOVE || curPlayerState == PlayerStates.IDLE)
+        {
+            float maxInputSpeedChange = maxInputAcceleration * Time.deltaTime;
+            animInputX = Mathf.MoveTowards(animInputX, AxisInputs.x, maxInputSpeedChange);
+            animInputZ = Mathf.MoveTowards(animInputZ, AxisInputs.z, maxInputSpeedChange);
+        }
+        else
+        {
+            animInputX = 0;
+            animInputZ = 0;
+        }
+        animX.anim.SetFloat("InputX", animInputX);
+        animX.anim.SetFloat("InputZ", animInputZ);
+    }
     #endregion
 
     #region Take Damage
@@ -375,7 +399,8 @@ public class Player : MonoBehaviour, IHitable
     private IEnumerator TakeDamageCor()
     {
         float percent = 0f;
-        while (percent < hittedDuration)
+        float duration = animX.ReturnAnimData("Take Damage").duration;
+        while (percent < duration)
         {
             percent += Time.fixedDeltaTime;
             velocity = -forward * hittedPushSpeed;
@@ -389,7 +414,7 @@ public class Player : MonoBehaviour, IHitable
         UnlockAbilityInputs();
 
         isHitAble = true;
-        ChangePlayerState(PlayerStates.IDLE, false);
+        ChangePlayerState(PlayerStates.MOVE, false);
     }
     #endregion
 
