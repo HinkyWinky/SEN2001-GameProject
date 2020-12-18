@@ -19,7 +19,7 @@ public class Enemy1_ExecuteTreeState : BehaviourTreeState
         public CheckIsWayOpen checkIsWayOpen_1;
         public ActionTimer actionWaitBeforeDash_1;
         public ActionDash actionDash_1;
-        public ActionAnimation actionAnimation_1;
+        public ActionPlayAnimation actionPlayAnimation1;
         public ActionTimer actionWaitAfterDash_1;
     [Title("CloseAttack_2")]
         public ActionAttack actionAttack_2;
@@ -43,7 +43,7 @@ public class Enemy1_ExecuteTreeState : BehaviourTreeState
                 checkIsWayOpen_1,
                 actionWaitBeforeDash_1,
                 actionDash_1,
-                actionAnimation_1,
+                actionPlayAnimation1,
                 actionWaitAfterDash_1
             });
         rootNode = new Selector(new List<Node>
@@ -56,7 +56,7 @@ public class Enemy1_ExecuteTreeState : BehaviourTreeState
         checkIsWayOpen_1.StartLeaf(this);
         actionWaitBeforeDash_1.StartLeaf(this);
         actionDash_1.StartLeaf(this);
-        actionAnimation_1.StartLeaf(this);
+        actionPlayAnimation1.StartLeaf(this);
         actionWaitAfterDash_1.StartLeaf(this);
         actionAttack_2.StartLeaf(this);
         actionWaitAfterCloseAttack_2.StartLeaf(this);

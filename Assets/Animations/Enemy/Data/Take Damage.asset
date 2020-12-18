@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: Take Damage
   m_EditorClassIdentifier: 
   isClip: 1
-  clip: {fileID: 7400000, guid: d5d90d4ce47f92640adfb6d1fd795e93, type: 2}
-  clipName: Take Damage
+  clip: {fileID: 7400000, guid: a180df4055aa90247b8282412db59c02, type: 2}
+  clipName: 
   isLoop: 0
-  duration: 0.5
-  normalizedFadeDuration: 0.1
+  duration: 0.03
+  normalizedFadeDuration: 0

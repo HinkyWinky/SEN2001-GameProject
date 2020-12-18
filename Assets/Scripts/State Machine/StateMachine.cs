@@ -50,14 +50,9 @@ namespace Game.AI
             Vector3 direction = (fixedTargetPos - rig.position).normalized;
             if (direction == Vector3.zero) return;
             var targetRot = Quaternion.LookRotation(direction, Vector3.up); // Calculate target rotation value.
-            float fixedMaxRotationAcceleration =
-                maxRotationAcceleration * Quaternion.Angle(rig.rotation, targetRot) /
-                180f; // Calculate acceleration value for the angle.
-            float maxRotationChange =
-                fixedMaxRotationAcceleration * Time.fixedDeltaTime; // Calculate acceleration needed for one frame.
-            rig.rotation =
-                Quaternion.RotateTowards(rig.rotation, targetRot,
-                    maxRotationChange); // Rotate the player to the target rotation value smoothly.
+            float fixedMaxRotationAcceleration = maxRotationAcceleration * Quaternion.Angle(rig.rotation, targetRot) / 180f; // Calculate acceleration value for the angle.
+            float maxRotationChange = fixedMaxRotationAcceleration * Time.fixedDeltaTime; // Calculate acceleration needed for one frame.
+            rig.rotation = Quaternion.RotateTowards(rig.rotation, targetRot, maxRotationChange); // Rotate the player to the target rotation value smoothly.
         }
     }
 }

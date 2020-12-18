@@ -25,11 +25,11 @@ public class AnimatorX : MonoBehaviour
 
     public AnimData ReturnAnimData(string animName)
     {
-        return animsData.Find(t => t.Name == animName);
+        return animsData.Find(t => t.AnimName == animName);
     }
     public AnimSequenceData ReturnAnimSequenceData(string animSequenceName)
     {
-        return animSequencesData.Find(t => t.Name == animSequenceName);
+        return animSequencesData.Find(t => t.SequenceName == animSequenceName);
     }
 
     private void Awake()
@@ -43,6 +43,18 @@ public class AnimatorX : MonoBehaviour
     }
 
     #region Play Animation
+    public void StartAnimation(AnimData animData)
+    {
+        StopAnimation(true);
+        animationCor = PlayAnimation(animData.AnimName, animData.duration, animData.isLoop, animData.normalizedFadeDuration);
+        StartCoroutine(animationCor); // Start the new animation.
+    }
+    public void StartAnimation(AnimData animData, float duration)
+    {
+        StopAnimation(true);
+        animationCor = PlayAnimation(animData.AnimName, duration, animData.isLoop, animData.normalizedFadeDuration);
+        StartCoroutine(animationCor); // Start the new animation.
+    }
     public void StartAnimation(string animName, float duration, bool loop, float normalizedFadeDuration)
     {
         StopAnimation(true);
@@ -132,20 +144,20 @@ public class AnimatorX : MonoBehaviour
                     fixedAnimationDuration = durationForThisAnim - fadeDuration;
                     while (percent < fadeDuration)
                     {
-                        anim.CrossFade(curAnimData.Name, curAnimData.normalizedFadeDuration);
+                        anim.CrossFade(curAnimData.AnimName, curAnimData.normalizedFadeDuration);
                         percent += Time.deltaTime;
                         yield return null;
                     }
-                    anim.CrossFade(curAnimData.Name, curAnimData.normalizedFadeDuration);
+                    anim.CrossFade(curAnimData.AnimName, curAnimData.normalizedFadeDuration);
                 }
                 else
-                    anim.Play(curAnimData.Name, 0, 0);
+                    anim.Play(curAnimData.AnimName, 0, 0);
                 yield return null;
             }
             else
-                anim.Play(curAnimData.Name, 0, 0);
+                anim.Play(curAnimData.AnimName, 0, 0);
 
-            currentAnim = sequence.animsData[i].Name;
+            currentAnim = sequence.animsData[i].AnimName;
             isAnimPlaying = true;
             anim.SetFloat(lastAnim, 0f);
             lastAnim = currentAnim;

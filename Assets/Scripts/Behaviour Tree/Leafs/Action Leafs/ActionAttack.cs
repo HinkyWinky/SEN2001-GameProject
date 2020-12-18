@@ -11,10 +11,7 @@ namespace Game.AI
         [SerializeField, Range(0f, 360f)] private float attackAngleRange = 180f;
         [SerializeField, Range(0.05f, 50f)] private float maxAttackDistance = 1f;
         [SerializeField, Range(0.01f, 0.05f)] private float maxAttackDistanceTolerance = 0.025f;
-
-        [SerializeField] private string animationMotionName = default;
-        [SerializeField, Min(0)] private float animationDuration = 1f;
-        [SerializeField, Range(0f, 1f)] private float animationFadeDuration = 0f;
+        [SerializeField] private AnimData animData = default;
 
         private Vector3 targetPos;
 
@@ -27,12 +24,12 @@ namespace Game.AI
                 float distanceToTargetPos = Vector3.Distance(Machine.rig.position, targetPos);
                 if (distanceToTargetPos > maxAttackDistance + maxAttackDistanceTolerance) return NodeStates.FAILURE;
 
-                Machine.animX.StartAnimation(animationMotionName, animationDuration, false, animationFadeDuration);
+                Machine.animX.StartAnimation(animData);
 
                 return NodeStates.RUNNING;
             }
 
-            if (!Machine.animX.IsPlaying(animationMotionName)) return NodeStates.SUCCESS;
+            if (!Machine.animX.IsPlaying(animData.AnimName)) return NodeStates.SUCCESS;
 
             return NodeStates.RUNNING;
         }

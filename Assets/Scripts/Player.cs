@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -42,10 +40,15 @@ public class Player : MonoBehaviour, IHitable
     [SerializeField, Range(0f, 0.1f), DisableInPlayMode] private float stayStableAfterRollDuration = 0.025f;
 
     [Title("Take Damage", Bold = true)]
-    [SerializeField, Range(0f, 100f)] private float hittedPushSpeed = 20f;
+    [SerializeField, Range(0f, 100f)] private float takeDamagePushSpeed = 10f;
 
     [Title("Animations", Bold = true)]
     [SerializeField, Range(0f, 100f)] private float maxInputAcceleration = 40f; // max acceleration while moving
+
+    [FoldoutGroup("Read Only Fields"), ShowInInspector, ReadOnly, LabelText("Current Player State")]
+    private PlayerStates curPlayerState = PlayerStates.IDLE;
+    [FoldoutGroup("Read Only Fields"), ShowInInspector, ReadOnly]
+    private bool onGround, hitGroundFirstTime, lockedPlayerState, lockedAbilityInputs, isHitAble;
 
     private int health = 100;
     private float animInputX, animInputZ, rollAnimDuration;
@@ -54,12 +57,12 @@ public class Player : MonoBehaviour, IHitable
     private IEnumerator rotationCor, abilityCor;
     private WaitForSeconds waitForLockedAbilityInputsDuration, waitForStayStableAfterRollDuration;
     private AnimData curAnimData;
-
-    [FoldoutGroup("Read Only Fields"), ShowInInspector, ReadOnly, LabelText("Current Player IState")]
-    private PlayerStates curPlayerState = PlayerStates.IDLE;
+    
+    private Vector3 AxisInputs => new Vector3(InputCtrl.AxisInputs.x, 0, InputCtrl.AxisInputs.y); // direct axis inputs
+    private Vector3 FixedAxisInputs => (AxisInputs.x * Vector3.Cross(Vector3.up,forward)) + (AxisInputs.z * forward); // axis inputs according to the player rotation
+    private float JumpSpeedY => Mathf.Sqrt(-2f * Physics.gravity.y * jumpHeight);
+    private float JumpDuration => -2f * JumpSpeedY / Physics.gravity.y;
     private PlayerStates lastFramePlayerState = PlayerStates.JUMP;
-    [FoldoutGroup("Read Only Fields"), ShowInInspector, ReadOnly]
-    private bool onGround, hitGroundFirstTime, lockedPlayerState, lockedAbilityInputs, isHitAble;
 
     public int Health
     {
@@ -72,10 +75,6 @@ public class Player : MonoBehaviour, IHitable
         }
     }
     public Vector3 Forward => forward;
-    private Vector3 AxisInputs => new Vector3(InputCtrl.AxisInputs.x, 0, InputCtrl.AxisInputs.y); // direct axis inputs
-    private Vector3 FixedAxisInputs => (AxisInputs.x * Vector3.Cross(Vector3.up,forward)) + (AxisInputs.z * forward); // axis inputs according to the player rotation
-    private float JumpSpeedY => Mathf.Sqrt(-2f * Physics.gravity.y * jumpHeight);
-    private float JumpDuration => -2f * JumpSpeedY / Physics.gravity.y;
 
     #region Mono
     private void Awake()
@@ -99,7 +98,7 @@ public class Player : MonoBehaviour, IHitable
         desiredMoveVelocity = FixedAxisInputs * maxMoveSpeed; // Calculate the desiredMoveVelocity with the axisInputs.
         desiredRollVelocity = FixedAxisInputs.normalized * rollMoveDistance / rollMoveDuration; // Calculate the desiredRollVelocity with the axisInputs.
 
-        MoveBlendTreeUpdate();
+        MoveBlendTreeUpdate(); // Play move animations according to the input axis.
     }
     private void FixedUpdate()
     {
@@ -180,22 +179,22 @@ public class Player : MonoBehaviour, IHitable
             case PlayerStates.IDLE:
             case PlayerStates.MOVE:
                 curAnimData = animX.ReturnAnimData("Move");
-                animX.StartAnimation(curAnimData.Name, curAnimData.duration, curAnimData.isLoop, curAnimData.normalizedFadeDuration);
+                animX.StartAnimation(curAnimData);
                 break;
             case PlayerStates.JUMP:
                 curAnimData = animX.ReturnAnimData("Jump");
-                animX.StartAnimation(curAnimData.Name, JumpDuration, curAnimData.isLoop, curAnimData.normalizedFadeDuration);
+                animX.StartAnimation(curAnimData, JumpDuration);
                 break;
             case PlayerStates.ROLL:
                 animX.StartAnimationSequence("Roll", rollAnimDuration);
                 break;
             case PlayerStates.ATTACK:
                 curAnimData = animX.ReturnAnimData("Attack");
-                animX.StartAnimation(curAnimData.Name, curAnimData.duration, curAnimData.isLoop, curAnimData.normalizedFadeDuration);
+                animX.StartAnimation(curAnimData);
                 break;
             case PlayerStates.TAKE_DAMAGE:
                 curAnimData = animX.ReturnAnimData("Take Damage");
-                animX.StartAnimation(curAnimData.Name, curAnimData.duration, curAnimData.isLoop, curAnimData.normalizedFadeDuration);
+                animX.StartAnimation(curAnimData);
                 break;
         }
     }
@@ -384,12 +383,15 @@ public class Player : MonoBehaviour, IHitable
     public void TakeDamage(int damageValue)
     {
         if (!isHitAble) return;
-        ChangePlayerState(PlayerStates.TAKE_DAMAGE, true);
-        LockAbilityInputs();
-        isHitAble = false;
 
         Health -= damageValue;
         GameManager.Cur.EventCtrl.onPlayerHealthChange?.Invoke(Health, maxHealth);
+
+        if (curPlayerState == PlayerStates.ROLL) return;
+
+        ChangePlayerState(PlayerStates.TAKE_DAMAGE, true);
+        LockAbilityInputs();
+        isHitAble = false;
 
         if (abilityCor != null)
             StopCoroutine(abilityCor);
@@ -400,13 +402,15 @@ public class Player : MonoBehaviour, IHitable
     {
         float percent = 0f;
         float duration = animX.ReturnAnimData("Take Damage").duration;
+
         while (percent < duration)
         {
             percent += Time.fixedDeltaTime;
-            velocity = -forward * hittedPushSpeed;
+            velocity = -forward * takeDamagePushSpeed;
             yield return CoroutineUtils.waitForFixedUpdate;
         }
         velocity = Vector3.zero;
+
         yield return CoroutineUtils.waitForFixedUpdate;
 
         UnlockPlayerState();
@@ -417,7 +421,6 @@ public class Player : MonoBehaviour, IHitable
         ChangePlayerState(PlayerStates.MOVE, false);
     }
     #endregion
-
 
     public void IsSwordHitEnable()
     {

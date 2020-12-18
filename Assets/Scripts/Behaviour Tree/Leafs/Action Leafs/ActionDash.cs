@@ -11,10 +11,9 @@ namespace Game.AI
         [SerializeField, Range(0.1f, 10f)] private float dashSpeed = 4f;
         [SerializeField, Range(-50f, 50f)] private float stopDistance = 1f;
         [SerializeField, Range(0.01f, 0.05f)] private float stopDistanceTolerance = 0.025f;
+        [SerializeField] private AnimData dashAnimData = default;
 
-        private Vector3 curTargetPos;
-        private Vector3 lastFrameTargetPos;
-        private Vector3 targetDestination;
+        private Vector3 curTargetPos, lastFrameTargetPos, targetDestination;
 
         protected override NodeStates Action()
         {
@@ -36,8 +35,7 @@ namespace Game.AI
 
                 StartCoroutineLerpMove(targetDestination, duration);
                 StartCoroutineLerpRotate(targetDestination);
-                Machine.animX.StartAnimation("Dash", duration, false, 0f);
-
+                Machine.animX.StartAnimation(dashAnimData, duration);
                 return NodeStates.RUNNING;
             }
 

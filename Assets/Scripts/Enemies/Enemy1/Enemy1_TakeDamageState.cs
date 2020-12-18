@@ -5,20 +5,23 @@ using Sirenix.OdinInspector;
 using UnityEngine;
 
 [Serializable]
-public class Enemy1_OnHittedState : State
+public class Enemy1_TakeDamageState : State
 {
     private Enemy1 enemy;
 
     [HideInInspector] public bool isHitAble = true;
 
     [Title("TakeDamage", Bold = true)]
-    [SerializeField, Range(0f, 1f)] private float hittedDuration = 0.5f;
-    [SerializeField, Range(0f, 100f)] private float hittedPushSpeed = 20f;
+    [SerializeField, Range(0f, 100f)] private float takeDamagePushSpeed = 10f;
+
+    private AnimData takeDamageAnimData;
 
     public override void BuildState(StateMachine stateMachine)
     {
         base.BuildState(stateMachine);
         enemy = stateMachine as Enemy1;
+        if (enemy != null)
+            takeDamageAnimData = enemy.animX.ReturnAnimData("Take Damage");
     }
 
     public override void StateEnter()
@@ -27,7 +30,7 @@ public class Enemy1_OnHittedState : State
         isHitAble = false;
         machine.rig.isKinematic = false;
 
-        OnHitted();
+        OnTakeDamage();
     }
 
     public override void StateExit()
@@ -44,23 +47,23 @@ public class Enemy1_OnHittedState : State
         }
     }
 
-    public void OnHitted()
+    public void OnTakeDamage()
     {
-        machine.animX.StartAnimation("Hitted", hittedDuration, false, 0.1f);
+        machine.animX.StartAnimation(takeDamageAnimData);
 
         if (machine.action != null)
             machine.StopCoroutine(machine.action);
-        machine.action = OnHittedCur();
+        machine.action = OnTakeDamageCur();
         machine.StartCoroutine(machine.action);
     }
-    private IEnumerator OnHittedCur()
+    private IEnumerator OnTakeDamageCur()
     {
         Vector3 direction = machine.Player.Forward;
         float percent = 0f;
-        while (percent < hittedDuration)
+        while (percent < takeDamageAnimData.duration)
         {
             percent += Time.fixedDeltaTime;
-            machine.rig.velocity = direction * hittedPushSpeed;
+            machine.rig.velocity = direction * takeDamagePushSpeed;
             yield return CoroutineUtils.waitForFixedUpdate;
         }
         machine.rig.velocity = Vector3.zero;

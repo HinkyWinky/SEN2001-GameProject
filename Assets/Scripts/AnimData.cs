@@ -14,6 +14,6 @@ public class AnimData : ScriptableObject
     [Range(0f, 50f)] public float duration;
     [Range(0f, 1f)] public float normalizedFadeDuration;
 
-    public string Name => isClip ? clip.name : clipName;
+    public string AnimName => isClip ? clip.name : clipName;
     public float Length => isClip ? clip.length : 0f;
 }

@@ -13,19 +13,12 @@ namespace Game.AI
         [SerializeField, Range(0.01f, 0.05f)] private float stopDistanceTolerance = 0.025f;
         [SerializeField, Range(0f, 1f)] private float targetMoveDistanceTolerance = 0.2f;
         [SerializeField, Min(1f)] private float maxLoopCountDuration = 5f;
+        [SerializeField] private AnimData moveAnimData = default;
 
-        private Vector3 targetTransformPos;
-        private Vector3 lastEvaluateTargetPos;
-        private Vector3 targetDestination;
-        private float targetDistance;
-
-        private int startCornerIndex;
-        private int endCornerIndex;
-        private float cornerDistanceTolerance;
-        private float totalDuration;
-        private float totalDistance;
-        private bool isDirectMove;
-        private float loopCountLimit;
+        private Vector3 targetTransformPos, lastEvaluateTargetPos, targetDestination;
+        private bool isDirectMove, isFirstUpdate;
+        private int startCornerIndex, endCornerIndex;
+        private float targetDistance, cornerDistanceTolerance, totalDuration, totalDistance, loopCountLimit;
 
         public override void StartLeaf(BehaviourTreeState behaviourTreeState)
         {
@@ -65,13 +58,14 @@ namespace Game.AI
                     if (btState.machine.checkPath.status != NavMeshPathStatus.PathComplete) return NodeStates.FAILURE;
 
                     // If there is no obstacles on the way, then move directly to the target position,
-                    // else start following the path.
                     if (btState.machine.checkPath.corners.Length <= 2)
                     {
                         isDirectMove = true;
                         StartCoroutineLerpMove(targetDestination, targetDistance / Machine.moveSpeed);
+                        if (Vector3.Distance(targetDestination, targetTransformPos) >= 3f)
+                            StartCoroutineLerpRotate(targetDestination);
                     }
-                    else
+                    else // else start following the path.
                     {
                         isDirectMove = false;
                         Machine.movePath = Machine.checkPath;
@@ -90,11 +84,11 @@ namespace Game.AI
                 }
             }
 
-            // If AI is at the target destination, then return success,
+            // If AI is at the target destination, then return success.
             float distanceToTargetPos = Vector3.Distance(Machine.rig.position, targetDestination);
             if (distanceToTargetPos < Mathf.Abs(stopDistance + stopDistanceTolerance)) return NodeStates.SUCCESS;
 
-            // If AI is not following the path,
+            // If AI is not following the path and moving to target destination directly, then keep moving.
             if (isDirectMove) return NodeStates.RUNNING;
 
             if (endCornerIndex == Machine.movePath.corners.Length) return NodeStates.RUNNING;
@@ -136,12 +130,16 @@ namespace Game.AI
 
             if (NodeState != NodeStates.RUNNING) return;
 
+            if (!isFirstUpdate)
+            {
+                isFirstUpdate = true;
+                Machine.animX.StartAnimation(moveAnimData);
+            }
+
             if (isDirectMove)
             {
                 if (Vector3.Distance(targetDestination, targetTransformPos) < 3f)
                     Machine.Rotate(targetTransformPos);
-                else
-                    Machine.Rotate(targetDestination);
             }
         }
 
@@ -150,6 +148,7 @@ namespace Game.AI
             base.OnReset();
             Machine.movePath.ClearCorners();
             isDirectMove = false;
+            isFirstUpdate = false;
             lastEvaluateTargetPos = Vector3.zero;
             targetDestination = Vector3.zero;
             targetDistance = 0;

@@ -22,7 +22,7 @@ public class Enemy1 : StateMachine, IHitable
         }
     }
 
-    public Enemy1_OnHittedState onHittedState;
+    public Enemy1_TakeDamageState takeDamageState;
 
     public Enemy1_ExecuteTreeState executeTreeState;
     public Enemy1_FindTreeState findTreeState;
@@ -38,11 +38,11 @@ public class Enemy1 : StateMachine, IHitable
     }
     private void Start()
     {
-        animX.StartAnimation("Idle", 1f, true, 0.1f);
+        animX.StartAnimation(animX.ReturnAnimData("Idle"));
 
         executeTreeState.BuildBehaviourTree(this);
         findTreeState.BuildBehaviourTree(this);
-        onHittedState.BuildState(this);
+        takeDamageState.BuildState(this);
 
         StartStateMachine(executeTreeState);
     }
@@ -57,8 +57,8 @@ public class Enemy1 : StateMachine, IHitable
 
     public void TakeDamage(int damageValue)
     {
-        if (!onHittedState.isHitAble) return;
-        //ChangeState(onHittedState);
+        if (!takeDamageState.isHitAble) return;
+        //ChangeState(takeDamageState);
         Health -= damageValue;
     }
 
