@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cf38d8ce618f2854bb9e134a8ebb084c, type: 3}
-  m_Name: Take Damage
+  m_Name: Die
   m_EditorClassIdentifier: 
   isClip: 1
-  clip: {fileID: 7400000, guid: a180df4055aa90247b8282412db59c02, type: 2}
+  clip: {fileID: 7400000, guid: a40606e065c23ad44b372b8f3df0fb24, type: 2}
   clipName: 
   isLoop: 0
-  duration: 0.3
-  normalizedFadeDuration: 0
+  duration: 2
+  normalizedFadeDuration: 0.2

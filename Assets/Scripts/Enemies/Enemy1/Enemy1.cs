@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using Game.AI;
+﻿using Game.AI;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.AI;
@@ -21,9 +20,12 @@ public class Enemy1 : StateMachine, IHitable
             else { health = value; }
         }
     }
+    public bool IsDeath => Health == 0;
+    [HideInInspector] public bool isHitAble = true;
 
+    public Enemy1_IdleState idleState;
     public Enemy1_TakeDamageState takeDamageState;
-
+    public Enemy1_DeathState deathState;
     public Enemy1_ExecuteTreeState executeTreeState;
     public Enemy1_FindTreeState findTreeState;
 
@@ -32,19 +34,22 @@ public class Enemy1 : StateMachine, IHitable
         TryGetComponent(out anim);
         TryGetComponent(out animX);
         TryGetComponent(out rig);
+        TryGetComponent(out col);
 
         checkPath = new NavMeshPath();
         movePath = new NavMeshPath();
     }
     private void Start()
     {
-        animX.StartAnimation(animX.ReturnAnimData("Idle"));
-
+        idleState.BuildState(this);
+        takeDamageState.BuildState(this);
+        deathState.BuildState(this);
         executeTreeState.BuildBehaviourTree(this);
         findTreeState.BuildBehaviourTree(this);
-        takeDamageState.BuildState(this);
+        
+        GameManager.Cur.EventCtrl.onEnemyHealthChange?.Invoke(Health, maxHealth);
 
-        StartStateMachine(executeTreeState);
+        StartStateMachine(idleState);
     }
     private void Update()
     {
@@ -57,9 +62,23 @@ public class Enemy1 : StateMachine, IHitable
 
     public void TakeDamage(int damageValue)
     {
-        if (!takeDamageState.isHitAble) return;
-        //ChangeState(takeDamageState);
+        if (!isHitAble) return;
+
         Health -= damageValue;
+        GameManager.Cur.EventCtrl.onEnemyHealthChange?.Invoke(Health, maxHealth);
+
+        if (IsDeath)
+        {
+            Die();
+            return;
+        }
+
+        ChangeState(takeDamageState);
+    }
+
+    public void Die()
+    {
+        ChangeState(deathState);
     }
 
     public void IsSwordHitEnable()

@@ -76,6 +76,12 @@ using UnityEngine;
             machine.isUpdatedFirstTime = true;
         }
 
+        if (GameManager.Cur.Player.IsDeath)
+        {
+            machine.ChangeState(enemy.idleState);
+            return;
+        }
+
         if (rootNode.NodeState != NodeStates.RUNNING)
         {
             machine.ChangeState(enemy.executeTreeState);

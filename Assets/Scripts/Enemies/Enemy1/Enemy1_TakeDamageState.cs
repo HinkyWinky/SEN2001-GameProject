@@ -1,42 +1,34 @@
 ﻿using System;
 using System.Collections;
 using Game.AI;
-using Sirenix.OdinInspector;
 using UnityEngine;
 
 [Serializable]
 public class Enemy1_TakeDamageState : State
 {
     private Enemy1 enemy;
-
-    [HideInInspector] public bool isHitAble = true;
-
-    [Title("TakeDamage", Bold = true)]
-    [SerializeField, Range(0f, 100f)] private float takeDamagePushSpeed = 10f;
-
-    private AnimData takeDamageAnimData;
+    public AnimData takeDamageAnimData;
 
     public override void BuildState(StateMachine stateMachine)
     {
         base.BuildState(stateMachine);
         enemy = stateMachine as Enemy1;
-        if (enemy != null)
-            takeDamageAnimData = enemy.animX.ReturnAnimData("Take Damage");
     }
 
     public override void StateEnter()
     {
         base.StateEnter();
-        isHitAble = false;
-        machine.rig.isKinematic = false;
-
-        OnTakeDamage();
+        enemy.isHitAble = false;
+        machine.animX.StartAnimation(takeDamageAnimData);
+        if (machine.action != null)
+            machine.StopCoroutine(machine.action);
+        machine.action = OnTakeDamage();
+        machine.StartCoroutine(machine.action);
     }
 
     public override void StateExit()
     {
-        isHitAble = true;
-        machine.rig.isKinematic = true;
+        enemy.isHitAble = true;
     }
 
     public override void StateUpdate()
@@ -45,25 +37,22 @@ public class Enemy1_TakeDamageState : State
         {
             machine.isUpdatedFirstTime = true;
         }
+
+        if (GameManager.Cur.Player.IsDeath)
+        {
+            machine.ChangeState(enemy.idleState);
+            return;
+        }
     }
 
-    public void OnTakeDamage()
-    {
-        machine.animX.StartAnimation(takeDamageAnimData);
-
-        if (machine.action != null)
-            machine.StopCoroutine(machine.action);
-        machine.action = OnTakeDamageCur();
-        machine.StartCoroutine(machine.action);
-    }
-    private IEnumerator OnTakeDamageCur()
+    private IEnumerator OnTakeDamage()
     {
         Vector3 direction = machine.Player.Forward;
         float percent = 0f;
         while (percent < takeDamageAnimData.duration)
         {
             percent += Time.fixedDeltaTime;
-            machine.rig.velocity = direction * takeDamagePushSpeed;
+            machine.rig.velocity = Vector3.zero;
             yield return CoroutineUtils.waitForFixedUpdate;
         }
         machine.rig.velocity = Vector3.zero;

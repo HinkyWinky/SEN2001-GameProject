@@ -12,13 +12,16 @@ namespace Game.AI
         [HideInInspector] public Animator anim;
         [HideInInspector] public AnimatorX animX;
         [HideInInspector] public Rigidbody rig;
+        [HideInInspector] public Collider col;
 
         protected IState currentState;
+        [ShowInInspector, ReadOnly, PropertyOrder(-2)]
+        public string CurrentStateName => currentState == null ? "Empty" : currentState.ToString();
+
         [Range(0f, 5f)] public float moveSpeed = 0.5f;
 
         [SerializeField, PropertyRange(0f, 1f), LabelText("Rotation Duration For 180")]
         public float rotationDuration = 0.1f; // roll rotation duration for 180 degree
-
         [SerializeField, Range(500f, 3000f), LabelText("Max Rotation Acceleration For 180")]
         private float maxRotationAcceleration = 1000f; // max acceleration for 180 degree while rotating
 

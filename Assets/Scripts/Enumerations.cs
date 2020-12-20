@@ -6,7 +6,7 @@ public enum FrameRateSetting { DEFAULT, RATE_30, RATE_45, RATE_60 };
 
 public enum SceneType { MAINMENU, LEVEL };
 
-public enum PlayerStates { IDLE, MOVE, JUMP, ROLL, ATTACK, TAKE_DAMAGE };
+public enum PlayerStates { IDLE, MOVE, JUMP, ROLL, ATTACK, TAKE_DAMAGE, DIE };
 
 namespace Game.AI
 {

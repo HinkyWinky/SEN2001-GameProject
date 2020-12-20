@@ -5,6 +5,7 @@ namespace Game.UI
     public class InGamePanel : Panel
     {
         public Bar playerHealthBar;
+        public Bar enemyHealthBar;
 
         #region Mono
         #endregion

@@ -90,6 +90,12 @@ public class Enemy1_ExecuteTreeState : BehaviourTreeState
             machine.isUpdatedFirstTime = true;
         }
 
+        if (GameManager.Cur.Player.IsDeath)
+        {
+            machine.ChangeState(enemy.idleState);
+            return;
+        }
+
         if (rootNode.NodeState == NodeStates.FAILURE)
         {
             machine.ChangeState(enemy.findTreeState);

@@ -31,9 +31,9 @@ public class Sword : MonoBehaviour
         {
             if (other.CompareTag("Enemy"))
             {
-                if (other.TryGetComponent(out IHitable hitObject))
+                if (other.TryGetComponent(out IHitable takeDamageObject))
                 {
-                    hitObject.TakeDamage(damageValue);
+                    takeDamageObject.TakeDamage(damageValue);
                     IsHitDisable();
                 }
             }
@@ -42,9 +42,9 @@ public class Sword : MonoBehaviour
         {
             if (other.CompareTag("Player"))
             {
-                if (other.TryGetComponent(out IHitable hitObject))
+                if (other.TryGetComponent(out IHitable takeDamageObject))
                 {
-                    hitObject.TakeDamage(damageValue);
+                    takeDamageObject.TakeDamage(damageValue);
                     IsHitDisable();
                 }
             }

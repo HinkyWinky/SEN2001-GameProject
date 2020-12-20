@@ -39,9 +39,6 @@ public class Player : MonoBehaviour, IHitable
     private float rollRotationDuration = 0.1f; // roll rotation duration for 180 degree
     [SerializeField, Range(0f, 0.1f), DisableInPlayMode] private float stayStableAfterRollDuration = 0.025f;
 
-    [Title("Take Damage", Bold = true)]
-    [SerializeField, Range(0f, 100f)] private float takeDamagePushSpeed = 10f;
-
     [Title("Animations", Bold = true)]
     [SerializeField, Range(0f, 100f)] private float maxInputAcceleration = 40f; // max acceleration while moving
 
@@ -74,6 +71,7 @@ public class Player : MonoBehaviour, IHitable
             else { health = value; }
         }
     }
+    public bool IsDeath => Health == 0;
     public Vector3 Forward => forward;
 
     #region Mono
@@ -114,7 +112,6 @@ public class Player : MonoBehaviour, IHitable
         rig.velocity = velocity; // Add the sum of all calculated velocities to the player`s velocity.
     }
     #endregion
-
     
     private void MovementUpdate()
     {
@@ -196,6 +193,10 @@ public class Player : MonoBehaviour, IHitable
                 curAnimData = animX.ReturnAnimData("Take Damage");
                 animX.StartAnimation(curAnimData);
                 break;
+            case PlayerStates.DIE:
+                curAnimData = animX.ReturnAnimData("Die");
+                animX.StartAnimation(curAnimData);
+                break;
         }
     }
 
@@ -238,11 +239,13 @@ public class Player : MonoBehaviour, IHitable
             yield return CoroutineUtils.waitForFixedUpdate;
         }
         yield return new WaitUntil(()=>animX.CurrentAnim == "Roll");
+        isHitAble = false;
         while (animX.CurrentAnim == "Roll") // rolling
         {
             velocity = rollVelocity; // The player`s velocity is constant while rolling.
             yield return CoroutineUtils.waitForFixedUpdate;
         }
+        isHitAble = true;
         yield return new WaitUntil(() => animX.CurrentAnim == "Roll End");
         while (animX.CurrentAnim == "Roll End") // rolling
         {
@@ -383,15 +386,19 @@ public class Player : MonoBehaviour, IHitable
     public void TakeDamage(int damageValue)
     {
         if (!isHitAble) return;
+        isHitAble = false;
 
         Health -= damageValue;
         GameManager.Cur.EventCtrl.onPlayerHealthChange?.Invoke(Health, maxHealth);
 
-        if (curPlayerState == PlayerStates.ROLL) return;
+        if (IsDeath)
+        {
+            Die();
+            return;
+        }
 
         ChangePlayerState(PlayerStates.TAKE_DAMAGE, true);
         LockAbilityInputs();
-        isHitAble = false;
 
         if (abilityCor != null)
             StopCoroutine(abilityCor);
@@ -400,17 +407,15 @@ public class Player : MonoBehaviour, IHitable
     }
     private IEnumerator TakeDamageCor()
     {
-        float percent = 0f;
         float duration = animX.ReturnAnimData("Take Damage").duration;
-
+        float percent = 0f;
         while (percent < duration)
         {
             percent += Time.fixedDeltaTime;
-            velocity = -forward * takeDamagePushSpeed;
+            velocity = Vector3.zero;
             yield return CoroutineUtils.waitForFixedUpdate;
         }
         velocity = Vector3.zero;
-
         yield return CoroutineUtils.waitForFixedUpdate;
 
         UnlockPlayerState();
@@ -418,7 +423,15 @@ public class Player : MonoBehaviour, IHitable
         UnlockAbilityInputs();
 
         isHitAble = true;
-        ChangePlayerState(PlayerStates.MOVE, false);
+        ChangePlayerState(PlayerStates.IDLE, false);
+    }
+
+    public void Die()
+    {
+        ChangePlayerState(PlayerStates.DIE, true);
+        LockAbilityInputs();
+        velocity = Vector3.zero;
+        isHitAble = false;
     }
     #endregion
 

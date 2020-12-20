@@ -12,6 +12,7 @@ public class EventCtrl : MonoBehaviour
     [HideInInspector] public UnityEvent onSceneLoadStarted;
     [HideInInspector] public UnityEvent onSceneLoadEnded;
     [HideInInspector] public UnityEventIntInt onPlayerHealthChange;
+    [HideInInspector] public UnityEventIntInt onEnemyHealthChange;
 
     private void Start()
     {
@@ -32,7 +33,10 @@ public class EventCtrl : MonoBehaviour
         Debug.Log("EVENT: OnSceneLoadStarted");
 
         if (Mng.SceneCtrl.CompareSceneType(SceneType.LEVEL))
+        {
             onPlayerHealthChange.RemoveAllListeners();
+            onEnemyHealthChange.RemoveAllListeners();
+        }
     }
 
     public void OnSceneLoadEnded()
@@ -40,6 +44,9 @@ public class EventCtrl : MonoBehaviour
         Debug.Log("EVENT: OnSceneLoadEnded");
 
         if (Mng.SceneCtrl.CompareSceneType(SceneType.LEVEL))
+        {
             onPlayerHealthChange.AddListener(Mng.SceneCanvas.inGamePanel.playerHealthBar.SetValue);
+            onEnemyHealthChange.AddListener(Mng.SceneCanvas.inGamePanel.enemyHealthBar.SetValue);
+        }
     }
 }
