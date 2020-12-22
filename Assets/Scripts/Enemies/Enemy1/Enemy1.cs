@@ -9,7 +9,7 @@ public class Enemy1 : StateMachine, IHitable
     public Sword sword;
 
     [SerializeField, Min(0)] private int maxHealth = 100;
-    [SerializeField, PropertyRange(0, "maxHealth")] private int health = 100;
+    [ShowInInspector, ReadOnly] private int health;
     public int Health
     {
         get => health;
@@ -38,6 +38,8 @@ public class Enemy1 : StateMachine, IHitable
 
         checkPath = new NavMeshPath();
         movePath = new NavMeshPath();
+
+        Health = maxHealth;
     }
     private void Start()
     {

@@ -6,8 +6,8 @@ using UnityEngine.SceneManagement;
 
 public class SceneCtrl : MonoBehaviour
 {
-    private SceneType curSceneType;
-    [ShowInInspector, ReadOnly, PropertyOrder(-1)] public SceneType CurSceneType => curSceneType;
+    [HideInInspector] public SceneTypes curSceneType;
+    [ShowInInspector, ReadOnly, PropertyOrder(-1)] public SceneTypes CurSceneType => curSceneType;
 
     public SceneData gameManagerSceneData;
     public SceneData mainMenuSceneData;
@@ -77,16 +77,14 @@ public class SceneCtrl : MonoBehaviour
 
     public IEnumerator LoadMainMenuScene(bool unloadActiveScene)
     {
-        curSceneType = SceneType.MAINMENU;
         yield return StartCoroutine(LoadSceneAdditive(mainMenuSceneData, true, unloadActiveScene));
     }
     public IEnumerator LoadLevelScene(int levelNo, bool unloadActiveScene)
     {
-        curSceneType = SceneType.LEVEL;
         yield return StartCoroutine(LoadSceneAdditive(levelsSceneData[levelNo - 1], true, unloadActiveScene));
     }
 
-    public bool CompareSceneType(SceneType sceneType)
+    public bool CompareSceneType(SceneTypes sceneType)
     {
         return sceneType == CurSceneType;
     }

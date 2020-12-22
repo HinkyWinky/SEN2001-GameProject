@@ -1,19 +1,25 @@
-﻿using System;
-using Game.UI;
+﻿using Game.UI;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 public class Subscene : MonoBehaviour
 {
+    [SerializeField] private SceneTypes sceneType = default;
+    public SceneTypes SceneType => sceneType;
+
     [SerializeField] private CanvasX canvas = default;
     public CanvasX Canvas => canvas;
 
-    [SerializeField] private CamCtrl camCtrl = default;
+    [SerializeField, HideIf("sceneType", SceneTypes.MAINMENU)]
+    private CamCtrl camCtrl = default;
     public CamCtrl CamCtrl => camCtrl;
 
-    [SerializeField] private Player player = default;
+    [SerializeField, HideIf("sceneType", SceneTypes.MAINMENU)]
+    private Player player = default;
     public Player Player => player;
 
-    [SerializeField] private Enemy1 enemy = default;
+    [SerializeField, HideIf("sceneType", SceneTypes.MAINMENU)]
+    private Enemy1 enemy = default;
     public Enemy1 Enemy => enemy;
 
     private bool firstTime = false;
@@ -21,7 +27,7 @@ public class Subscene : MonoBehaviour
     private void Start()
     {
         Debug.Log("LEVEL SCENE: Start()");
-        GameManager.Cur.SetSubscene();
+        GameManager.Cur.SetSubscene(SceneType, this);
     }
 
     private void Update()

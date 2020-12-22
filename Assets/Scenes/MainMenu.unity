@@ -204,6 +204,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+  hasText: 0
+  text: {fileID: 0}
 --- !u!114 &15634528
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -769,6 +771,7 @@ GameObject:
   - component: {fileID: 397766587}
   - component: {fileID: 397766586}
   - component: {fileID: 397766588}
+  - component: {fileID: 397766589}
   m_Layer: 5
   m_Name: Main Menu Panel
   m_TagString: Untagged
@@ -846,14 +849,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rectTransform: {fileID: 0}
+  canvasGroup: {fileID: 0}
   originalScale: {x: 0, y: 0, z: 0}
-  mainMenuButtonsPanel: {fileID: 282377218}
   newGameButton: {fileID: 1512358866}
   levelsButton: {fileID: 1505928939}
   optionsButton: {fileID: 15634527}
   exitButton: {fileID: 1036906840}
-  optionsPanel: {fileID: 2058752830}
-  levelsPanel: {fileID: 510280622}
+--- !u!225 &397766589
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 397766584}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &510280618
 GameObject:
   m_ObjectHideFlags: 0
@@ -866,6 +879,7 @@ GameObject:
   - component: {fileID: 510280621}
   - component: {fileID: 510280620}
   - component: {fileID: 510280622}
+  - component: {fileID: 510280623}
   m_Layer: 5
   m_Name: Levels Panel
   m_TagString: Untagged
@@ -944,12 +958,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rectTransform: {fileID: 0}
+  canvasGroup: {fileID: 0}
   originalScale: {x: 0, y: 0, z: 0}
   levelButtonsPanel: {fileID: 1562732339}
   levelButtons: []
   backButton: {fileID: 1866891749}
-  mainMenuPanel: {fileID: 397766588}
   timeOpenCloseAnimation: 0.5
+--- !u!225 &510280623
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 510280618}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &600771759
 GameObject:
   m_ObjectHideFlags: 0
@@ -1112,6 +1138,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1929d7c1582b8734ca32ac8e7cc78b3b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  sceneType: 0
   canvas: {fileID: 1758870810}
   camCtrl: {fileID: 0}
   player: {fileID: 0}
@@ -1593,6 +1620,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+  hasText: 0
+  text: {fileID: 0}
 --- !u!114 &861183720
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1845,6 +1874,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+  hasText: 0
+  text: {fileID: 0}
 --- !u!114 &1036906841
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2097,6 +2128,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+  hasText: 0
+  text: {fileID: 0}
 --- !u!114 &1429919891
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2216,6 +2249,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+  hasText: 0
+  text: {fileID: 0}
 --- !u!114 &1505928940
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2335,6 +2370,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+  hasText: 0
+  text: {fileID: 0}
 --- !u!114 &1512358867
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2799,6 +2836,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+  hasText: 0
+  text: {fileID: 0}
 --- !u!224 &1866891750
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2938,6 +2977,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+  hasText: 0
+  text: {fileID: 0}
 --- !u!114 &2004325210
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2987,6 +3028,7 @@ GameObject:
   - component: {fileID: 2058752829}
   - component: {fileID: 2058752828}
   - component: {fileID: 2058752830}
+  - component: {fileID: 2058752831}
   m_Layer: 5
   m_Name: Options Panel
   m_TagString: Untagged
@@ -3064,10 +3106,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rectTransform: {fileID: 0}
+  canvasGroup: {fileID: 0}
   originalScale: {x: 0, y: 0, z: 0}
   backButton: {fileID: 861183719}
-  mainMenuPanel: {fileID: 397766588}
   timeOpenCloseAnimation: 0.5
+--- !u!225 &2058752831
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2058752826}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &2120272985
 GameObject:
   m_ObjectHideFlags: 0
@@ -3150,6 +3204,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+  hasText: 0
+  text: {fileID: 0}
 --- !u!114 &2120272988
 MonoBehaviour:
   m_ObjectHideFlags: 0

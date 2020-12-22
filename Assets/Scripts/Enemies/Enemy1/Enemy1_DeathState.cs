@@ -19,6 +19,8 @@ public class Enemy1_DeathState : State
         enemy.isHitAble = false;
         enemy.col.isTrigger = true;
         machine.animX.StartAnimation(dieAnimData);
+
+        GameManager.Cur.EventCtrl.onEnemyDie?.Invoke();
     }
 
     public override void StateExit()

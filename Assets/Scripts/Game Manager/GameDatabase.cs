@@ -13,8 +13,10 @@ public class GameDatabase : MonoBehaviour
     public SaveFile OptionsFile => optionsFile;
 
     #region Save Load
-    // This method is called by Storage class after user calls Save() method in GameDatabase class.
-    // Put all save logic into this method.
+    /// <summary>
+    /// This method is called by Storage class after user calls Save() method in GameDatabase class.
+    /// Put all save logic into this method.
+    /// </summary>
     public void SaveData(DataWriter writer, SaveFile file)
     {
         if (file.name == levelsFile.name)
@@ -35,8 +37,10 @@ public class GameDatabase : MonoBehaviour
             Debug.Log("FILE: " + "GameDatabase has no name of the " + file.name + " file!");
         }
     }
-    // This method is called by Storage class after user calls Load() method in GameDatabase class.
-    // Put all load logic into this method.
+    /// <summary>
+    /// This method is called by Storage class after user calls Load() method in GameDatabase class.
+    /// Put all load logic into this method.
+    /// </summary>
     public void LoadData(DataReader reader, SaveFile file)
     {
         if (file.name == levelsFile.name)
@@ -63,12 +67,16 @@ public class GameDatabase : MonoBehaviour
         }
     }
 
-    // Call this method to save the file. 
+    /// <summary>
+    /// Call this method to save the file. 
+    /// </summary>
     public void Save(SaveFile file)
     {
         Storage.SaveGame(this, file);
     }
-    // Call this method to load the file. 
+    /// <summary>
+    /// Call this method to load the file. 
+    /// </summary>
     public void Load(SaveFile file)
     {
         Storage.LoadGame(this, file);

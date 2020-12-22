@@ -1,17 +1,29 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace Game.UI
 {
+    [Serializable]
     public abstract class Panel : MonoBehaviour, IElementUI
     {
-        [HideInInspector] public RectTransform rectTransform;
-        [HideInInspector] public Vector3 originalScale;
+        [ReadOnly] public RectTransform rectTransform;
+        [ReadOnly] public CanvasGroup canvasGroup;
+        [ReadOnly] public Vector3 originalScale;
 
+        private void Reset()
+        {
+            canvasGroup = gameObject.AddComponent<CanvasGroup>();
+        }
         public virtual void Awake()
         {
             rectTransform = GetComponent<RectTransform>();
             originalScale = rectTransform.localScale;
+            if (canvasGroup == null)
+                canvasGroup = GetComponent<CanvasGroup>();
+            if (canvasGroup == null)
+                canvasGroup = gameObject.AddComponent<CanvasGroup>();
         }
 
         public abstract void Activate(bool value);

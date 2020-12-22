@@ -17,6 +17,7 @@ public class Player : MonoBehaviour, IHitable
     // Inspector Variables
     [SerializeField] private Sword sword = default;
     [SerializeField, Min(0)] private int maxHealth = 100;
+    [ShowInInspector, ReadOnly] private int health;
     [SerializeField, Range(0.01f, 1f)] private float groundClearance = 0.1f; // height from the ground
     [SerializeField, Range(0.1f, 1f), DisableInPlayMode] private float lockedAbilityInputsDuration = 0.2f; // input lock duration after finishing abilities
 
@@ -45,9 +46,8 @@ public class Player : MonoBehaviour, IHitable
     [FoldoutGroup("Read Only Fields"), ShowInInspector, ReadOnly, LabelText("Current Player State")]
     private PlayerStates curPlayerState = PlayerStates.IDLE;
     [FoldoutGroup("Read Only Fields"), ShowInInspector, ReadOnly]
-    private bool onGround, hitGroundFirstTime, lockedPlayerState, lockedAbilityInputs, isHitAble;
+    private bool onGround, hitGroundFirstTime, lockedPlayerState, lockedAbilityInputs, isHitAble, isDieHappened;
 
-    private int health = 100;
     private float animInputX, animInputZ, rollAnimDuration;
     private Vector3 velocity, desiredMoveVelocity, rollVelocity, desiredRollVelocity, forward, rollDirection;
     private Quaternion rotation = Quaternion.identity;
@@ -83,7 +83,9 @@ public class Player : MonoBehaviour, IHitable
 
         waitForLockedAbilityInputsDuration = new WaitForSeconds(lockedAbilityInputsDuration);
         waitForStayStableAfterRollDuration = new WaitForSeconds(stayStableAfterRollDuration);
+
         isHitAble = true;
+        Health = maxHealth;
     }
     private void Start()
     {
@@ -97,6 +99,9 @@ public class Player : MonoBehaviour, IHitable
         desiredRollVelocity = FixedAxisInputs.normalized * rollMoveDistance / rollMoveDuration; // Calculate the desiredRollVelocity with the axisInputs.
 
         MoveBlendTreeUpdate(); // Play move animations according to the input axis.
+
+        if (!isDieHappened && IsDeath)
+            Die();
     }
     private void FixedUpdate()
     {
@@ -106,7 +111,7 @@ public class Player : MonoBehaviour, IHitable
         MovementUpdate(); // All movement logic update.
         AnimationUpdate(); // All animation logic update.
         EnvironmentUpdate(); // All environment logic update.
-
+       
         lastFramePlayerState = curPlayerState; // Set the last frame player state.
         rig.rotation = rotation; // Add the sum of all calculated rotations to the player`s rotation.
         rig.velocity = velocity; // Add the sum of all calculated velocities to the player`s velocity.
@@ -345,9 +350,10 @@ public class Player : MonoBehaviour, IHitable
     #region State Control Methods
     private void ChangePlayerState(PlayerStates playerState, bool lockState)
     {
-        if (!lockedPlayerState)
-            curPlayerState = playerState;
-        if (lockState)
+        if (lockedPlayerState) return;
+
+        curPlayerState = playerState;
+        if (lockState == true)
             lockedPlayerState = true;
     }
     private void UnlockPlayerState()
@@ -391,11 +397,8 @@ public class Player : MonoBehaviour, IHitable
         Health -= damageValue;
         GameManager.Cur.EventCtrl.onPlayerHealthChange?.Invoke(Health, maxHealth);
 
-        if (IsDeath)
-        {
-            Die();
+        if (IsDeath || curPlayerState == PlayerStates.ROLL)
             return;
-        }
 
         ChangePlayerState(PlayerStates.TAKE_DAMAGE, true);
         LockAbilityInputs();
@@ -419,19 +422,25 @@ public class Player : MonoBehaviour, IHitable
         yield return CoroutineUtils.waitForFixedUpdate;
 
         UnlockPlayerState();
-        yield return waitForLockedAbilityInputsDuration;
         UnlockAbilityInputs();
-
         isHitAble = true;
         ChangePlayerState(PlayerStates.IDLE, false);
     }
 
     public void Die()
     {
+        isDieHappened = true;
+        if (abilityCor != null)
+            StopCoroutine(abilityCor);
+        if (rotationCor != null)
+            StopCoroutine(rotationCor);
+        UnlockPlayerState();
         ChangePlayerState(PlayerStates.DIE, true);
         LockAbilityInputs();
         velocity = Vector3.zero;
         isHitAble = false;
+
+        GameManager.Cur.EventCtrl.onPlayerDie?.Invoke();
     }
     #endregion
 

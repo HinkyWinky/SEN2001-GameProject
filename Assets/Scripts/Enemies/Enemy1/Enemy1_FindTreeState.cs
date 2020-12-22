@@ -62,7 +62,7 @@ using UnityEngine;
     {
         UpdateBehaviourTree();
 
-        while (GameManager.Cur.StateCtrl.CompareGameState(GameState.PLAY))
+        while (GameManager.Cur.StateCtrl.CompareGameState(GameState.PLAYLEVEL))
         {
             rootNodeState = rootNode.Evaluate();
             yield return waitTimeEvaluateDeltaTime;

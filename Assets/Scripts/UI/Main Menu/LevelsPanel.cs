@@ -12,9 +12,6 @@ namespace Game.UI
         [HideInInspector] public List<ButtonX> levelButtons = new List<ButtonX>();
         public ButtonX backButton;
 
-        [Header("Panels")]
-        [SerializeField] private MainMenuPanel mainMenuPanel = default;
-
         [Header("Animation")]
         [SerializeField] private float timeOpenCloseAnimation = 0.5f;
 
@@ -68,7 +65,7 @@ namespace Game.UI
         }
         private IEnumerator BackButtonOnUpCor()
         {
-            mainMenuPanel.Activate(true);
+            GameManager.Cur.MainMenuCanvas.mainMenuPanel.Activate(true);
             yield return StartCoroutine(StartCloseAnimation(true));
             Activate(false);
         }
@@ -78,13 +75,15 @@ namespace Game.UI
         public override IEnumerator OpenAnimation()
         {
             GameManager.Cur.Canvas.ActivateUIInput(false);
-            yield return StartCoroutine(ScalePanel(Vector3.zero, rectTransform.localScale, timeOpenCloseAnimation));
+            yield return StartCoroutine(ScalePanel(
+                Vector3.zero, rectTransform.localScale, timeOpenCloseAnimation));
             GameManager.Cur.Canvas.ActivateUIInput(true);
         }
         public override IEnumerator CloseAnimation()
         {
             GameManager.Cur.Canvas.ActivateUIInput(false);
-            yield return StartCoroutine(ScalePanel(rectTransform.localScale, Vector3.zero, timeOpenCloseAnimation));
+            yield return StartCoroutine(ScalePanel(
+                rectTransform.localScale, Vector3.zero, timeOpenCloseAnimation));
             GameManager.Cur.Canvas.ActivateUIInput(true);
         }
         #endregion

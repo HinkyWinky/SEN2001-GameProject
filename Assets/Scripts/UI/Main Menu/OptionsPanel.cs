@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections;
 using UnityEngine;
 
 namespace Game.UI
@@ -10,17 +8,10 @@ namespace Game.UI
         [Header("Options Buttons")]
         public ButtonX backButton;
 
-        [Header("Panels")]
-        [SerializeField] private MainMenuPanel mainMenuPanel = default;
-
         [Header("Animation")]
         [SerializeField] private float timeOpenCloseAnimation = 0.5f;
 
         #region Mono
-        public override void Awake()
-        {
-            base.Awake();
-        }
         private void Start()
         {
             backButton.AddListeners(BackButtonOnDown, BackButtonOnUp);
@@ -48,7 +39,7 @@ namespace Game.UI
         }
         private IEnumerator BackButtonOnUpCor()
         {
-            mainMenuPanel.Activate(true);
+            GameManager.Cur.MainMenuCanvas.mainMenuPanel.Activate(true);
             yield return StartCoroutine(StartCloseAnimation(true));
             Activate(false);
         }

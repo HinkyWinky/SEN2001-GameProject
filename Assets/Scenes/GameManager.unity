@@ -244,6 +244,7 @@ GameObject:
   - component: {fileID: 944448940}
   - component: {fileID: 944448939}
   - component: {fileID: 944448938}
+  - component: {fileID: 944448942}
   m_Layer: 5
   m_Name: Loading Panel
   m_TagString: Untagged
@@ -264,6 +265,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rectTransform: {fileID: 0}
+  canvasGroup: {fileID: 0}
   originalScale: {x: 0, y: 0, z: 0}
   bar: {fileID: 1282895188}
 --- !u!114 &944448939
@@ -323,6 +325,18 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!225 &944448942
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 944448937}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &1105044138
 GameObject:
   m_ObjectHideFlags: 0
@@ -824,6 +838,24 @@ MonoBehaviour:
   onPlayerHealthChange:
     m_PersistentCalls:
       m_Calls: []
+  onEnemyHealthChange:
+    m_PersistentCalls:
+      m_Calls: []
+  onPlayerDie:
+    m_PersistentCalls:
+      m_Calls: []
+  onEnemyDie:
+    m_PersistentCalls:
+      m_Calls: []
+  onPausePanelOpened:
+    m_PersistentCalls:
+      m_Calls: []
+  onPausePanelClosed:
+    m_PersistentCalls:
+      m_Calls: []
+  onEndLevelPanelOpened:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &4657706661598815083
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -911,6 +943,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1eb375d40cea5224c9aa39ee739134fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  curSceneType: 0
   gameManagerSceneData: {fileID: 11400000, guid: 8259524ea9e718f4eb5734f299e93850,
     type: 2}
   mainMenuSceneData: {fileID: 11400000, guid: bcfe44eab0c8b34418d9628278184308, type: 2}

@@ -6,14 +6,40 @@ namespace Game.UI
     {
         public Bar playerHealthBar;
         public Bar enemyHealthBar;
+        public ButtonX pauseButton;
 
         #region Mono
+        private void Start()
+        {
+            pauseButton.AddListeners(PauseButtonOnDown, PauseButtonOnUp);
+        }
+        private void OnDestroy()
+        {
+            pauseButton.RemoveAllListeners();
+        }
         #endregion
 
         public override void Activate(bool value)
         {
             gameObject.SetActive(value);
         }
+
+        #region Pause Button
+        private void PauseButtonOnDown()
+        {
+
+        }
+        private void PauseButtonOnUp()
+        {
+            StartCoroutine(PauseButtonOnUpCor());
+        }
+        private IEnumerator PauseButtonOnUpCor()
+        {
+            GameManager.Cur.SceneCanvas.pausePanel.Activate(true);
+            GameManager.Cur.EventCtrl.onPausePanelOpened?.Invoke();
+            yield return GameManager.Cur.SceneCanvas.pausePanel.StartOpenAnimation(true);
+        }
+        #endregion
 
         #region Animations
         public override IEnumerator OpenAnimation()

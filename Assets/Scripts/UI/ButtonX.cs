@@ -1,15 +1,29 @@
-﻿using UnityEngine;
+﻿using System;
+using Sirenix.OdinInspector;
+using TMPro;
+using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace Game.UI
 {
-    [AddComponentMenu("UI/ButtonX")]
+    [Serializable]
     public class ButtonX : Button, IElementUI
     {
         public readonly UnityEvent onDown = new UnityEvent();
         public readonly UnityEvent onUp = new UnityEvent();
+
+        public bool hasText = false;
+        [HideInInspector] public TextMeshProUGUI text;
+        public bool HasText => hasText && text != null;
+
+        protected override void Awake()
+        {
+            base.Awake();
+            if (hasText)
+                text = GetComponentInChildren<TextMeshProUGUI>();
+        }
 
         public override void OnPointerDown(PointerEventData eventData)
         {

@@ -18,6 +18,14 @@ public class InputCtrl : MonoBehaviour
         SetDefenceInput();
     }
 
+    public void ResetAllInputs()
+    {
+        jumpInput = false;
+        rollInput = false;
+        attackInput = false;
+        defenceInput = false;
+    }
+
     private void SetAxisInputs()
     {
         axisInputs = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical")); // Set the axisInputs by getting from the user.

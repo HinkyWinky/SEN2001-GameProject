@@ -8,11 +8,6 @@ namespace Game.UI
         public LevelsPanel levelsPanel;
         public OptionsPanel optionsPanel;
 
-        public override void Awake()
-        {
-            base.Awake();
-        }
-
         public override void Activate(bool value)
         {
             base.Activate(value);

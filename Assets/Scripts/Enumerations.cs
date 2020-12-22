@@ -1,12 +1,14 @@
-﻿public enum GameState { PLAY, PAUSE, MAINMENU, PAUSEMENU, ENDMENU, LOADING };
+﻿public enum GameState { PLAYLEVEL, MAINMENU, PAUSEMENU, ENDMENU, LOADING };
 
 public enum SaveType { LEVELS, OPTIONS };
 
 public enum FrameRateSetting { DEFAULT, RATE_30, RATE_45, RATE_60 };
 
-public enum SceneType { MAINMENU, LEVEL };
+public enum SceneTypes { MAINMENU, LEVEL };
 
 public enum PlayerStates { IDLE, MOVE, JUMP, ROLL, ATTACK, TAKE_DAMAGE, DIE };
+
+public enum LevelResults { LOSE , WIN };
 
 namespace Game.AI
 {
@@ -14,4 +16,3 @@ namespace Game.AI
 
     public enum CheckType { IS_EQUAL, IS_GREATER, IS_SMALLER };
 }
-

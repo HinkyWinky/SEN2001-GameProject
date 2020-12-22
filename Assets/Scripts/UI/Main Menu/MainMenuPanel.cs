@@ -1,21 +1,15 @@
 ﻿using System.Collections;
 using UnityEditor;
 using UnityEngine;
-
 namespace Game.UI
 {
     public class MainMenuPanel : Panel
     {
-        [Header("Main Menu Buttons")]
-        public CanvasGroup mainMenuButtonsPanel;
+        [Header("Main Menu Panel Buttons")]
         public ButtonX newGameButton;
         public ButtonX levelsButton;
         public ButtonX optionsButton;
         public ButtonX exitButton;
-
-        [Header("Panels")]
-        [SerializeField] private OptionsPanel optionsPanel = default;
-        [SerializeField] private LevelsPanel levelsPanel = default;
 
         #region Mono
         private void Start()
@@ -61,8 +55,8 @@ namespace Game.UI
         }
         private IEnumerator LevelsButtonOnUpCor()
         {
-            levelsPanel.Activate(true);
-            yield return levelsPanel.StartOpenAnimation(true);
+            GameManager.Cur.MainMenuCanvas.levelsPanel.Activate(true);
+            yield return GameManager.Cur.MainMenuCanvas.levelsPanel.StartOpenAnimation(true);
             Activate(false);
         }
         #endregion
@@ -78,8 +72,8 @@ namespace Game.UI
         }
         private IEnumerator OptionsButtonOnUpCor()
         {
-            optionsPanel.Activate(true);
-            yield return optionsPanel.StartOpenAnimation(true);
+            GameManager.Cur.MainMenuCanvas.optionsPanel.Activate(true);
+            yield return GameManager.Cur.MainMenuCanvas.optionsPanel.StartOpenAnimation(true);
             Activate(false);
         }
         #endregion
@@ -92,9 +86,9 @@ namespace Game.UI
         private void ExitButtonOnUp()
         {
             #if UNITY_EDITOR
-                EditorApplication.isPlaying = false;
+            EditorApplication.isPlaying = false;
             #else
-                Application.Quit();
+            Application.Quit();
             #endif
         }
         #endregion

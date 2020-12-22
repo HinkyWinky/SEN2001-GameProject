@@ -1,15 +1,17 @@
 ﻿using System.Collections;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace Game.UI
 {
-    public class PausePanel : Panel
+    public class EndLevelPanel : Panel
     {
+        public TextMeshProUGUI levelResultText;
         public Image buttonGroup;
 
-        [Header("Pause Panel Buttons")]
-        public ButtonX continueButton;
+        [Header("End Level Panel Buttons")]
+        public ButtonX nextLevelOrRestartButton;
         public ButtonX returnToMainMenuButton;
 
         [Header("Animation")]
@@ -18,13 +20,13 @@ namespace Game.UI
         #region Mono
         private void Start()
         {
-            continueButton.AddListeners(ContinueButtonOnDown, ContinueButtonOnUp);
+            nextLevelOrRestartButton.AddListeners(NextLevelOrRestartButtonOnDown, NextLevelOrRestartButtonOnUp);
             returnToMainMenuButton.AddListeners(ReturnToMainMenuButtonOnDown, ReturnToMainMenuButtonOnUp);
             Activate(false);
         }
         private void OnDestroy()
         {
-            continueButton.RemoveAllListeners();
+            nextLevelOrRestartButton.RemoveAllListeners();
             returnToMainMenuButton.RemoveAllListeners();
         }
         #endregion
@@ -34,20 +36,31 @@ namespace Game.UI
             gameObject.SetActive(value);
         }
 
-        #region Continue Button
-        private void ContinueButtonOnDown()
+        public IEnumerator OpenOnPlayerDieCor()
+        {
+            if (nextLevelOrRestartButton.HasText)
+                nextLevelOrRestartButton.text.SetText("Restart");
+            levelResultText.SetText("DEFEAT");
+            GameManager.Cur.EventCtrl.onEndLevelPanelOpened?.Invoke();
+            yield return StartCoroutine(StartOpenAnimation(true));
+        }
+        public IEnumerator OpenOnEnemyDieCor()
+        {
+            if (nextLevelOrRestartButton.HasText)
+                nextLevelOrRestartButton.text.SetText("Next Level");
+            levelResultText.SetText("VICTORY");
+            GameManager.Cur.EventCtrl.onEndLevelPanelOpened?.Invoke();
+            yield return StartCoroutine(StartOpenAnimation(true));
+        }
+
+        #region Next Level or Restart Button
+        private void NextLevelOrRestartButtonOnDown()
         {
 
         }
-        private void ContinueButtonOnUp()
+        private void NextLevelOrRestartButtonOnUp()
         {
-            StartCoroutine(ContinueButtonOnUpCor());
-        }
-        private IEnumerator ContinueButtonOnUpCor()
-        {
-            yield return StartCoroutine(StartCloseAnimation(true));
-            GameManager.Cur.EventCtrl.onPausePanelClosed?.Invoke();
-            Activate(false);
+
         }
         #endregion
 
@@ -80,4 +93,3 @@ namespace Game.UI
         #endregion
     }
 }
-
