@@ -39,17 +39,28 @@ namespace Game.UI
         public IEnumerator OpenOnPlayerDieCor()
         {
             if (nextLevelOrRestartButton.HasText)
-                nextLevelOrRestartButton.text.SetText("Restart");
+                nextLevelOrRestartButton.textMesh.SetText("Restart");
             levelResultText.SetText("DEFEAT");
-            GameManager.Cur.EventCtrl.onEndLevelPanelOpened?.Invoke();
+            GameManager.Cur.EventCtrl.onEndLevelPanelOpened?.Invoke(LevelResults.DEFEAT);
             yield return StartCoroutine(StartOpenAnimation(true));
         }
         public IEnumerator OpenOnEnemyDieCor()
         {
             if (nextLevelOrRestartButton.HasText)
-                nextLevelOrRestartButton.text.SetText("Next Level");
+            {
+                if (GameManager.Cur.SceneCtrl.CurrentLevelNo == GameManager.Cur.SceneCtrl.LastLevelNo)
+                {
+                    nextLevelOrRestartButton.textMesh.SetText("All Levels Done");
+                    nextLevelOrRestartButton.interactable = false;
+                }
+                else
+                {
+                    nextLevelOrRestartButton.textMesh.SetText("Next Level");
+                }
+            }
+
             levelResultText.SetText("VICTORY");
-            GameManager.Cur.EventCtrl.onEndLevelPanelOpened?.Invoke();
+            GameManager.Cur.EventCtrl.onEndLevelPanelOpened?.Invoke(LevelResults.VICTORY);
             yield return StartCoroutine(StartOpenAnimation(true));
         }
 
@@ -60,7 +71,18 @@ namespace Game.UI
         }
         private void NextLevelOrRestartButtonOnUp()
         {
-
+            if (nextLevelOrRestartButton.textMesh.text.Equals("Restart"))
+            {
+                StartCoroutine(GameManager.Cur.SceneCtrl.LoadLevelScene(
+                    GameManager.Cur.SceneCtrl.CurrentLevelNo, true));
+            }
+            else if (nextLevelOrRestartButton.textMesh.text.Equals("Next Level"))
+            {
+                StartCoroutine(GameManager.Cur.SceneCtrl.LoadLevelScene(
+                    GameManager.Cur.SceneCtrl.CurrentLevelNo + 1, true));
+            }
+            else
+                Debug.LogWarning("Check strings!");
         }
         #endregion
 

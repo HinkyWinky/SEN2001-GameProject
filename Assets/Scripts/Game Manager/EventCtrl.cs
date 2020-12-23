@@ -3,7 +3,11 @@ using UnityEngine;
 using UnityEngine.Events;
 
 [System.Serializable]
+public class UnityEventInt : UnityEvent<int> { }
+[System.Serializable]
 public class UnityEventIntInt : UnityEvent<int, int> { }
+[System.Serializable]
+public class UnityEventLevelResult : UnityEvent<LevelResults> { }
 
 public class EventCtrl : MonoBehaviour
 {
@@ -11,13 +15,15 @@ public class EventCtrl : MonoBehaviour
 
     [HideInInspector] public UnityEvent onSceneLoadStarted;
     [HideInInspector] public UnityEvent onSceneLoadEnded;
+    [HideInInspector] public UnityEvent onMainMenuSceneLoadStarted;
+    [HideInInspector] public UnityEventInt onLevelSceneLoadStarted;
     [HideInInspector] public UnityEventIntInt onPlayerHealthChange;
     [HideInInspector] public UnityEventIntInt onEnemyHealthChange;
     [HideInInspector] public UnityEvent onPlayerDie;
     [HideInInspector] public UnityEvent onEnemyDie;
     [HideInInspector] public UnityEvent onPausePanelOpened;
     [HideInInspector] public UnityEvent onPausePanelClosed;
-    [HideInInspector] public UnityEvent onEndLevelPanelOpened;
+    [HideInInspector] public UnityEventLevelResult onEndLevelPanelOpened;
 
     private void Start()
     {
@@ -25,12 +31,16 @@ public class EventCtrl : MonoBehaviour
         onSceneLoadStarted.AddListener(OnSceneLoadStarted);
         onSceneLoadStarted.AddListener(Mng.InputCtrl.ResetAllInputs);
         onSceneLoadEnded.AddListener(OnSceneLoadEnded);
+        onMainMenuSceneLoadStarted.AddListener(Mng.OnMainMenuSceneLoadStarted);
+        onLevelSceneLoadStarted.AddListener(Mng.OnLevelSceneLoadStarted);
     }
 
     private void OnDestroy()
     {
         onSceneLoadStarted.RemoveAllListeners();
         onSceneLoadEnded.RemoveAllListeners();
+        onMainMenuSceneLoadStarted.RemoveAllListeners();
+        onLevelSceneLoadStarted.RemoveAllListeners();
     }
 
     // Called before opening new scene.

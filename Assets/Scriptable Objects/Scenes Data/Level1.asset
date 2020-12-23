@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Level1
   buildIndex: 2
+  isOpen: 1

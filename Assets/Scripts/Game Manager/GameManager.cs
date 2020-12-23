@@ -52,6 +52,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    #region Mono
     private void Awake()
     {
         // Only one instance of the GameManager can exist.
@@ -80,16 +81,18 @@ public class GameManager : MonoBehaviour
 
         // If open scene count is more than 1, unload all scenes and load the GameManager scene.
         #if UNITY_EDITOR
-        if (UnityEngine.SceneManagement.SceneManager.sceneCount > 1)
+        if (SceneManager.sceneCount > 1)
         {
             Debug.Log("RESTARTING: Game Manager!");
-            UnityEngine.SceneManagement.SceneManager.LoadScene(
-                SceneCtrl.gameManagerSceneData.BuildIndex, LoadSceneMode.Single);
+            SceneManager.LoadScene(SceneCtrl.gameManagerSceneData.BuildIndex, LoadSceneMode.Single);
             return;
         }
         #endif
 
         StateCtrl.ChangeGameState(GameState.LOADING);
+
+        // Create levels dictionary to write saved file data in it. 
+        GameDatabase.CreateLevelsDictionary();
 
         // Create save files` directory.
         Storage.CreateGameDirectories();
@@ -97,7 +100,6 @@ public class GameManager : MonoBehaviour
         GameDatabase.Load(GameDatabase.LevelsFile);
         GameDatabase.Load(GameDatabase.OptionsFile);
     }
-
     private void Start()
     {
         if (EditorModeOn)
@@ -107,19 +109,12 @@ public class GameManager : MonoBehaviour
 
         SettingCtrl.SetFrameRate();
     }
-
-    public void OnSceneLoadStarted()
-    {
-        StateCtrl.ChangeGameState(GameState.LOADING);
-
-        gameManagerCanvas.Activate(true);
-        gameManagerCamera.gameObject.SetActive(true);
-    }
+    #endregion
 
     public void SetSubscene(SceneTypes curSceneType, Subscene subscene)
     {
         Subscene = subscene;
-        if(Subscene != null)
+        if (Subscene != null)
             Debug.Log("SUBSCENE: found");
         else
             Debug.LogWarning("SUBSCENE: NULL!!!!!!!");
@@ -170,6 +165,32 @@ public class GameManager : MonoBehaviour
         Time.timeScale = 1f;
     }
 
+    public void OnSceneLoadStarted()
+    {
+        StateCtrl.ChangeGameState(GameState.LOADING);
+
+        gameManagerCanvas.Activate(true);
+        gameManagerCamera.gameObject.SetActive(true);
+    }
+
+    public void OnMainMenuSceneLoadStarted()
+    {
+        GameDatabase.Load(GameDatabase.LevelsFile);
+    }
+
+    public void OnLevelSceneLoadStarted(int levelNo)
+    {
+        GameDatabase.Load(GameDatabase.LevelsFile);
+        if (levelNo > 1)
+        {
+            if (!GameDatabase.levelsCompletionStatue[levelNo - 1])
+            {
+                Debug.LogError("Level No " + levelNo + " is not unlocked!");
+                Application.Quit();
+            }
+        }
+    }
+
     public void OnPausePanelOpened()
     {
         StateCtrl.ChangeGameState(GameState.PAUSEMENU);
@@ -181,8 +202,11 @@ public class GameManager : MonoBehaviour
         UnpauseFrameRate();
     }
 
-    public void OnEndLevelPanelOpened()
+    public void OnEndLevelPanelOpened(LevelResults result)
     {
         StateCtrl.ChangeGameState(GameState.ENDMENU);
+        if (result == LevelResults.VICTORY)
+            GameDatabase.levelsCompletionStatue[SceneCtrl.CurrentLevelNo] = true; // complete current level, unlock next level.
+        GameDatabase.Save(GameDatabase.LevelsFile);
     }
 }

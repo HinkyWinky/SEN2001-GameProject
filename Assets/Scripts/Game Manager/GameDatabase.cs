@@ -12,6 +12,18 @@ public class GameDatabase : MonoBehaviour
     [SerializeField] private SaveFile optionsFile = new SaveFile(1, "options", SaveType.OPTIONS);
     public SaveFile OptionsFile => optionsFile;
 
+    public IDictionary<int, bool> levelsCompletionStatue;
+
+    public void CreateLevelsDictionary()
+    {
+        levelsCompletionStatue = new Dictionary<int, bool>()
+        {
+            {1, false},
+            {2, false},
+            {3, false}
+        };
+    }
+
     #region Save Load
     /// <summary>
     /// This method is called by Storage class after user calls Save() method in GameDatabase class.
@@ -23,6 +35,10 @@ public class GameDatabase : MonoBehaviour
         {
             writer.Write(file.version);
             // TODO Save levels
+            for (int i = 0; i < levelsCompletionStatue.Count; i++)
+            {
+                writer.Write(levelsCompletionStatue[i + 1]);
+            }
             Debug.Log("FILE: " + file.name + " file saved.");
 
         }
@@ -48,7 +64,11 @@ public class GameDatabase : MonoBehaviour
             file.version = reader.ReadInt();
             if (file.version == 1)
             {
-                // TODO Load levels 
+                // TODO Load levels
+                for (int i = 0; i < levelsCompletionStatue.Count; i++)
+                {
+                    levelsCompletionStatue[i + 1] = reader.ReadBool();
+                }
             }
             Debug.Log("FILE: " + file.name + " file loaded.");
         }

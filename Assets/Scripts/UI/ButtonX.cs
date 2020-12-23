@@ -15,18 +15,20 @@ namespace Game.UI
         public readonly UnityEvent onUp = new UnityEvent();
 
         public bool hasText = false;
-        [HideInInspector] public TextMeshProUGUI text;
-        public bool HasText => hasText && text != null;
+        [HideInInspector] public TextMeshProUGUI textMesh;
+        public bool HasText => hasText && textMesh != null;
 
         protected override void Awake()
         {
             base.Awake();
             if (hasText)
-                text = GetComponentInChildren<TextMeshProUGUI>();
+                textMesh = GetComponentInChildren<TextMeshProUGUI>();
         }
 
         public override void OnPointerDown(PointerEventData eventData)
         {
+            if (!interactable) return;
+            
             base.OnPointerDown(eventData);
             ButtonDown();
             onDown.Invoke();
@@ -34,6 +36,8 @@ namespace Game.UI
 
         public override void OnPointerUp(PointerEventData eventData)
         {
+            if (!interactable) return;
+
             base.OnPointerUp(eventData);
             ButtonUp();
             onUp.Invoke();

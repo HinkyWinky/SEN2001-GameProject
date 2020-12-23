@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: MainMenu
   buildIndex: 1
+  isOpen: 1

@@ -8,7 +8,7 @@ public enum SceneTypes { MAINMENU, LEVEL };
 
 public enum PlayerStates { IDLE, MOVE, JUMP, ROLL, ATTACK, TAKE_DAMAGE, DIE };
 
-public enum LevelResults { LOSE , WIN };
+public enum LevelResults { DEFEAT , VICTORY };
 
 namespace Game.AI
 {

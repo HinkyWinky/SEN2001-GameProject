@@ -835,6 +835,12 @@ MonoBehaviour:
   onSceneLoadEnded:
     m_PersistentCalls:
       m_Calls: []
+  onMainMenuSceneLoadStarted:
+    m_PersistentCalls:
+      m_Calls: []
+  onLevelSceneLoadStarted:
+    m_PersistentCalls:
+      m_Calls: []
   onPlayerHealthChange:
     m_PersistentCalls:
       m_Calls: []
@@ -944,6 +950,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   curSceneType: 0
+  currentLoadedSceneData: {fileID: 0}
   gameManagerSceneData: {fileID: 11400000, guid: 8259524ea9e718f4eb5734f299e93850,
     type: 2}
   mainMenuSceneData: {fileID: 11400000, guid: bcfe44eab0c8b34418d9628278184308, type: 2}

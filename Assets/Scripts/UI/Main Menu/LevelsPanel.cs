@@ -8,7 +8,7 @@ namespace Game.UI
     public class LevelsPanel : Panel
     {
         [Header("Levels Buttons")]
-        public CanvasGroup levelButtonsPanel;
+        public CanvasGroup levelButtonsGroup;
         [HideInInspector] public List<ButtonX> levelButtons = new List<ButtonX>();
         public ButtonX backButton;
 
@@ -19,7 +19,7 @@ namespace Game.UI
         public override void Awake()
         {
             base.Awake();
-            levelButtons = levelButtonsPanel.GetComponentsInChildren<ButtonX>().ToList();
+            levelButtons = levelButtonsGroup.GetComponentsInChildren<ButtonX>().ToList();
         }
         private void Start()
         {
@@ -30,13 +30,29 @@ namespace Game.UI
                 levelButtons[i].AddListeners(delegate { LevelButtonOnDown(levelNo); }, delegate { LevelButtonOnUp(levelNo); });
             }
 
+            SetLevelButtons();
             Activate(false);
         }
         private void OnDestroy()
         {
             backButton.RemoveAllListeners();
+            for (int i = 0; i < levelButtons.Count; i++)
+                levelButtons[i].RemoveAllListeners();
         }
         #endregion
+
+        private void SetLevelButtons()
+        {
+            for (int i = 0; i < levelButtons.Count; i++)
+            {
+                if (i == 0)
+                {
+                    levelButtons[i].interactable = true;
+                    continue;
+                }
+                levelButtons[i].interactable = GameManager.Cur.GameDatabase.levelsCompletionStatue[i]; // look level x - 1 value for level x button
+            }
+        }
 
         public override void Activate(bool value)
         {
