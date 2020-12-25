@@ -6,8 +6,6 @@ namespace Game.AI
 {
     [Serializable] public class ActionDash : ActionLeaf
     {
-        private StateMachine Machine => btState.machine;
-
         [SerializeField, Range(0.1f, 10f)] private float dashSpeed = 4f;
         [SerializeField, Range(-50f, 50f)] private float stopDistance = 1f;
         [SerializeField, Range(0.01f, 0.05f)] private float stopDistanceTolerance = 0.025f;

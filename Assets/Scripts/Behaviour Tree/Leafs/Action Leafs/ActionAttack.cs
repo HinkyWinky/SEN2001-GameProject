@@ -6,8 +6,6 @@ namespace Game.AI
     [Serializable]
     public class ActionAttack : ActionLeaf
     {
-        private StateMachine Machine => btState.machine;
-
         [SerializeField, Range(0f, 360f)] private float attackAngleRange = 180f;
         [SerializeField, Range(0.05f, 50f)] private float maxAttackDistance = 1f;
         [SerializeField, Range(0.01f, 0.05f)] private float maxAttackDistanceTolerance = 0.025f;

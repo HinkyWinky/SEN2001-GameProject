@@ -6,8 +6,6 @@ namespace Game.AI
     [Serializable]
     public class ActionPlayAnimation : ActionLeaf
     {
-        private StateMachine Machine => btState.machine;
-
         [SerializeField] private AnimData animData = default;
 
         protected override NodeStates Action()

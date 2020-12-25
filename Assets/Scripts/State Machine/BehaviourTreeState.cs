@@ -9,8 +9,8 @@ namespace Game.AI
     public abstract class BehaviourTreeState : IState
     {
         [Title("Behaviour Tree")]
-        [SerializeField, ReadOnly] protected bool isEvaluating;
         [SerializeField, Range(0.0333f, 10f), HideInPlayMode] protected float evaluateDeltaTime = 0.1f;
+        [SerializeField, ReadOnly] protected bool isEvaluating;
         public float EvaluateDeltaTime => evaluateDeltaTime;
 
         [HideInInspector] public StateMachine machine;

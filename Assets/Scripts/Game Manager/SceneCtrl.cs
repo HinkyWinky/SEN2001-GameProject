@@ -8,7 +8,7 @@ public class SceneCtrl : MonoBehaviour
 {
     [HideInInspector] public SceneTypes curSceneType;
     [ShowInInspector, ReadOnly, PropertyOrder(-1)] public SceneTypes CurSceneType => curSceneType;
-    [ReadOnly] public SceneData currentLoadedSceneData;
+    [ReadOnly, HideInEditorMode] public SceneData currentLoadedSceneData;
     public int CurrentLevelNo => currentLoadedSceneData.BuildIndex > 1 ? currentLoadedSceneData.BuildIndex - 1 : -1;
 
     public SceneData gameManagerSceneData;

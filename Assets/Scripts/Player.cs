@@ -392,7 +392,7 @@ public class Player : MonoBehaviour, IHitable
     public void TakeDamage(int damageValue)
     {
         if (!isHitAble) return;
-        isHitAble = false;
+        //isHitAble = false;
 
         Health -= damageValue;
         GameManager.Cur.EventCtrl.onPlayerHealthChange?.Invoke(Health, maxHealth);

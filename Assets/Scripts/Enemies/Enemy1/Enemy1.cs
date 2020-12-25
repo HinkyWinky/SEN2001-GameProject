@@ -23,6 +23,7 @@ public class Enemy1 : StateMachine, IHitable
     public bool IsDeath => Health == 0;
     [HideInInspector] public bool isHitAble = true;
 
+    [Title("States")]
     public Enemy1_IdleState idleState;
     public Enemy1_TakeDamageState takeDamageState;
     public Enemy1_DeathState deathState;

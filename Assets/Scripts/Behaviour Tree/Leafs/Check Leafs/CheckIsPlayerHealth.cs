@@ -5,8 +5,6 @@ namespace Game.AI
 {
     [Serializable] public class CheckIsPlayerHealth : CheckLeaf
     {
-        private StateMachine Machine => btState.machine;
-
         [SerializeField] private CheckType checkType = default;
         [SerializeField, Min(0)] private int compareValue = 3;
         private int playerHealth;

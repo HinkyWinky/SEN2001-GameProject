@@ -15,7 +15,7 @@ namespace Game.AI
         [HideInInspector] public Collider col;
 
         protected IState currentState;
-        [ShowInInspector, ReadOnly, PropertyOrder(-2)]
+        [ShowInInspector, ReadOnly, PropertyOrder(-2), HideInEditorMode]
         public string CurrentStateName => currentState == null ? "Empty" : currentState.ToString();
 
         [Range(0f, 5f)] public float moveSpeed = 0.5f;

@@ -10,20 +10,26 @@ public class Enemy1_ExecuteTreeState : BehaviourTreeState
 {
     private Enemy1 enemy;
 
-    [Title("Root Selector")]
-        [ShowInInspector, ReadOnly] NodeStates rootNodeState;
-        [ShowInInspector, ReadOnly] Sequence dashAttack_1;
-        [ShowInInspector, ReadOnly] Sequence closeAttack_2;
-    [Title("DashAttack_1")]
+    [ShowInInspector, ReadOnly] NodeStates rootNodeState;
+        [Title("DashAttack_1")]
+        [ShowInInspector, ReadOnly] private Sequence dashAttack_1;
         public CheckIsDistance checkIsDistance_1;
         public CheckIsWayOpen checkIsWayOpen_1;
         public ActionTimer actionWaitBeforeDash_1;
         public ActionDash actionDash_1;
         public ActionPlayAnimation actionPlayAnimation1;
         public ActionTimer actionWaitAfterDash_1;
-    [Title("CloseAttack_2")]
-        public ActionAttack actionAttack_2;
-        public ActionTimer actionWaitAfterCloseAttack_2;
+        [Title("CloseAttack_2")]
+        [ShowInInspector, ReadOnly] private Selector closeAttack_2;
+            [Title("Attack_21")]
+            [ShowInInspector, ReadOnly] private Sequence attack_21;
+            public CheckRandom chechRandom_21; 
+            public ActionAttack actionAttack_21;
+            public ActionTimer actionWaitAfterCloseAttack_21;
+            [Title("Attack_22")]
+            [ShowInInspector, ReadOnly] private Sequence attack_22;
+            public ActionAttack actionAttack_22;
+            public ActionTimer actionWaitAfterCloseAttack_22;
 
     public override void BuildBehaviourTree(StateMachine stateMachine)
     {
@@ -32,10 +38,21 @@ public class Enemy1_ExecuteTreeState : BehaviourTreeState
 
         waitTimeEvaluateDeltaTime = new WaitForSeconds(evaluateDeltaTime);
 
-            closeAttack_2 = new Sequence(new List<Node>
+                attack_22 = new Sequence(new List<Node>()
+                {
+                    actionAttack_22,
+                    actionWaitAfterCloseAttack_22
+                });
+                attack_21 = new Sequence(new List<Node>()
+                {
+                    chechRandom_21,
+                    actionAttack_21,
+                    actionWaitAfterCloseAttack_21
+                });
+            closeAttack_2 = new Selector(new List<Node>
             {
-                actionAttack_2,
-                actionWaitAfterCloseAttack_2
+                attack_21,
+                attack_22
             });
             dashAttack_1 = new Sequence(new List<Node>
             {
@@ -58,8 +75,13 @@ public class Enemy1_ExecuteTreeState : BehaviourTreeState
         actionDash_1.StartLeaf(this);
         actionPlayAnimation1.StartLeaf(this);
         actionWaitAfterDash_1.StartLeaf(this);
-        actionAttack_2.StartLeaf(this);
-        actionWaitAfterCloseAttack_2.StartLeaf(this);
+
+            chechRandom_21.StartLeaf(this);
+            actionAttack_21.StartLeaf(this);
+            actionWaitAfterCloseAttack_21.StartLeaf(this);
+
+            actionAttack_22.StartLeaf(this);
+            actionWaitAfterCloseAttack_22.StartLeaf(this);
     }
 
     public override void UpdateBehaviourTree()
@@ -69,7 +91,11 @@ public class Enemy1_ExecuteTreeState : BehaviourTreeState
         checkIsDistance_1.UpdateLeaf(playerPos);
         checkIsWayOpen_1.UpdateLeaf(playerPos);
         actionDash_1.UpdateLeaf(playerPos);
-        actionAttack_2.UpdateLeaf(playerPos);
+
+            actionAttack_21.UpdateLeaf(playerPos);
+
+            actionAttack_22.UpdateLeaf(playerPos);
+
     }
 
     public override IEnumerator EvaluateBehaviourTree()

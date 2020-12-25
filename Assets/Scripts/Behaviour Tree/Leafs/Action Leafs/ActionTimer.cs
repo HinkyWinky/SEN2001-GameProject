@@ -7,8 +7,6 @@ namespace Game.AI
     [Serializable]
     public class ActionTimer : ActionLeaf
     {
-        private StateMachine Machine => btState.machine;
-
         [SerializeField, Min(0)] private float duration = 0f;
 
         private WaitForSeconds waitForDuration;

@@ -9,15 +9,15 @@ using UnityEngine;
 {
     private Enemy1 enemy;
 
-    [Title("Root Selector")] [ShowInInspector, ReadOnly]
-    NodeStates rootNodeState;
-
-    [ShowInInspector, ReadOnly] Sequence goFarPos_31;
-    [ShowInInspector, ReadOnly] Sequence goClosePos_32;
-    [Title("GoFarPos_31")] public CheckIsDistance checkIsDistance_31;
-    public CheckIsWayOpen checkIsWayOpen_31;
-    public ActionMove actionMove_31;
-    [Title("GoClosePos_32")] public ActionMove actionMove_32;
+    [ShowInInspector, ReadOnly] NodeStates rootNodeState;
+        [Title("GoFarPos_1")]
+        [ShowInInspector, ReadOnly] Sequence goFarPos_1;
+        public CheckIsDistance checkIsDistance_1;
+        public CheckIsWayOpen checkIsWayOpen_1;
+        public ActionMove actionMove_1;
+        [Title("GoClosePos_2")]
+        [ShowInInspector, ReadOnly] Sequence goClosePos_2;
+        public ActionMove actionMove_2;
 
     public override void BuildBehaviourTree(StateMachine stateMachine)
     {
@@ -26,36 +26,36 @@ using UnityEngine;
 
         waitTimeEvaluateDeltaTime = new WaitForSeconds(evaluateDeltaTime);
 
-        goClosePos_32 = new Sequence(new List<Node>
+        goClosePos_2 = new Sequence(new List<Node>
         {
-            actionMove_32
+            actionMove_2
         });
-        goFarPos_31 = new Sequence(new List<Node>
+        goFarPos_1 = new Sequence(new List<Node>
         {
-            checkIsDistance_31,
-            checkIsWayOpen_31,
-            actionMove_31
+            checkIsDistance_1,
+            checkIsWayOpen_1,
+            actionMove_1
         });
         rootNode = new Selector(new List<Node>
         {
-            goFarPos_31,
-            goClosePos_32
+            goFarPos_1,
+            goClosePos_2
         });
 
-        actionMove_32.StartLeaf(this);
-        checkIsDistance_31.StartLeaf(this);
-        checkIsWayOpen_31.StartLeaf(this);
-        actionMove_31.StartLeaf(this);
+        actionMove_2.StartLeaf(this);
+        checkIsDistance_1.StartLeaf(this);
+        checkIsWayOpen_1.StartLeaf(this);
+        actionMove_1.StartLeaf(this);
     }
 
     public override void UpdateBehaviourTree()
     {
         Vector3 playerPos = machine.Player.transform.position;
 
-        actionMove_32.UpdateLeaf(playerPos);
-        checkIsDistance_31.UpdateLeaf(playerPos);
-        checkIsWayOpen_31.UpdateLeaf(playerPos);
-        actionMove_31.UpdateLeaf(playerPos);
+        actionMove_2.UpdateLeaf(playerPos);
+        checkIsDistance_1.UpdateLeaf(playerPos);
+        checkIsWayOpen_1.UpdateLeaf(playerPos);
+        actionMove_1.UpdateLeaf(playerPos);
     }
 
     public override IEnumerator EvaluateBehaviourTree()

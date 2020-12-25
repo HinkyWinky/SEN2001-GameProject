@@ -99,7 +99,7 @@ LightmapSettings:
     m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 112000002, guid: cab7954aa23bf064d913778c5c21bc48,
     type: 2}
-  m_UseShadowmask: 0
+  m_UseShadowmask: 1
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -15273,8 +15273,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 257833096}
-  m_LocalRotation: {x: -0.005405592, y: -0.7589394, z: -0.0063008205, w: 0.6511084}
-  m_LocalPosition: {x: 20.94118, y: 1.5169843, z: 11.760183}
+  m_LocalRotation: {x: -0.005405587, y: -0.7589393, z: -0.0063008135, w: 0.65110844}
+  m_LocalPosition: {x: 20.94118, y: 1.5169845, z: 11.760181}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1471138161}
@@ -22171,7 +22171,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   hasText: 0
-  text: {fileID: 0}
+  textMesh: {fileID: 0}
 --- !u!224 &377476235
 RectTransform:
   m_ObjectHideFlags: 0
@@ -30386,7 +30386,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   hasText: 0
-  text: {fileID: 0}
+  textMesh: {fileID: 0}
 --- !u!1 &511512785
 GameObject:
   m_ObjectHideFlags: 0
@@ -45065,7 +45065,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   hasText: 0
-  text: {fileID: 0}
+  textMesh: {fileID: 0}
 --- !u!114 &785434648
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -49969,8 +49969,8 @@ MonoBehaviour:
   deathState:
     dieAnimData: {fileID: 11400000, guid: f9846794d8747c149b7380771a4f0f92, type: 2}
   executeTreeState:
-    isEvaluating: 0
     evaluateDeltaTime: 0.1
+    isEvaluating: 0
     machine: {fileID: 0}
     checkIsDistance_1:
       checkType: 1
@@ -49989,30 +49989,39 @@ MonoBehaviour:
       animData: {fileID: 11400000, guid: 53558b3df86ec9148a0499ca83da640a, type: 2}
     actionWaitAfterDash_1:
       duration: 1
-    actionAttack_2:
+    chechRandom_21:
+      percentageOfSuccess: 50
+    actionAttack_21:
       attackAngleRange: 120
       maxAttackDistance: 2
       maxAttackDistanceTolerance: 0.025
       animData: {fileID: 11400000, guid: 9f62d265773391c4ab552346258b3af9, type: 2}
-    actionWaitAfterCloseAttack_2:
+    actionWaitAfterCloseAttack_21:
+      duration: 1
+    actionAttack_22:
+      attackAngleRange: 120
+      maxAttackDistance: 2
+      maxAttackDistanceTolerance: 0.025
+      animData: {fileID: 11400000, guid: 8f368924d71f4994eb1d8c49cb8dba87, type: 2}
+    actionWaitAfterCloseAttack_22:
       duration: 1
   findTreeState:
-    isEvaluating: 0
     evaluateDeltaTime: 0.1
+    isEvaluating: 0
     machine: {fileID: 0}
-    checkIsDistance_31:
+    checkIsDistance_1:
       checkType: 1
       equalThreshold: 0.1
       distanceValue: 4
-    checkIsWayOpen_31:
+    checkIsWayOpen_1:
       stopDistance: 1
-    actionMove_31:
+    actionMove_1:
       stopDistance: 7
       stopDistanceTolerance: 0.025
       targetMoveDistanceTolerance: 0.2
       maxLoopCountDuration: 5
       moveAnimData: {fileID: 11400000, guid: 75c9435ef8101e14bb118dcf0e35ec10, type: 2}
-    actionMove_32:
+    actionMove_2:
       stopDistance: 1.2
       stopDistanceTolerance: 0.025
       targetMoveDistanceTolerance: 0.1
@@ -50077,7 +50086,7 @@ Animator:
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: 33896e3cde30e3d48a5ece3a13ffe250, type: 2}
   m_CullingMode: 0
-  m_UpdateMode: 0
+  m_UpdateMode: 1
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_WarningMessage: 
@@ -51686,8 +51695,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 892732375}
-  m_LocalRotation: {x: -0.005405592, y: -0.7589394, z: -0.0063008205, w: 0.6511084}
-  m_LocalPosition: {x: 20.94118, y: 1.5169843, z: 11.760183}
+  m_LocalRotation: {x: -0.005405587, y: -0.7589393, z: -0.0063008135, w: 0.65110844}
+  m_LocalPosition: {x: 20.94118, y: 1.5169845, z: 11.760181}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1696741975}
@@ -58029,7 +58038,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   hasText: 0
-  text: {fileID: 0}
+  textMesh: {fileID: 0}
 --- !u!114 &1002929081
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -118569,7 +118578,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   hasText: 1
-  text: {fileID: 2077334224}
+  textMesh: {fileID: 2077334224}
 --- !u!114 &2072829240
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -124043,6 +124052,16 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 4582377618230068838, guid: 8af443036be4c9c43ba5f0558a033998,
+        type: 3}
+      propertyPath: m_UpdateMode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6301509769314026974, guid: 8af443036be4c9c43ba5f0558a033998,
+        type: 3}
+      propertyPath: maxHealth
+      value: 100
+      objectReference: {fileID: 0}
     - target: {fileID: 7078563854149502630, guid: 8af443036be4c9c43ba5f0558a033998,
         type: 3}
       propertyPath: m_Name

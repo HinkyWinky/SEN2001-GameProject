@@ -7,8 +7,6 @@ namespace Game.AI
     [Serializable]
     public class CheckIsDistance : CheckLeaf
     {
-        private StateMachine Machine => btState.machine;
-
         [SerializeField] private CheckType checkType = default;
         [SerializeField, ShowIf("checkType", CheckType.IS_EQUAL), Range(0.01f, 0.05f)]
         private float equalThreshold = 0.025f;

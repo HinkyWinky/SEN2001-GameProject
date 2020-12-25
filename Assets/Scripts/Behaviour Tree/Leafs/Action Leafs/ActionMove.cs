@@ -7,8 +7,6 @@ namespace Game.AI
     [Serializable]
     public class ActionMove : ActionLeaf
     {
-        private StateMachine Machine => btState.machine;
-
         [SerializeField, Range(-50f, 50f)] private float stopDistance = 1f;
         [SerializeField, Range(0.01f, 0.05f)] private float stopDistanceTolerance = 0.025f;
         [SerializeField, Range(0f, 1f)] private float targetMoveDistanceTolerance = 0.2f;

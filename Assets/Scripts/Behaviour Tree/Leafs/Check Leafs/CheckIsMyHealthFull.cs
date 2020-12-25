@@ -5,8 +5,6 @@ namespace Game.AI
     [Serializable]
     public class CheckIsMyHealthFull : CheckLeaf
     {
-        private StateMachine Machine => btState.machine;
-
         private int curHealth;
         private int maxHealth;
 

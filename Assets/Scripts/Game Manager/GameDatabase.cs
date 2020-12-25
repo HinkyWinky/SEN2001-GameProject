@@ -1,15 +1,17 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 public class GameDatabase : MonoBehaviour
 {
     // Save Files Data
-    [Header("Save Files` Data")]
-    [SerializeField] private SaveFile levelsFile = new SaveFile(1, "levels", SaveType.LEVELS);
+    [BoxGroup("Save Files` Data"), SerializeField]
+    private SaveFile levelsFile = new SaveFile(1, "levels", SaveType.LEVELS);
     public SaveFile LevelsFile => levelsFile;
-    [SerializeField] private SaveFile optionsFile = new SaveFile(1, "options", SaveType.OPTIONS);
+    [BoxGroup("Save Files` Data"), SerializeField]
+    private SaveFile optionsFile = new SaveFile(1, "options", SaveType.OPTIONS);
     public SaveFile OptionsFile => optionsFile;
 
     public IDictionary<int, bool> levelsCompletionStatue;
