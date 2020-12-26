@@ -8,9 +8,9 @@ namespace Game.UI
     [Serializable]
     public abstract class Panel : MonoBehaviour, IElementUI
     {
-        [ReadOnly] public RectTransform rectTransform;
-        [ReadOnly] public CanvasGroup canvasGroup;
-        [ReadOnly] public Vector3 originalScale;
+        [ReadOnly, HideInEditorMode] public RectTransform rectTransform;
+        [ReadOnly, HideInEditorMode] public CanvasGroup canvasGroup;
+        [ReadOnly, HideInEditorMode] public Vector3 originalScale;
 
         private void Reset()
         {

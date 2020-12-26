@@ -35,9 +35,9 @@ namespace Game.UI
         }
         private IEnumerator PauseButtonOnUpCor()
         {
-            GameManager.Cur.SceneCanvas.pausePanel.Activate(true);
+            GameManager.Cur.LevelCanvas.pausePanel.Activate(true);
             GameManager.Cur.EventCtrl.onPausePanelOpened?.Invoke();
-            yield return GameManager.Cur.SceneCanvas.pausePanel.StartOpenAnimation(true);
+            yield return GameManager.Cur.LevelCanvas.pausePanel.StartOpenAnimation(true);
         }
         #endregion
 

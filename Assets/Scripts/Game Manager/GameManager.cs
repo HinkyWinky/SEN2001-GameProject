@@ -8,15 +8,12 @@ public class GameManager : MonoBehaviour
     public static GameManager Cur { get; private set; }
 
     [ShowInInspector, ReadOnly] private bool isFrameRateRunning;
-    public bool IsFrameRateRunning => isFrameRateRunning;
 
     [SerializeField] private bool editorModeOn = false;
-    public bool EditorModeOn => editorModeOn;
-
     [SerializeField] private GameManagerCanvas gameManagerCanvas = default;
     [SerializeField] private Camera gameManagerCamera = default;
-
-    public GameDatabase GameDatabase { get; private set; }
+   
+    public Database Database { get; private set; }
     public EventCtrl EventCtrl { get; private set; }
     public AudioCtrl AudioCtrl { get; private set; }
     public StateCtrl StateCtrl { get; private set; }
@@ -41,16 +38,19 @@ public class GameManager : MonoBehaviour
             return null;
         }
     }
-    public SceneCanvas SceneCanvas
+    public LevelCanvas LevelCanvas
     {
         get
         {
-            if (Canvas as SceneCanvas != null)
-                return Canvas as SceneCanvas;
+            if (Canvas as LevelCanvas != null)
+                return Canvas as LevelCanvas;
 
             return null;
         }
     }
+    
+    public bool EditorModeOn => editorModeOn;
+    public bool IsFrameRateRunning => isFrameRateRunning;
 
     #region Mono
     private void Awake()
@@ -62,8 +62,8 @@ public class GameManager : MonoBehaviour
             Destroy(gameObject);
 
         // Get all components of this game object.
-        if (GameDatabase == null)
-            GameDatabase = GetComponent<GameDatabase>();
+        if (Database == null)
+            Database = GetComponent<Database>();
         if (EventCtrl == null)
             EventCtrl = GetComponent<EventCtrl>();
         if (AudioCtrl == null)
@@ -77,8 +77,6 @@ public class GameManager : MonoBehaviour
         if (SettingCtrl == null)
             SettingCtrl = GetComponent<SettingCtrl>();
 
-        PauseFrameRate();
-
         // If open scene count is more than 1, unload all scenes and load the GameManager scene.
         #if UNITY_EDITOR
         if (SceneManager.sceneCount > 1)
@@ -89,16 +87,17 @@ public class GameManager : MonoBehaviour
         }
         #endif
 
+        PauseFrameRate();
         StateCtrl.ChangeGameState(GameState.LOADING);
 
         // Create levels dictionary to write saved file data in it. 
-        GameDatabase.CreateLevelsDictionary();
+        Database.CreateLevelsDictionary();
 
         // Create save files` directory.
         Storage.CreateGameDirectories();
         // Load the saved data at the start of the game.
-        GameDatabase.Load(GameDatabase.LevelsFile);
-        GameDatabase.Load(GameDatabase.OptionsFile);
+        Database.Load(Database.LevelsFile);
+        Database.Load(Database.OptionsFile);
     }
     private void Start()
     {
@@ -148,7 +147,7 @@ public class GameManager : MonoBehaviour
 
         if (MainMenuCanvas != null)
             Debug.Log("MAIN MENU CANVAS: found");
-        if (SceneCanvas != null)
+        if (LevelCanvas != null)
             Debug.Log("LEVEL CANVAS: found");
 
         GameManager.Cur.EventCtrl.onSceneLoadEnded?.Invoke();
@@ -175,15 +174,15 @@ public class GameManager : MonoBehaviour
 
     public void OnMainMenuSceneLoadStarted()
     {
-        GameDatabase.Load(GameDatabase.LevelsFile);
+        Database.Load(Database.LevelsFile);
     }
 
     public void OnLevelSceneLoadStarted(int levelNo)
     {
-        GameDatabase.Load(GameDatabase.LevelsFile);
+        Database.Load(Database.LevelsFile);
         if (levelNo > 1)
         {
-            if (!GameDatabase.levelsCompletionStatue[levelNo - 1])
+            if (!Database.levelsCompletionStatue[levelNo - 1])
             {
                 Debug.LogError("Level No " + levelNo + " is not unlocked!");
                 Application.Quit();
@@ -206,7 +205,7 @@ public class GameManager : MonoBehaviour
     {
         StateCtrl.ChangeGameState(GameState.ENDMENU);
         if (result == LevelResults.VICTORY)
-            GameDatabase.levelsCompletionStatue[SceneCtrl.CurrentLevelNo] = true; // complete current level, unlock next level.
-        GameDatabase.Save(GameDatabase.LevelsFile);
+            Database.levelsCompletionStatue[SceneCtrl.CurrentLevelNo] = true; // complete current level, unlock next level.
+        Database.Save(Database.LevelsFile);
     }
 }

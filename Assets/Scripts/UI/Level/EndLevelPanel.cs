@@ -22,6 +22,7 @@ namespace Game.UI
         {
             nextLevelOrRestartButton.AddListeners(NextLevelOrRestartButtonOnDown, NextLevelOrRestartButtonOnUp);
             returnToMainMenuButton.AddListeners(ReturnToMainMenuButtonOnDown, ReturnToMainMenuButtonOnUp);
+
             Activate(false);
         }
         private void OnDestroy()
@@ -48,7 +49,7 @@ namespace Game.UI
         {
             if (nextLevelOrRestartButton.HasText)
             {
-                if (GameManager.Cur.SceneCtrl.CurrentLevelNo == GameManager.Cur.SceneCtrl.LastLevelNo)
+                if (GameManager.Cur.SceneCtrl.CurrentLevelNo == GameManager.Cur.SceneCtrl.MaxLevelNo)
                 {
                     nextLevelOrRestartButton.textMesh.SetText("All Levels Done");
                     nextLevelOrRestartButton.interactable = false;

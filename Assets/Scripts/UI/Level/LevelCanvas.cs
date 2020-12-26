@@ -1,6 +1,6 @@
 ﻿namespace Game.UI
 {
-    public class SceneCanvas : CanvasX
+    public class LevelCanvas : CanvasX
     {
         public InGamePanel inGamePanel;
         public PausePanel pausePanel;

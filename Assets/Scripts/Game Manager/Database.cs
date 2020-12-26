@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-public class GameDatabase : MonoBehaviour
+public class Database : MonoBehaviour
 {
     // Save Files Data
     [BoxGroup("Save Files` Data"), SerializeField]
@@ -15,6 +13,11 @@ public class GameDatabase : MonoBehaviour
     public SaveFile OptionsFile => optionsFile;
 
     public IDictionary<int, bool> levelsCompletionStatue;
+    [ReadOnly] public int lastCompletedLevel = 0;
+    [ReadOnly] public bool hasSavedLevelFile = false;
+    public int LastCompletedLevel => lastCompletedLevel;
+    public int LastLevel => levelsCompletionStatue.Count;
+    public bool HasSavedLevelFile => hasSavedLevelFile;
 
     public void CreateLevelsDictionary()
     {
@@ -28,7 +31,7 @@ public class GameDatabase : MonoBehaviour
 
     #region Save Load
     /// <summary>
-    /// This method is called by Storage class after user calls Save() method in GameDatabase class.
+    /// This method is called by Storage class after user calls Save() method in Database class.
     /// Put all save logic into this method.
     /// </summary>
     public void SaveData(DataWriter writer, SaveFile file)
@@ -36,7 +39,6 @@ public class GameDatabase : MonoBehaviour
         if (file.name == levelsFile.name)
         {
             writer.Write(file.version);
-            // TODO Save levels
             for (int i = 0; i < levelsCompletionStatue.Count; i++)
             {
                 writer.Write(levelsCompletionStatue[i + 1]);
@@ -52,24 +54,26 @@ public class GameDatabase : MonoBehaviour
         }
         else
         {
-            Debug.Log("FILE: " + "GameDatabase has no name of the " + file.name + " file!");
+            Debug.Log("FILE: " + "Database has no name of the " + file.name + " file!");
         }
     }
     /// <summary>
-    /// This method is called by Storage class after user calls Load() method in GameDatabase class.
+    /// This method is called by Storage class after user calls Load() method in Database class.
     /// Put all load logic into this method.
     /// </summary>
     public void LoadData(DataReader reader, SaveFile file)
     {
         if (file.name == levelsFile.name)
         {
+            hasSavedLevelFile = true;
             file.version = reader.ReadInt();
             if (file.version == 1)
             {
-                // TODO Load levels
                 for (int i = 0; i < levelsCompletionStatue.Count; i++)
                 {
                     levelsCompletionStatue[i + 1] = reader.ReadBool();
+                    if (levelsCompletionStatue[i + 1])
+                        lastCompletedLevel = i + 1;
                 }
             }
             Debug.Log("FILE: " + file.name + " file loaded.");

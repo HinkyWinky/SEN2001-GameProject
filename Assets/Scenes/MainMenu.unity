@@ -205,7 +205,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   hasText: 0
-  text: {fileID: 0}
+  textMesh: {fileID: 0}
 --- !u!114 &15634528
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -656,7 +656,7 @@ GameObject:
   - component: {fileID: 282377218}
   - component: {fileID: 282377215}
   m_Layer: 5
-  m_Name: Main Menu Buttons Panel
+  m_Name: Buttons Group
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -851,7 +851,7 @@ MonoBehaviour:
   rectTransform: {fileID: 0}
   canvasGroup: {fileID: 0}
   originalScale: {x: 0, y: 0, z: 0}
-  newGameButton: {fileID: 1512358866}
+  newGameOrContinueButton: {fileID: 1512358866}
   levelsButton: {fileID: 1505928939}
   optionsButton: {fileID: 15634527}
   exitButton: {fileID: 1036906840}
@@ -921,7 +921,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.22745098, g: 0.43534726, b: 0.59607846, a: 1}
+  m_Color: {r: 0, g: 0, b: 0, a: 1}
   m_RaycastTarget: 1
   m_Maskable: 0
   m_OnCullStateChanged:
@@ -1621,7 +1621,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   hasText: 0
-  text: {fileID: 0}
+  textMesh: {fileID: 0}
 --- !u!114 &861183720
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1805,7 +1805,7 @@ GameObject:
   - component: {fileID: 1036906841}
   - component: {fileID: 1036906840}
   m_Layer: 5
-  m_Name: Exit to Desktop Button
+  m_Name: Exit Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1875,7 +1875,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   hasText: 0
-  text: {fileID: 0}
+  textMesh: {fileID: 0}
 --- !u!114 &1036906841
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1969,7 +1969,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Exit to Desktop
+  m_text: Exit
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -2129,7 +2129,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   hasText: 0
-  text: {fileID: 0}
+  textMesh: {fileID: 0}
 --- !u!114 &1429919891
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2250,7 +2250,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   hasText: 0
-  text: {fileID: 0}
+  textMesh: {fileID: 0}
 --- !u!114 &1505928940
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2301,7 +2301,7 @@ GameObject:
   - component: {fileID: 1512358867}
   - component: {fileID: 1512358866}
   m_Layer: 5
-  m_Name: New Game Button
+  m_Name: New Game or Continue Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2370,8 +2370,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
-  hasText: 0
-  text: {fileID: 0}
+  hasText: 1
+  textMesh: {fileID: 0}
 --- !u!114 &1512358867
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2423,7 +2423,7 @@ GameObject:
   - component: {fileID: 1562732339}
   - component: {fileID: 1562732336}
   m_Layer: 5
-  m_Name: Level Buttons Group
+  m_Name: Buttons Group
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2837,7 +2837,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   hasText: 0
-  text: {fileID: 0}
+  textMesh: {fileID: 0}
 --- !u!224 &1866891750
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2978,7 +2978,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   hasText: 0
-  text: {fileID: 0}
+  textMesh: {fileID: 0}
 --- !u!114 &2004325210
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3205,7 +3205,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   hasText: 0
-  text: {fileID: 0}
+  textMesh: {fileID: 0}
 --- !u!114 &2120272988
 MonoBehaviour:
   m_ObjectHideFlags: 0

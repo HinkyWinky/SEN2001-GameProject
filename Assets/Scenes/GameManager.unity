@@ -922,6 +922,8 @@ MonoBehaviour:
     version: 1
     name: options
     type: 1
+  lastCompletedLevel: 0
+  hasSavedLevelFile: 0
 --- !u!114 &4657706661598815087
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -934,7 +936,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b46d44871752d544d90014e751747274, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  editorModeOn: 1
+  editorModeOn: 0
   gameManagerCanvas: {fileID: 1172453501}
   gameManagerCamera: {fileID: 1105044140}
 --- !u!114 &4657706661598815088

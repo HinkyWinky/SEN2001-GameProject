@@ -1,12 +1,13 @@
 ﻿using System.Collections;
 using UnityEditor;
 using UnityEngine;
+
 namespace Game.UI
 {
     public class MainMenuPanel : Panel
     {
         [Header("Main Menu Panel Buttons")]
-        public ButtonX newGameButton;
+        public ButtonX newGameOrContinueButton;
         public ButtonX levelsButton;
         public ButtonX optionsButton;
         public ButtonX exitButton;
@@ -14,14 +15,16 @@ namespace Game.UI
         #region Mono
         private void Start()
         {
-            newGameButton.AddListeners(NewGameButtonOnDown, NewGameButtonOnUp);
+            newGameOrContinueButton.AddListeners(NewGameOrContinueButtonOnDown, NewGameOrContinueButtonOnUp);
             levelsButton.AddListeners(LevelsButtonOnDown, LevelsButtonOnUp);
             optionsButton.AddListeners(OptionsButtonOnDown, OptionsButtonOnUp);
             exitButton.AddListeners(ExitButtonOnDown, ExitButtonOnUp);
+
+            SetNewGameOrContinueButton();
         }
         private void OnDestroy()
         {
-            newGameButton.RemoveAllListeners();
+            newGameOrContinueButton.RemoveAllListeners();
             levelsButton.RemoveAllListeners();
             optionsButton.RemoveAllListeners();
             exitButton.RemoveAllListeners();
@@ -33,14 +36,25 @@ namespace Game.UI
             gameObject.SetActive(value);
         }
 
-        #region New Game / Continue Button
-        private void NewGameButtonOnDown()
+        #region New Game Or Continue Button
+        private void SetNewGameOrContinueButton()
         {
-            Debug.Log("New Game Button pointer down");
+            if (GameManager.Cur.Database.HasSavedLevelFile)
+                newGameOrContinueButton.textMesh.SetText("Continue");
+            else
+                newGameOrContinueButton.textMesh.SetText("New Game");
         }
-        private void NewGameButtonOnUp()
+
+        private void NewGameOrContinueButtonOnDown()
         {
-            Debug.Log("New Game Button pointer up");
+
+        }
+        private void NewGameOrContinueButtonOnUp()
+        {
+            int lastCompletedLevel = GameManager.Cur.Database.LastCompletedLevel;
+            if (lastCompletedLevel < GameManager.Cur.Database.LastLevel)
+                lastCompletedLevel += 1;
+            StartCoroutine(GameManager.Cur.SceneCtrl.LoadLevelScene(lastCompletedLevel, true));
         }
         #endregion
 

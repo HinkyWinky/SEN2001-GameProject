@@ -41,6 +41,12 @@ namespace Game.UI
         }
         #endregion
 
+        public override void Activate(bool value)
+        {
+            gameObject.SetActive(value);
+        }
+
+        #region Level Buttons
         private void SetLevelButtons()
         {
             for (int i = 0; i < levelButtons.Count; i++)
@@ -50,16 +56,10 @@ namespace Game.UI
                     levelButtons[i].interactable = true;
                     continue;
                 }
-                levelButtons[i].interactable = GameManager.Cur.GameDatabase.levelsCompletionStatue[i]; // look level x - 1 value for level x button
+                levelButtons[i].interactable = GameManager.Cur.Database.levelsCompletionStatue[i]; // look level x - 1 value for level x button
             }
         }
 
-        public override void Activate(bool value)
-        {
-            gameObject.SetActive(value);
-        }
-
-        #region Level Buttons
         private void LevelButtonOnDown(int levelNo)
         {
 

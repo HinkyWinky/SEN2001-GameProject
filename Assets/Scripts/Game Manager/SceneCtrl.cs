@@ -15,7 +15,30 @@ public class SceneCtrl : MonoBehaviour
     public SceneData mainMenuSceneData;
     public List<SceneData> levelsSceneData = new List<SceneData>();
 
-    public int LastLevelNo => levelsSceneData.Count;
+    public int MaxLevelNo => levelsSceneData.Count;
+
+    public IEnumerator LoadMainMenuScene(bool unloadActiveScene)
+    {
+        currentLoadedSceneData = mainMenuSceneData;
+        GameManager.Cur.EventCtrl.onMainMenuSceneLoadStarted?.Invoke();
+        yield return StartCoroutine(LoadSceneAdditive(currentLoadedSceneData, true, unloadActiveScene));
+    }
+    public IEnumerator LoadLevelScene(int levelNo, bool unloadActiveScene)
+    {
+        if (levelNo - 1 >= levelsSceneData.Count)
+        {
+            Debug.LogWarning("levelsSceneData list does not have level" + levelNo + "!");
+            yield break;
+        }
+        currentLoadedSceneData = levelsSceneData[levelNo - 1];
+        GameManager.Cur.EventCtrl.onLevelSceneLoadStarted?.Invoke(levelNo);
+        yield return StartCoroutine(LoadSceneAdditive(currentLoadedSceneData, true, unloadActiveScene));
+    }
+
+    public bool CompareSceneType(SceneTypes sceneType)
+    {
+        return sceneType == CurSceneType;
+    }
 
     private void SetActiveScene(SceneData sceneData)
     {
@@ -77,28 +100,5 @@ public class SceneCtrl : MonoBehaviour
 
         if (setSceneActive)
             SetActiveScene(sceneData);
-    }
-
-    public IEnumerator LoadMainMenuScene(bool unloadActiveScene)
-    {
-        currentLoadedSceneData = mainMenuSceneData;
-        GameManager.Cur.EventCtrl.onMainMenuSceneLoadStarted?.Invoke();
-        yield return StartCoroutine(LoadSceneAdditive(currentLoadedSceneData, true, unloadActiveScene));
-    }
-    public IEnumerator LoadLevelScene(int levelNo, bool unloadActiveScene)
-    {
-        if (levelNo - 1 >= levelsSceneData.Count)
-        {
-            Debug.LogWarning("levelsSceneData list does not have level" + levelNo + "!");
-            yield break;
-        }
-        currentLoadedSceneData = levelsSceneData[levelNo - 1];
-        GameManager.Cur.EventCtrl.onLevelSceneLoadStarted?.Invoke(levelNo);
-        yield return StartCoroutine(LoadSceneAdditive(currentLoadedSceneData, true, unloadActiveScene));
-    }
-
-    public bool CompareSceneType(SceneTypes sceneType)
-    {
-        return sceneType == CurSceneType;
     }
 }

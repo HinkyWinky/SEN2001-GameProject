@@ -67,10 +67,10 @@ public class EventCtrl : MonoBehaviour
 
         if (Mng.SceneCtrl.CompareSceneType(SceneTypes.LEVEL))
         {
-            onPlayerHealthChange.AddListener(Mng.SceneCanvas.inGamePanel.playerHealthBar.SetValue);
-            onEnemyHealthChange.AddListener(Mng.SceneCanvas.inGamePanel.enemyHealthBar.SetValue);
-            onPlayerDie.AddListener(Mng.SceneCanvas.OpenEndLevelPanelOnPlayerDie);
-            onEnemyDie.AddListener(Mng.SceneCanvas.OpenEndLevelPanelOnEnemyDie);
+            onPlayerHealthChange.AddListener(Mng.LevelCanvas.inGamePanel.playerHealthBar.SetValue);
+            onEnemyHealthChange.AddListener(Mng.LevelCanvas.inGamePanel.enemyHealthBar.SetValue);
+            onPlayerDie.AddListener(Mng.LevelCanvas.OpenEndLevelPanelOnPlayerDie);
+            onEnemyDie.AddListener(Mng.LevelCanvas.OpenEndLevelPanelOnEnemyDie);
             onPausePanelOpened.AddListener(Mng.OnPausePanelOpened);
             onPausePanelClosed.AddListener(Mng.OnPausePanelClosed);
             onEndLevelPanelOpened.AddListener(Mng.OnEndLevelPanelOpened);
