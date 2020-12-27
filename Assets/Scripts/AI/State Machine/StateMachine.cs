@@ -19,7 +19,6 @@ namespace Game.AI
         public string CurrentStateName => currentState == null ? "Empty" : currentState.ToString();
 
         [Range(0f, 5f)] public float moveSpeed = 0.5f;
-
         [SerializeField, PropertyRange(0f, 1f), LabelText("Rotation Duration For 180")]
         public float rotationDuration = 0.1f; // roll rotation duration for 180 degree
         [SerializeField, Range(500f, 3000f), LabelText("Max Rotation Acceleration For 180")]
@@ -33,6 +32,8 @@ namespace Game.AI
         public IEnumerator rotateToTargetPos;
 
         [HideInInspector] public bool isUpdatedFirstTime = false;
+        public bool hasDoor = false;
+        public Door door;
 
         public void StartStateMachine(IState startState)
         {
@@ -56,6 +57,35 @@ namespace Game.AI
             float fixedMaxRotationAcceleration = maxRotationAcceleration * Quaternion.Angle(rig.rotation, targetRot) / 180f; // Calculate acceleration value for the angle.
             float maxRotationChange = fixedMaxRotationAcceleration * Time.fixedDeltaTime; // Calculate acceleration needed for one frame.
             rig.rotation = Quaternion.RotateTowards(rig.rotation, targetRot, maxRotationChange); // Rotate the player to the target rotation value smoothly.
+        }
+
+        protected void ForwardRaycast()
+        {
+            Vector3 startPos = transform.position;
+            Vector3 direction = transform.forward;
+            const float distance = 1.5f;
+            bool forwardRay = Physics.Raycast(startPos, direction, out RaycastHit hit, distance);
+            if (forwardRay)
+            {
+                hit.collider.TryGetComponent(out door);
+                if (door != null)
+                {
+                    hasDoor = true;
+                    Debug.DrawLine(startPos, hit.point, Color.yellow);
+                }
+                else
+                {
+                    door = null;
+                    hasDoor = false;
+                    Debug.DrawLine(startPos, hit.point, Color.red);
+                }
+            }
+            else
+            {
+                door = null;
+                hasDoor = false;
+                Debug.DrawLine(startPos, startPos + direction * distance, Color.white);
+            }
         }
     }
 }

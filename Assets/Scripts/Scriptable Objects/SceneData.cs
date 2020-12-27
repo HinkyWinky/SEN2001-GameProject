@@ -1,11 +1,14 @@
 ﻿using UnityEngine;
 
-[CreateAssetMenu(fileName = "Scene Data", menuName = "Scriptable Object/Scene Data")]
-public class SceneData : ScriptableObject
+namespace Game
 {
-    [SerializeField] private new string name = default;
-    [SerializeField] private int buildIndex = default;
+    [CreateAssetMenu(fileName = "Scene Data", menuName = "Scriptable Object/Scene Data")]
+    public class SceneData : ScriptableObject
+    {
+        [SerializeField] private new string name = default;
+        [SerializeField] private int buildIndex = default;
 
-    public string Name => name;
-    public int BuildIndex => buildIndex;
+        public string Name => name;
+        public int BuildIndex => buildIndex;
+    }
 }

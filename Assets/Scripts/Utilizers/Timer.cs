@@ -1,38 +1,41 @@
-﻿using System.Linq;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
-public static class Timer
+namespace Game
 {
-    private static readonly List<TimeRequest> TimeRequestList = new List<TimeRequest>();
-
-    private readonly struct TimeRequest
+    public static class Timer
     {
-        public readonly string name;
-        public readonly float startTime;
-        public TimeRequest(string name, float startTime)
+        private static readonly List<TimeRequest> TimeRequestList = new List<TimeRequest>();
+
+        private readonly struct TimeRequest
         {
-            this.name = name;
-            this.startTime = startTime;
+            public readonly string name;
+            public readonly float startTime;
+
+            public TimeRequest(string name, float startTime)
+            {
+                this.name = name;
+                this.startTime = startTime;
+            }
         }
-    }
 
-    public static void StartTime(string name)
-    {
-        float startTime = Time.time;
-        TimeRequest newTimeRequest = new TimeRequest(name, startTime);
-        TimeRequestList.Add(newTimeRequest);
-    }
-    public static void EndTime(string name)
-    {
-        TimeRequest curTimeRequest = TimeRequestList.Find(timeRequest => timeRequest.name == name);
-        if (TimeRequestList.Contains(curTimeRequest))
+        public static void StartTime(string name)
         {
-            float endTime = Time.time;
-            float elapsedTime = endTime - curTimeRequest.startTime;
-            Debug.Log($"{curTimeRequest.name}: {elapsedTime}");
-            TimeRequestList.Remove(curTimeRequest);
+            float startTime = Time.time;
+            TimeRequest newTimeRequest = new TimeRequest(name, startTime);
+            TimeRequestList.Add(newTimeRequest);
+        }
+
+        public static void EndTime(string name)
+        {
+            TimeRequest curTimeRequest = TimeRequestList.Find(timeRequest => timeRequest.name == name);
+            if (TimeRequestList.Contains(curTimeRequest))
+            {
+                float endTime = Time.time;
+                float elapsedTime = endTime - curTimeRequest.startTime;
+                Debug.Log($"{curTimeRequest.name}: {elapsedTime}");
+                TimeRequestList.Remove(curTimeRequest);
+            }
         }
     }
 }

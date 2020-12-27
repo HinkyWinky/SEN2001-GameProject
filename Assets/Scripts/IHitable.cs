@@ -1,5 +1,8 @@
-﻿public interface IHitable
+﻿namespace Game
 {
-    void TakeDamage(int damageValue);
-    void Die();
+    public interface IHitable
+    {
+        void TakeDamage(int damageValue);
+        void Die();
+    }
 }

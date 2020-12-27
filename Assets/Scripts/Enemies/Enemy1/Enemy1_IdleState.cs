@@ -1,36 +1,38 @@
 ﻿using System;
 using Game.AI;
 
-[Serializable]
-public class Enemy1_IdleState : State
+namespace Game
 {
-    private Enemy1 enemy;
-    public AnimData idleAnimData;
-
-    public override void BuildState(StateMachine stateMachine)
+    [Serializable] public class Enemy1_IdleState : State
     {
-        base.BuildState(stateMachine);
-        enemy = stateMachine as Enemy1;
-    }
+        private Enemy1 enemy;
+        public AnimData idleAnimData;
 
-    public override void StateEnter()
-    {
-        base.StateEnter();
-        machine.animX.StartAnimation(idleAnimData);
-    }
-
-    public override void StateExit()
-    {
-    }
-
-    public override void StateUpdate()
-    {
-        if (!machine.isUpdatedFirstTime)
+        public override void BuildState(StateMachine stateMachine)
         {
-            machine.isUpdatedFirstTime = true;
+            base.BuildState(stateMachine);
+            enemy = stateMachine as Enemy1;
         }
 
-        if (!GameManager.Cur.Player.IsDeath)
-            machine.ChangeState(enemy.executeTreeState);
+        public override void StateEnter()
+        {
+            base.StateEnter();
+            machine.animX.StartAnimation(idleAnimData);
+        }
+
+        public override void StateExit()
+        {
+        }
+
+        public override void StateUpdate()
+        {
+            if (!machine.isUpdatedFirstTime)
+            {
+                machine.isUpdatedFirstTime = true;
+            }
+
+            if (!GameManager.Cur.Player.IsDeath)
+                machine.ChangeState(enemy.executeTreeState);
+        }
     }
 }

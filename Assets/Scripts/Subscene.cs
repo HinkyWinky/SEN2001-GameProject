@@ -2,40 +2,46 @@
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-public class Subscene : MonoBehaviour
+namespace Game
 {
-    [SerializeField] private SceneTypes sceneType = default;
-    public SceneTypes SceneType => sceneType;
-
-    [SerializeField] private CanvasX canvas = default;
-    public CanvasX Canvas => canvas;
-
-    [SerializeField, HideIf("sceneType", SceneTypes.MAINMENU)]
-    private CamCtrl camCtrl = default;
-    public CamCtrl CamCtrl => camCtrl;
-
-    [SerializeField, HideIf("sceneType", SceneTypes.MAINMENU)]
-    private Player player = default;
-    public Player Player => player;
-
-    [SerializeField, HideIf("sceneType", SceneTypes.MAINMENU)]
-    private Enemy1 enemy = default;
-    public Enemy1 Enemy => enemy;
-
-    private bool firstTime = false;
-
-    private void Start()
+    public class Subscene : MonoBehaviour
     {
-        Debug.Log("LEVEL SCENE: Start()");
-        GameManager.Cur.SetSubscene(SceneType, this);
-    }
+        [SerializeField] private SceneTypes sceneType = default;
+        public SceneTypes SceneType => sceneType;
 
-    private void Update()
-    {
-        if (!firstTime)
+        [SerializeField] private CanvasX canvas = default;
+        public CanvasX Canvas => canvas;
+
+        [SerializeField, HideIf("sceneType", SceneTypes.MAINMENU)]
+        private CamCtrl camCtrl = default;
+
+        public CamCtrl CamCtrl => camCtrl;
+
+        [SerializeField, HideIf("sceneType", SceneTypes.MAINMENU)]
+        private Player player = default;
+
+        public Player Player => player;
+
+        [SerializeField, HideIf("sceneType", SceneTypes.MAINMENU)]
+        private Enemy1 enemy = default;
+
+        public Enemy1 Enemy => enemy;
+
+        private bool firstTime = false;
+
+        private void Start()
         {
-            firstTime = true;
-            Debug.Log("LEVEL SCENE: Update()");
+            Debug.Log("LEVEL SCENE: Start()");
+            GameManager.Cur.SetSubscene(SceneType, this);
+        }
+
+        private void Update()
+        {
+            if (!firstTime)
+            {
+                firstTime = true;
+                Debug.Log("LEVEL SCENE: Update()");
+            }
         }
     }
 }

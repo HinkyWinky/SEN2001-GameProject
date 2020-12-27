@@ -143,7 +143,7 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2541457280464432744, guid: 77a3f9d8690a9cc478f78f9541db0303, type: 3}
+  - {fileID: 2100000, guid: 018cd785776cfc14296264a4beb07e2c, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -2339,7 +2339,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sword: {fileID: 2163733882808218033}
-  maxHealth: 20
+  maxHealth: 100
   groundClearance: 0.075
   lockedAbilityInputsDuration: 0.1
   maxMoveSpeed: 3.5
@@ -2415,7 +2415,7 @@ Animator:
   m_Avatar: {fileID: 9000000, guid: 77a3f9d8690a9cc478f78f9541db0303, type: 3}
   m_Controller: {fileID: 9100000, guid: e5ea4b9164c6eb149b56a9bbb97fad2a, type: 2}
   m_CullingMode: 0
-  m_UpdateMode: 0
+  m_UpdateMode: 1
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_WarningMessage: 

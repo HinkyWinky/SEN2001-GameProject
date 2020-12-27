@@ -3,61 +3,64 @@ using System.Collections;
 using Game.AI;
 using UnityEngine;
 
-[Serializable]
-public class Enemy1_TakeDamageState : State
+namespace Game
 {
-    private Enemy1 enemy;
-    public AnimData takeDamageAnimData;
-
-    public override void BuildState(StateMachine stateMachine)
+    [Serializable]
+    public class Enemy1_TakeDamageState : State
     {
-        base.BuildState(stateMachine);
-        enemy = stateMachine as Enemy1;
-    }
+        private Enemy1 enemy;
+        public AnimData takeDamageAnimData;
 
-    public override void StateEnter()
-    {
-        base.StateEnter();
-        enemy.isHitAble = false;
-        machine.animX.StartAnimation(takeDamageAnimData);
-        if (machine.action != null)
-            machine.StopCoroutine(machine.action);
-        machine.action = OnTakeDamage();
-        machine.StartCoroutine(machine.action);
-    }
-
-    public override void StateExit()
-    {
-        enemy.isHitAble = true;
-    }
-
-    public override void StateUpdate()
-    {
-        if (!machine.isUpdatedFirstTime)
+        public override void BuildState(StateMachine stateMachine)
         {
-            machine.isUpdatedFirstTime = true;
+            base.BuildState(stateMachine);
+            enemy = stateMachine as Enemy1;
         }
 
-        if (GameManager.Cur.Player.IsDeath)
+        public override void StateEnter()
         {
-            machine.ChangeState(enemy.idleState);
-            return;
+            base.StateEnter();
+            enemy.isHitAble = false;
+            machine.animX.StartAnimation(takeDamageAnimData);
+            if (machine.action != null)
+                machine.StopCoroutine(machine.action);
+            machine.action = OnTakeDamage();
+            machine.StartCoroutine(machine.action);
         }
-    }
 
-    private IEnumerator OnTakeDamage()
-    {
-        Vector3 direction = machine.Player.Forward;
-        float percent = 0f;
-        while (percent < takeDamageAnimData.duration)
+        public override void StateExit()
         {
-            percent += Time.fixedDeltaTime;
+            enemy.isHitAble = true;
+        }
+
+        public override void StateUpdate()
+        {
+            if (!machine.isUpdatedFirstTime)
+            {
+                machine.isUpdatedFirstTime = true;
+            }
+
+            if (GameManager.Cur.Player.IsDeath)
+            {
+                machine.ChangeState(enemy.idleState);
+                return;
+            }
+        }
+
+        private IEnumerator OnTakeDamage()
+        {
+            Vector3 direction = machine.Player.Forward;
+            float percent = 0f;
+            while (percent < takeDamageAnimData.duration)
+            {
+                percent += Time.fixedDeltaTime;
+                machine.rig.velocity = Vector3.zero;
+                yield return StateMachineUtils.waitForFixedUpdate;
+            }
             machine.rig.velocity = Vector3.zero;
-            yield return CoroutineUtils.waitForFixedUpdate;
-        }
-        machine.rig.velocity = Vector3.zero;
-        yield return CoroutineUtils.waitForFixedUpdate;
+            yield return StateMachineUtils.waitForFixedUpdate;
 
-        machine.ChangeState(enemy.executeTreeState);
+            machine.ChangeState(enemy.executeTreeState);
+        }
     }
 }

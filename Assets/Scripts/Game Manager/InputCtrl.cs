@@ -1,54 +1,59 @@
 ﻿using UnityEngine;
 
-public class InputCtrl : MonoBehaviour
+namespace Game
 {
-    private Vector2 axisInputs;
-    public Vector2 AxisInputs => axisInputs;
-    [HideInInspector] public bool jumpInput = false;
-    [HideInInspector] public bool rollInput = false;
-    [HideInInspector] public bool attackInput = false;
-    [HideInInspector] public bool defenceInput = false;
-
-    private void Update()
+    public class InputCtrl : MonoBehaviour
     {
-        SetAxisInputs(); // Set axisInputs with the user input (wasd and controller`s analog).
-        SetJumpInput();
-        SetRollInput();
-        SetAttackInput();
-        SetDefenceInput();
-    }
+        private Vector2 axisInputs;
+        public Vector2 AxisInputs => axisInputs;
+        [HideInInspector] public bool jumpInput = false;
+        [HideInInspector] public bool rollInput = false;
+        [HideInInspector] public bool attackInput = false;
+        [HideInInspector] public bool defenceInput = false;
 
-    public void ResetAllInputs()
-    {
-        jumpInput = false;
-        rollInput = false;
-        attackInput = false;
-        defenceInput = false;
-    }
+        private void Update()
+        {
+            SetAxisInputs(); // Set axisInputs with the user input (wasd and controller`s analog).
+            SetJumpInput();
+            SetRollInput();
+            SetAttackInput();
+            SetDefenceInput();
+        }
 
-    private void SetAxisInputs()
-    {
-        axisInputs = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical")); // Set the axisInputs by getting from the user.
-        axisInputs = Vector2.ClampMagnitude(axisInputs, 1f); // Normalize the axisInputs.
-    }
+        public void ResetAllInputs()
+        {
+            jumpInput = false;
+            rollInput = false;
+            attackInput = false;
+            defenceInput = false;
+        }
 
-    private void SetJumpInput()
-    {
-        jumpInput |= Input.GetKeyDown(KeyCode.Space);
-    }
+        private void SetAxisInputs()
+        {
+            axisInputs =
+                new Vector2(Input.GetAxis("Horizontal"),
+                    Input.GetAxis("Vertical")); // Set the axisInputs by getting from the user.
+            axisInputs = Vector2.ClampMagnitude(axisInputs, 1f); // Normalize the axisInputs.
+        }
 
-    private void SetRollInput()
-    {
-        rollInput |= Input.GetKeyDown(KeyCode.M);
-    }
+        private void SetJumpInput()
+        {
+            jumpInput |= Input.GetKeyDown(KeyCode.Space);
+        }
 
-    private void SetAttackInput()
-    {
-        attackInput |= Input.GetKeyDown(KeyCode.B);
-    }
+        private void SetRollInput()
+        {
+            rollInput |= Input.GetKeyDown(KeyCode.M);
+        }
 
-    private void SetDefenceInput()
-    {
-        defenceInput |= Input.GetKey(KeyCode.N);
+        private void SetAttackInput()
+        {
+            attackInput |= Input.GetKeyDown(KeyCode.B);
+        }
+
+        private void SetDefenceInput()
+        {
+            defenceInput |= Input.GetKey(KeyCode.N);
+        }
     }
 }

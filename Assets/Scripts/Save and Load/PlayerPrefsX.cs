@@ -1,19 +1,22 @@
 ﻿using UnityEngine;
 
-public class PlayerPrefsX
+namespace Game.IO
 {
-    public static void SetBool(string name, bool booleanValue)
+    public class PlayerPrefsX
     {
-        PlayerPrefs.SetInt(name, booleanValue ? 1 : 0);
-    }
+        public static void SetBool(string name, bool booleanValue)
+        {
+            PlayerPrefs.SetInt(name, booleanValue ? 1 : 0);
+        }
 
-    public static bool GetBool(string name)
-    {
-        return PlayerPrefs.GetInt(name) == 1 ? true : false;
-    }
+        public static bool GetBool(string name)
+        {
+            return PlayerPrefs.GetInt(name) == 1 ? true : false;
+        }
 
-    public static bool GetBool(string name, bool defaultValue)
-    {
-        return PlayerPrefs.HasKey(name) ? GetBool(name) : defaultValue;
+        public static bool GetBool(string name, bool defaultValue)
+        {
+            return PlayerPrefs.HasKey(name) ? GetBool(name) : defaultValue;
+        }
     }
 }

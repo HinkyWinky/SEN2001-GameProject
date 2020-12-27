@@ -14,7 +14,7 @@ namespace Game.AI
         [SerializeField] private AnimData moveAnimData = default;
 
         private Vector3 targetTransformPos, lastEvaluateTargetPos, targetDestination;
-        private bool isDirectMove, isFirstUpdate;
+        private bool isDirectMove, isFirstUpdate, isFirstDoor;
         private int startCornerIndex, endCornerIndex;
         private float targetDistance, cornerDistanceTolerance, totalDuration, totalDistance, loopCountLimit;
 
@@ -82,6 +82,20 @@ namespace Game.AI
                 }
             }
 
+            // If there is a door on the way, wait until opened.
+            if (Machine.hasDoor && !Machine.door.IsOpen)
+            {
+                if (!isFirstDoor)
+                {
+                    isFirstDoor = true;
+                    Machine.door.OpenDoor();
+                    return NodeStates.RUNNING;
+                }
+                return NodeStates.RUNNING;
+            }
+            if (isFirstDoor)
+                isFirstDoor = false;
+
             // If AI is at the target destination, then return success.
             float distanceToTargetPos = Vector3.Distance(Machine.rig.position, targetDestination);
             if (distanceToTargetPos < Mathf.Abs(stopDistance + stopDistanceTolerance)) return NodeStates.SUCCESS;
@@ -111,14 +125,14 @@ namespace Game.AI
         {
             if (Machine.action != null)
                 Machine.StopCoroutine(Machine.action);
-            Machine.action = CoroutineUtils.LerpMove(Machine.rig, targetPos, duration);
+            Machine.action = StateMachineUtils.LerpMove(Machine, targetPos, duration);
             Machine.StartCoroutine(Machine.action);
         }
         private void StartCoroutineLerpRotate(Vector3 targetPos)
         {
             if (Machine.rotateToTargetPos != null)
                 Machine.StopCoroutine(Machine.rotateToTargetPos);
-            Machine.rotateToTargetPos = CoroutineUtils.LerpRotate(Machine.rig, targetPos, Machine.rotationDuration);
+            Machine.rotateToTargetPos = StateMachineUtils.LerpRotate(Machine, targetPos, Machine.rotationDuration);
             Machine.StartCoroutine(Machine.rotateToTargetPos);
         }
 

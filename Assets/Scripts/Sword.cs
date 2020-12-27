@@ -1,51 +1,52 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class Sword : MonoBehaviour
+namespace Game
 {
-    private bool isHitAble = false;
-    public int damageValue = 10;
-    public bool isPlayerSword = false;
-
-    public void IsHitEnable()
+    public class Sword : MonoBehaviour
     {
-        isHitAble = true;
-    }
-    public void IsHitDisable()
-    {
-        isHitAble = false;
-    }
+        private bool isHitAble = false;
+        public int damageValue = 10;
+        public bool isPlayerSword = false;
 
-    public void OnHit()
-    {
-
-    }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        if (!isHitAble) return;
-
-        if (isPlayerSword)
+        public void IsHitEnable()
         {
-            if (other.CompareTag("Enemy"))
+            isHitAble = true;
+        }
+
+        public void IsHitDisable()
+        {
+            isHitAble = false;
+        }
+
+        public void OnHit()
+        {
+
+        }
+
+        private void OnTriggerEnter(Collider other)
+        {
+            if (!isHitAble) return;
+
+            if (isPlayerSword)
             {
-                if (other.TryGetComponent(out IHitable takeDamageObject))
+                if (other.CompareTag("Enemy"))
                 {
-                    takeDamageObject.TakeDamage(damageValue);
-                    IsHitDisable();
+                    if (other.TryGetComponent(out IHitable takeDamageObject))
+                    {
+                        takeDamageObject.TakeDamage(damageValue);
+                        IsHitDisable();
+                    }
                 }
             }
-        }
-        else
-        {
-            if (other.CompareTag("Player"))
+            else
             {
-                if (other.TryGetComponent(out IHitable takeDamageObject))
+                if (other.CompareTag("Player"))
                 {
-                    takeDamageObject.TakeDamage(damageValue);
-                    IsHitDisable();
+                    if (other.TryGetComponent(out IHitable takeDamageObject))
+                    {
+                        takeDamageObject.TakeDamage(damageValue);
+                        IsHitDisable();
+                    }
                 }
             }
         }

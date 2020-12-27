@@ -1,56 +1,59 @@
 ﻿using System.IO;
 using UnityEngine;
 
-public class DataReader
+namespace Game.IO
 {
-    private readonly BinaryReader reader;
-
-    public DataReader(BinaryReader reader)
+    public class DataReader
     {
-        this.reader = reader;
-    }
+        private readonly BinaryReader reader;
 
-    public bool ReadBool()
-    {
-        return reader.ReadBoolean();
-    }
+        public DataReader(BinaryReader reader)
+        {
+            this.reader = reader;
+        }
 
-    public float ReadFloat()
-    {
-        return reader.ReadSingle();
-    }
+        public bool ReadBool()
+        {
+            return reader.ReadBoolean();
+        }
 
-    public int ReadInt()
-    {
-        return reader.ReadInt32();
-    }
+        public float ReadFloat()
+        {
+            return reader.ReadSingle();
+        }
 
-    public Quaternion ReadQuaternion()
-    {
-        Quaternion value;
-        value.x = reader.ReadSingle();
-        value.y = reader.ReadSingle();
-        value.z = reader.ReadSingle();
-        value.w = reader.ReadSingle();
-        return value;
-    }
+        public int ReadInt()
+        {
+            return reader.ReadInt32();
+        }
 
-    public Vector3 ReadVector3()
-    {
-        Vector3 value;
-        value.x = reader.ReadSingle();
-        value.y = reader.ReadSingle();
-        value.z = reader.ReadSingle();
-        return value;
-    }
+        public Quaternion ReadQuaternion()
+        {
+            Quaternion value;
+            value.x = reader.ReadSingle();
+            value.y = reader.ReadSingle();
+            value.z = reader.ReadSingle();
+            value.w = reader.ReadSingle();
+            return value;
+        }
 
-    public Color ReadColor()
-    {
-        Color value;
-        value.r = reader.ReadSingle();
-        value.g = reader.ReadSingle();
-        value.b = reader.ReadSingle();
-        value.a = reader.ReadSingle();
-        return value;
+        public Vector3 ReadVector3()
+        {
+            Vector3 value;
+            value.x = reader.ReadSingle();
+            value.y = reader.ReadSingle();
+            value.z = reader.ReadSingle();
+            return value;
+        }
+
+        public Color ReadColor()
+        {
+            Color value;
+            value.r = reader.ReadSingle();
+            value.g = reader.ReadSingle();
+            value.b = reader.ReadSingle();
+            value.a = reader.ReadSingle();
+            return value;
+        }
     }
 }

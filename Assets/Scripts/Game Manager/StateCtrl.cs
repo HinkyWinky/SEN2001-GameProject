@@ -1,22 +1,25 @@
 ﻿using Sirenix.OdinInspector;
 using UnityEngine;
 
-public class StateCtrl : MonoBehaviour
+namespace Game
 {
-    [ShowInInspector, ReadOnly] public GameState CurGameState { get; private set; }
-
-    private bool gameRunning = false;
-    public bool GameRunning => gameRunning;
-
-    public void ChangeGameState(GameState state)
+    public class StateCtrl : MonoBehaviour
     {
-        CurGameState = state;
-        Debug.Log("GAME STATE: " + CurGameState);
-    }
+        [ShowInInspector, ReadOnly] public GameState CurGameState { get; private set; }
 
-    public bool CompareGameState(GameState state)
-    {
-        return CurGameState == state;
-    }
+        private bool gameRunning = false;
+        public bool GameRunning => gameRunning;
 
+        public void ChangeGameState(GameState state)
+        {
+            CurGameState = state;
+            Debug.Log("GAME STATE: " + CurGameState);
+        }
+
+        public bool CompareGameState(GameState state)
+        {
+            return CurGameState == state;
+        }
+
+    }
 }

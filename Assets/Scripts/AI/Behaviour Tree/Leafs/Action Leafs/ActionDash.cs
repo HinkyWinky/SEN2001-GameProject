@@ -48,14 +48,14 @@ namespace Game.AI
         {
             if (Machine.action != null)
                 Machine.StopCoroutine(Machine.action);
-            Machine.action = CoroutineUtils.LerpMove(Machine.rig, targetPos, duration);
+            Machine.action = StateMachineUtils.LerpMove(Machine, targetPos, duration);
             Machine.StartCoroutine(Machine.action);
         }
         private void StartCoroutineLerpRotate(Vector3 targetPos)
         {
             if (Machine.rotateToTargetPos != null)
                 Machine.StopCoroutine(Machine.rotateToTargetPos);
-            Machine.rotateToTargetPos = CoroutineUtils.LerpRotate(Machine.rig, targetPos, Machine.rotationDuration);
+            Machine.rotateToTargetPos = StateMachineUtils.LerpRotate(Machine, targetPos, Machine.rotationDuration);
             Machine.StartCoroutine(Machine.rotateToTargetPos);
         }
 

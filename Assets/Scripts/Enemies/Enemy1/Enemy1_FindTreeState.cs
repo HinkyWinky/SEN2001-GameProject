@@ -5,89 +5,99 @@ using Game.AI;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-[Serializable] public class Enemy1_FindTreeState : BehaviourTreeState
+namespace Game
 {
-    private Enemy1 enemy;
+    [Serializable]
+    public class Enemy1_FindTreeState : BehaviourTreeState
+    {
+        private Enemy1 enemy;
 
-    [ShowInInspector, ReadOnly] NodeStates rootNodeState;
+        [ShowInInspector, ReadOnly] NodeStates rootNodeState;
         [Title("GoFarPos_1")]
         [ShowInInspector, ReadOnly] Sequence goFarPos_1;
         public CheckIsDistance checkIsDistance_1;
-        public CheckIsWayOpen checkIsWayOpen_1;
+        public CheckIsThereObstacle checkIsThereObstacle_1;
+        public CheckPathCornerCount checkPathCornerCount_1;
         public ActionMove actionMove_1;
         [Title("GoClosePos_2")]
         [ShowInInspector, ReadOnly] Sequence goClosePos_2;
         public ActionMove actionMove_2;
 
-    public override void BuildBehaviourTree(StateMachine stateMachine)
-    {
-        machine = stateMachine;
-        enemy = machine as Enemy1;
-
-        waitTimeEvaluateDeltaTime = new WaitForSeconds(evaluateDeltaTime);
-
-        goClosePos_2 = new Sequence(new List<Node>
+        public override void BuildBehaviourTree(StateMachine stateMachine)
         {
-            actionMove_2
-        });
-        goFarPos_1 = new Sequence(new List<Node>
-        {
-            checkIsDistance_1,
-            checkIsWayOpen_1,
-            actionMove_1
-        });
-        rootNode = new Selector(new List<Node>
+            machine = stateMachine;
+            enemy = machine as Enemy1;
+
+            waitTimeEvaluateDeltaTime = new WaitForSeconds(evaluateDeltaTime);
+
+            goClosePos_2 = new Sequence(new List<Node>
+            {
+                actionMove_2
+            });
+            goFarPos_1 = new Sequence(new List<Node>
+            {
+                checkIsDistance_1,
+                checkIsThereObstacle_1,
+                checkPathCornerCount_1,
+                actionMove_1
+            });
+            rootNode = new Selector(new List<Node>
         {
             goFarPos_1,
             goClosePos_2
         });
 
-        actionMove_2.StartLeaf(this);
-        checkIsDistance_1.StartLeaf(this);
-        checkIsWayOpen_1.StartLeaf(this);
-        actionMove_1.StartLeaf(this);
-    }
+            checkIsDistance_1.StartLeaf(this);
+            checkIsThereObstacle_1.StartLeaf(this);
+            checkPathCornerCount_1.StartLeaf(this);
+            actionMove_1.StartLeaf(this);
 
-    public override void UpdateBehaviourTree()
-    {
-        Vector3 playerPos = machine.Player.transform.position;
-
-        actionMove_2.UpdateLeaf(playerPos);
-        checkIsDistance_1.UpdateLeaf(playerPos);
-        checkIsWayOpen_1.UpdateLeaf(playerPos);
-        actionMove_1.UpdateLeaf(playerPos);
-    }
-
-    public override IEnumerator EvaluateBehaviourTree()
-    {
-        UpdateBehaviourTree();
-
-        while (GameManager.Cur.StateCtrl.CompareGameState(GameState.PLAYLEVEL))
-        {
-            rootNodeState = rootNode.Evaluate();
-            yield return waitTimeEvaluateDeltaTime;
-        }
-    }
-
-    public override void StateUpdate()
-    {
-        if (!machine.isUpdatedFirstTime)
-        {
-            machine.isUpdatedFirstTime = true;
+            actionMove_2.StartLeaf(this);
         }
 
-        if (GameManager.Cur.Player.IsDeath)
+        public override void UpdateBehaviourTree()
         {
-            machine.ChangeState(enemy.idleState);
-            return;
+            Vector3 playerPos = machine.Player.transform.position;
+
+            checkIsDistance_1.UpdateLeaf(playerPos);
+            checkIsThereObstacle_1.UpdateLeaf(playerPos);
+            checkPathCornerCount_1.UpdateLeaf(playerPos);
+            actionMove_1.UpdateLeaf(playerPos);
+
+            actionMove_2.UpdateLeaf(playerPos);
         }
 
-        if (rootNode.NodeState != NodeStates.RUNNING)
+        public override IEnumerator EvaluateBehaviourTree()
         {
-            machine.ChangeState(enemy.executeTreeState);
-            return;
+            UpdateBehaviourTree();
+
+            while (GameManager.Cur.StateCtrl.CompareGameState(GameState.PLAYLEVEL))
+            {
+                rootNodeState = rootNode.Evaluate();
+                yield return waitTimeEvaluateDeltaTime;
+            }
         }
 
-        UpdateBehaviourTree();
+        public override void StateUpdate()
+        {
+            if (!machine.isUpdatedFirstTime)
+            {
+                machine.isUpdatedFirstTime = true;
+            }
+
+            if (GameManager.Cur.Player.IsDeath)
+            {
+                machine.ChangeState(enemy.idleState);
+                return;
+            }
+
+            if (rootNode.NodeState != NodeStates.RUNNING)
+            {
+                machine.ChangeState(enemy.executeTreeState);
+                return;
+            }
+
+            UpdateBehaviourTree();
+        }
     }
 }
