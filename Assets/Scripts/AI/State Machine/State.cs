@@ -11,7 +11,7 @@
 
         public virtual void StateEnter()
         {
-            machine.isUpdatedFirstTime = false;
+            machine.isStateUpdatedFirstTime = false;
         }
 
         public virtual void StateExit()

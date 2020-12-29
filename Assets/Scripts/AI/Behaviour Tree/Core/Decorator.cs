@@ -1,6 +1,4 @@
-﻿using System;
-using Sirenix.OdinInspector;
-using UnityEngine;
+﻿using Sirenix.OdinInspector;
 
 namespace Game.AI
 {

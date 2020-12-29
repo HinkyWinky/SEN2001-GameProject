@@ -4,7 +4,7 @@
     public enum SaveType { LEVELS, OPTIONS };
     public enum FrameRateSetting { DEFAULT, RATE_30, RATE_45, RATE_60 };
     public enum SceneTypes { MAINMENU, LEVEL };
-    public enum PlayerStates { IDLE, MOVE, JUMP, ROLL, ATTACK, TAKE_DAMAGE, DIE };
+    public enum PlayerStates { IDLE, MOVE, JUMP, ROLL, ATTACK0, ATTACK1, TAKE_DAMAGE, DIE };
     public enum LevelResults { DEFEAT , VICTORY };
 }
 namespace Game.AI

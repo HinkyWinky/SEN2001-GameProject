@@ -936,8 +936,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b46d44871752d544d90014e751747274, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  editorModeOn: 0
-  startingLevelNoForEditorMode: 3
+  editorModeOn: 1
+  startingLevelNoForEditorMode: 1
   gameManagerCanvas: {fileID: 1172453501}
   gameManagerCamera: {fileID: 1105044140}
 --- !u!114 &4657706661598815088

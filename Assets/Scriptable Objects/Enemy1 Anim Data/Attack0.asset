@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cf38d8ce618f2854bb9e134a8ebb084c, type: 3}
-  m_Name: Attack
+  m_Name: Attack0
   m_EditorClassIdentifier: 
   isClip: 1
-  clip: {fileID: 7400000, guid: 26194137e4eee2840992a8ed420dc9bf, type: 2}
+  clip: {fileID: 7400000, guid: c82fc497397fb87469d2101b746f2be9, type: 2}
   clipName: 
   isLoop: 0
-  duration: 1.5
-  normalizedFadeDuration: 0.2
+  duration: 1
+  normalizedFadeDuration: 0

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Sirenix.OdinInspector;
+using UnityEngine;
 
 namespace Game
 {
@@ -8,8 +9,10 @@ namespace Game
         public Vector2 AxisInputs => axisInputs;
         [HideInInspector] public bool jumpInput = false;
         [HideInInspector] public bool rollInput = false;
-        [HideInInspector] public bool attackInput = false;
+        [ReadOnly] public int attackInput = 0;
         [HideInInspector] public bool defenceInput = false;
+
+        public int maxAttackInput = 2;
 
         private void Update()
         {
@@ -24,15 +27,13 @@ namespace Game
         {
             jumpInput = false;
             rollInput = false;
-            attackInput = false;
+            attackInput = 0;
             defenceInput = false;
         }
 
         private void SetAxisInputs()
         {
-            axisInputs =
-                new Vector2(Input.GetAxis("Horizontal"),
-                    Input.GetAxis("Vertical")); // Set the axisInputs by getting from the user.
+            axisInputs = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical")); // Set the axisInputs by getting from the user.
             axisInputs = Vector2.ClampMagnitude(axisInputs, 1f); // Normalize the axisInputs.
         }
 
@@ -48,7 +49,9 @@ namespace Game
 
         private void SetAttackInput()
         {
-            attackInput |= Input.GetKeyDown(KeyCode.B);
+            if (attackInput >= maxAttackInput) return;
+            if (Input.GetKeyDown(KeyCode.B))
+                attackInput += 1;
         }
 
         private void SetDefenceInput()

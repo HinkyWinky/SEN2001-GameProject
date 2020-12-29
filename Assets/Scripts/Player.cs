@@ -112,7 +112,7 @@ namespace Game
             SetOnGround(); // Check the player is on the ground or not.
             SetForward(); // Set the player`s forward direction.
 
-            MovementUpdate(); // All movement logic update.
+            MotionUpdate(); // All motion logic update.
             AnimationUpdate(); // All animation logic update.
             EnvironmentUpdate(); // All environment logic update.
            
@@ -122,7 +122,7 @@ namespace Game
         }
         #endregion
         
-        private void MovementUpdate()
+        private void MotionUpdate()
         {
             if (lockedPlayerState) return;
             if (onGround)
@@ -144,10 +144,11 @@ namespace Game
                 }
             }
             // The player attacks if the attack input button is clicked by the user.
-            if (InputCtrl.attackInput && !lockedAbilityInputs)
+            if (InputCtrl.attackInput > 0 && !lockedAbilityInputs)
             {
-                InputCtrl.attackInput = false;
-                Attack();
+                Attack(InputCtrl.attackInput);
+                if (InputCtrl.attackInput == InputCtrl.maxAttackInput)
+                    InputCtrl.attackInput = 0;
             }
             Rotate(); // The player rotates according to the player animation state.
         }
@@ -157,7 +158,7 @@ namespace Game
             {
                 // vvv...call these lines while the player on the ground...vvv
 
-                // vvv...call these lines one time when the player hits the ground isUpdatedFirstTime time...vvv
+                // vvv...call these lines one time when the player hits the ground isStateUpdatedFirstTime time...vvv
                 if (hitGroundFirstTime) return;
                 hitGroundFirstTime = true;
                 rig.useGravity = false; // Cancel the gravity while the player on the ground.
@@ -168,7 +169,7 @@ namespace Game
                 // vvv...call these lines while the player in the air...vvv
                 velocity = rig.velocity;
 
-                // vvv...call these lines one time when the player jumps isUpdatedFirstTime time...vvv
+                // vvv...call these lines one time when the player jumps isStateUpdatedFirstTime time...vvv
                 if (!hitGroundFirstTime) return;
                 hitGroundFirstTime = false;
                 rig.useGravity = true; // Activate the gravity while the player in the air.
@@ -194,8 +195,12 @@ namespace Game
                 case PlayerStates.ROLL:
                     animX.StartAnimationSequence("Roll", rollAnimDuration);
                     break;
-                case PlayerStates.ATTACK:
-                    curAnimData = animX.ReturnAnimData("Attack");
+                case PlayerStates.ATTACK0:
+                    curAnimData = animX.ReturnAnimData("Attack0");
+                    animX.StartAnimation(curAnimData);
+                    break;
+                case PlayerStates.ATTACK1:
+                    curAnimData = animX.ReturnAnimData("Attack1");
                     animX.StartAnimation(curAnimData);
                     break;
                 case PlayerStates.TAKE_DAMAGE:
@@ -268,20 +273,28 @@ namespace Game
             UnlockAbilityInputs();
         }
 
-        private void Attack()
+        private void Attack(int index)
         {
-            ChangePlayerState(PlayerStates.ATTACK, true);
+            switch (index)
+            {
+                case 1:
+                    ChangePlayerState(PlayerStates.ATTACK0, true);
+                    break;
+                case 2:
+                    ChangePlayerState(PlayerStates.ATTACK1, true);
+                    break;
+            }
             LockAbilityInputs();
 
             if (abilityCor != null)
                 StopCoroutine(abilityCor);
-            abilityCor = AttackCor();
+            abilityCor = AttackCor(index);
             StartCoroutine(abilityCor);
         }
-        private IEnumerator AttackCor()
+        private IEnumerator AttackCor(int index)
         {
+            float duration = animX.ReturnAnimData("Attack" + (index - 1).ToString()).duration;
             float percent = 0f;
-            float duration = animX.ReturnAnimData("Attack").duration;
             while (percent < duration) // attacking
             {
                 percent += Time.fixedDeltaTime;
@@ -292,9 +305,20 @@ namespace Game
             velocity = Vector3.zero;
             yield return waitForFixedUpdate;
 
-            UnlockPlayerState();
-            yield return waitForLockedAbilityInputsDuration;
-            UnlockAbilityInputs();
+            if (index == InputCtrl.maxAttackInput)
+            {
+                UnlockPlayerState();
+                yield return waitForLockedAbilityInputsDuration;
+                UnlockAbilityInputs();
+            }
+            else
+            {
+                UnlockPlayerState();
+                yield return waitForFixedUpdate;
+                UnlockAbilityInputs();
+                if (index == InputCtrl.attackInput)
+                    InputCtrl.attackInput = 0;
+            }
         }
 
         private void Rotate()

@@ -58,7 +58,7 @@ namespace Game.AI
 
         public virtual void StateEnter()
         {
-            machine.isUpdatedFirstTime = false;
+            machine.isStateUpdatedFirstTime = false;
             StartEvaluateBehaviourTree();
         }
 

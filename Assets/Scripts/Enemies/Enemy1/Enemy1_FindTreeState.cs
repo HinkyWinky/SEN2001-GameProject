@@ -80,9 +80,9 @@ namespace Game
 
         public override void StateUpdate()
         {
-            if (!machine.isUpdatedFirstTime)
+            if (!machine.isStateUpdatedFirstTime)
             {
-                machine.isUpdatedFirstTime = true;
+                machine.isStateUpdatedFirstTime = true;
             }
 
             if (GameManager.Cur.Player.IsDeath)

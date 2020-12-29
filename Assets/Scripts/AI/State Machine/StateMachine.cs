@@ -14,6 +14,7 @@ namespace Game.AI
         [HideInInspector] public Rigidbody rig;
         [HideInInspector] public Collider col;
 
+        public bool isStateChangeAble = true;
         protected IState currentState;
         [ShowInInspector, ReadOnly, PropertyOrder(-2), HideInEditorMode]
         public string CurrentStateName => currentState == null ? "Empty" : currentState.ToString();
@@ -31,9 +32,10 @@ namespace Game.AI
         public IEnumerator action;
         public IEnumerator rotateToTargetPos;
 
-        [HideInInspector] public bool isUpdatedFirstTime = false;
-        public bool hasDoor = false;
-        public Door door;
+        [HideInInspector] public bool isStateUpdatedFirstTime = false;
+
+        [ReadOnly] public bool hasDoor = false;
+        [HideInInspector] public Door door;
 
         public void StartStateMachine(IState startState)
         {
@@ -43,6 +45,7 @@ namespace Game.AI
 
         public void ChangeState(IState newState)
         {
+            if (!isStateChangeAble) return;
             currentState.StateExit();
             currentState = newState;
             currentState.StateEnter();
