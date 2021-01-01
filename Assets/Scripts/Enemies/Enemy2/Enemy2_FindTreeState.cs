@@ -8,9 +8,9 @@ using UnityEngine;
 namespace Game
 {
     [Serializable]
-    public class Enemy1_FindTreeState : BehaviourTreeState
+    public class Enemy2_FindTreeState : BehaviourTreeState
     {
-        private Enemy1 enemy;
+        private Enemy2 enemy;
 
         [ShowInInspector, ReadOnly] NodeStates rootNodeState;
         [Title("GoFarPos_1")]
@@ -26,7 +26,7 @@ namespace Game
         public override void BuildBehaviourTree(StateMachine stateMachine)
         {
             machine = stateMachine;
-            enemy = machine as Enemy1;
+            enemy = machine as Enemy2;
 
             waitTimeEvaluateDeltaTime = new WaitForSeconds(evaluateDeltaTime);
 
@@ -65,6 +65,7 @@ namespace Game
             actionMove_1.UpdateLeaf(playerPos);
 
             actionMove_2.UpdateLeaf(playerPos);
+
         }
 
         public override IEnumerator EvaluateBehaviourTree()

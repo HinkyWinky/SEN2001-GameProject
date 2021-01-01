@@ -8,9 +8,9 @@ using UnityEngine;
 namespace Game
 {
     [Serializable]
-    public class Enemy1_ExecuteTreeState : BehaviourTreeState
+    public class Enemy2_ExecuteTreeState : BehaviourTreeState
     {
-        private Enemy1 enemy;
+        private Enemy2 enemy;
 
         [ShowInInspector, ReadOnly] NodeStates rootNodeState;
         [Title("DashAttack_1")]
@@ -37,7 +37,7 @@ namespace Game
         public override void BuildBehaviourTree(StateMachine stateMachine)
         {
             machine = stateMachine;
-            enemy = machine as Enemy1;
+            enemy = machine as Enemy2;
 
             waitTimeEvaluateDeltaTime = new WaitForSeconds(evaluateDeltaTime);
 
@@ -121,8 +121,6 @@ namespace Game
             {
                 machine.isStateUpdatedFirstTime = true;
             }
-
-            machine.Rotate();
 
             if (GameManager.Cur.Player.IsDeath)
             {

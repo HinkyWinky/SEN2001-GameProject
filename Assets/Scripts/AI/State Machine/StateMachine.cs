@@ -37,6 +37,8 @@ namespace Game.AI
         [ReadOnly] public bool hasDoor = false;
         [HideInInspector] public Door door;
 
+        private Vector3 rotationPos;
+
         public void StartStateMachine(IState startState)
         {
             currentState = startState;
@@ -51,9 +53,13 @@ namespace Game.AI
             currentState.StateEnter();
         }
 
-        public void Rotate(Vector3 targetPos)
+        public void SetRotationTargetPos(Vector3 pos)
         {
-            Vector3 fixedTargetPos = new Vector3(targetPos.x, rig.position.y, targetPos.z);
+            rotationPos = pos;
+        }
+        public void Rotate()
+        {
+            Vector3 fixedTargetPos = new Vector3(rotationPos.x, rig.position.y, rotationPos.z);
             Vector3 direction = (fixedTargetPos - rig.position).normalized;
             if (direction == Vector3.zero) return;
             var targetRot = Quaternion.LookRotation(direction, Vector3.up); // Calculate target rotation value.
@@ -70,25 +76,20 @@ namespace Game.AI
             bool forwardRay = Physics.Raycast(startPos, direction, out RaycastHit hit, distance);
             if (forwardRay)
             {
-                hit.collider.TryGetComponent(out door);
-                if (door != null)
+                if (hit.collider.TryGetComponent(out door))
                 {
                     hasDoor = true;
                     Debug.DrawLine(startPos, hit.point, Color.yellow);
+                    return;
                 }
-                else
-                {
-                    door = null;
-                    hasDoor = false;
-                    Debug.DrawLine(startPos, hit.point, Color.red);
-                }
-            }
-            else
-            {
                 door = null;
                 hasDoor = false;
-                Debug.DrawLine(startPos, startPos + direction * distance, Color.white);
+                Debug.DrawLine(startPos, hit.point, Color.red);
+                return;
             }
+            door = null;
+            hasDoor = false;
+            Debug.DrawLine(startPos, startPos + direction * distance, Color.white);
         }
     }
 }

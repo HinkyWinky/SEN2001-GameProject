@@ -890,6 +890,7 @@ MonoBehaviour:
   rollInput: 0
   attackInput: 0
   defenceInput: 0
+  maxAttackInput: 2
 --- !u!114 &4657706661598815085
 MonoBehaviour:
   m_ObjectHideFlags: 0

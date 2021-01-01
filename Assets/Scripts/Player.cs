@@ -217,7 +217,7 @@ namespace Game
         #region Movement Methods
         private void Move()
         {
-            ChangePlayerState(new Vector3(rig.velocity.x, 0, rig.velocity.z).magnitude <= 0f ? PlayerStates.IDLE : PlayerStates.MOVE, false);
+            ChangeState(new Vector3(rig.velocity.x, 0, rig.velocity.z).magnitude <= 0f ? PlayerStates.IDLE : PlayerStates.MOVE, false);
             float maxSpeedChange = maxMoveAcceleration * Time.fixedDeltaTime;
             velocity.x = Mathf.MoveTowards(velocity.x, desiredMoveVelocity.x, maxSpeedChange);
             velocity.z = Mathf.MoveTowards(velocity.z, desiredMoveVelocity.z, maxSpeedChange);
@@ -225,7 +225,7 @@ namespace Game
 
         private void Jump()
         {
-            ChangePlayerState(PlayerStates.JUMP, false);
+            ChangeState(PlayerStates.JUMP, false);
 
             velocity += FixedAxisInputs.normalized * jumpForceXZ - velocity; // The player cannot move with input and has stable velocity on XZ axis while in the air.
             velocity.y += JumpSpeedY; // Add force to the player on Y axis for jumping. 
@@ -233,7 +233,7 @@ namespace Game
 
         private void Roll()
         {
-            ChangePlayerState(PlayerStates.ROLL, true);
+            ChangeState(PlayerStates.ROLL, true);
             LockAbilityInputs();
 
             // StartLeaf Roll Coroutine
@@ -278,10 +278,10 @@ namespace Game
             switch (index)
             {
                 case 1:
-                    ChangePlayerState(PlayerStates.ATTACK0, true);
+                    ChangeState(PlayerStates.ATTACK0, true);
                     break;
                 case 2:
-                    ChangePlayerState(PlayerStates.ATTACK1, true);
+                    ChangeState(PlayerStates.ATTACK1, true);
                     break;
             }
             LockAbilityInputs();
@@ -376,7 +376,7 @@ namespace Game
         #endregion
 
         #region State Control Methods
-        private void ChangePlayerState(PlayerStates playerState, bool lockState)
+        private void ChangeState(PlayerStates playerState, bool lockState)
         {
             if (lockedPlayerState) return;
 
@@ -428,7 +428,7 @@ namespace Game
             if (IsDeath || curPlayerState == PlayerStates.ROLL)
                 return;
 
-            ChangePlayerState(PlayerStates.TAKE_DAMAGE, true);
+            ChangeState(PlayerStates.TAKE_DAMAGE, true);
             LockAbilityInputs();
 
             if (abilityCor != null)
@@ -452,7 +452,7 @@ namespace Game
             UnlockPlayerState();
             UnlockAbilityInputs();
             isHitAble = true;
-            ChangePlayerState(PlayerStates.IDLE, false);
+            ChangeState(PlayerStates.IDLE, false);
         }
 
         public void Die()
@@ -463,7 +463,7 @@ namespace Game
             if (rotationCor != null)
                 StopCoroutine(rotationCor);
             UnlockPlayerState();
-            ChangePlayerState(PlayerStates.DIE, true);
+            ChangeState(PlayerStates.DIE, true);
             LockAbilityInputs();
             velocity = Vector3.zero;
             isHitAble = false;

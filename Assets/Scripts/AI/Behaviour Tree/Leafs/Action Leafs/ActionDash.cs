@@ -32,7 +32,7 @@ namespace Game.AI
                 float duration = distance / dashSpeed;
 
                 StartCoroutineLerpMove(targetDestination, duration);
-                StartCoroutineLerpRotate(targetDestination);
+                Machine.SetRotationTargetPos(targetDestination);
                 Machine.animX.StartAnimation(dashAnimData, duration);
                 return NodeStates.RUNNING;
             }
@@ -50,13 +50,6 @@ namespace Game.AI
                 Machine.StopCoroutine(Machine.action);
             Machine.action = StateMachineUtils.LerpMove(Machine, targetPos, duration);
             Machine.StartCoroutine(Machine.action);
-        }
-        private void StartCoroutineLerpRotate(Vector3 targetPos)
-        {
-            if (Machine.rotateToTargetPos != null)
-                Machine.StopCoroutine(Machine.rotateToTargetPos);
-            Machine.rotateToTargetPos = StateMachineUtils.LerpRotate(Machine, targetPos, Machine.rotationDuration);
-            Machine.StartCoroutine(Machine.rotateToTargetPos);
         }
 
         public void UpdateLeaf(Vector3 targetPosition)

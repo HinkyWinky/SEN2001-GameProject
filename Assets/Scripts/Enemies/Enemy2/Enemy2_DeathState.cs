@@ -1,0 +1,45 @@
+﻿using System;
+using Game.AI;
+
+namespace Game
+{
+    [Serializable]
+    public class Enemy2_DeathState : State
+    {
+        private Enemy2 enemy;
+        public AnimData dieAnimData;
+
+        public override void BuildState(StateMachine stateMachine)
+        {
+            base.BuildState(stateMachine);
+            enemy = stateMachine as Enemy2;
+        }
+
+        public override void StateEnter()
+        {
+            base.StateEnter();
+            enemy.isHitAble = false;
+            enemy.col.isTrigger = true;
+            machine.animX.StartAnimation(dieAnimData);
+
+            GameManager.Cur.EventCtrl.onEnemyDie?.Invoke();
+        }
+
+        public override void StateExit()
+        {
+            enemy.isHitAble = true;
+            enemy.col.isTrigger = false;
+        }
+
+        public override void StateUpdate()
+        {
+            if (!machine.isStateUpdatedFirstTime)
+            {
+                machine.isStateUpdatedFirstTime = true;
+            }
+
+            if (!enemy.IsDeath)
+                machine.ChangeState(enemy.idleState);
+        }
+    }
+}

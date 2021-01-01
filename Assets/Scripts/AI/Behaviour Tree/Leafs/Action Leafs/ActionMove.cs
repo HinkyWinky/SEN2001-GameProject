@@ -12,6 +12,8 @@ namespace Game.AI
         [SerializeField, Range(0f, 1f)] private float targetMoveDistanceTolerance = 0.2f;
         [SerializeField, Min(1f)] private float maxLoopCountDuration = 5f;
         [SerializeField] private AnimData moveAnimData = default;
+        private enum RotationTypes { DESTINATION, TARGET };
+        [SerializeField] private RotationTypes rotationType = default;
 
         private Vector3 targetTransformPos, lastEvaluateTargetPos, targetDestination;
         private bool isDirectMove, isFirstUpdate, isFirstDoor;
@@ -49,19 +51,18 @@ namespace Game.AI
                 // then move to the new destination, else keep moving previous last target destination.
                 if (Math.Abs(distance - targetDistance) > targetMoveDistanceTolerance)
                 {
-                    targetDistance = distance;
-                    targetDestination = destination;
-
-                    NavMesh.CalculatePath(startPos, targetDestination, NavMesh.AllAreas, Machine.checkPath);
+                    NavMesh.CalculatePath(startPos, destination, NavMesh.AllAreas, Machine.checkPath);
                     if (btState.machine.checkPath.status != NavMeshPathStatus.PathComplete) return NodeStates.FAILURE;
 
                     // If there is no obstacles on the way, then move directly to the target position,
                     if (btState.machine.checkPath.corners.Length <= 2)
                     {
+                        targetDistance = distance;
+                        targetDestination = destination;
                         isDirectMove = true;
                         StartCoroutineLerpMove(targetDestination, targetDistance / Machine.moveSpeed);
-                        if (Vector3.Distance(targetDestination, targetTransformPos) >= 3f)
-                            StartCoroutineLerpRotate(targetDestination);
+                        if (rotationType == RotationTypes.DESTINATION)
+                            Machine.SetRotationTargetPos(targetDestination);
                     }
                     else // else start following the path.
                     {
@@ -76,7 +77,7 @@ namespace Game.AI
                         float cornerDistance = Vector3.Distance(Machine.movePath.corners[startCornerIndex], Machine.movePath.corners[endCornerIndex]);
                         float cornerDuration = totalDuration * cornerDistance / totalDistance;
                         StartCoroutineLerpMove(Machine.movePath.corners[endCornerIndex], cornerDuration);
-                        StartCoroutineLerpRotate(Machine.movePath.corners[endCornerIndex]);
+                        Machine.SetRotationTargetPos(Machine.movePath.corners[endCornerIndex]);
                     }
                     return NodeStates.RUNNING;
                 }
@@ -115,7 +116,7 @@ namespace Game.AI
                 float cornerDistance = Vector3.Distance(Machine.movePath.corners[startCornerIndex], Machine.movePath.corners[endCornerIndex]);
                 float cornerDuration = totalDuration * cornerDistance / totalDistance;
                 StartCoroutineLerpMove(Machine.movePath.corners[endCornerIndex], cornerDuration);
-                StartCoroutineLerpRotate(Machine.movePath.corners[endCornerIndex]);
+                Machine.SetRotationTargetPos(Machine.movePath.corners[endCornerIndex]);
                 return NodeStates.RUNNING;
             }
             return NodeStates.RUNNING;
@@ -128,14 +129,7 @@ namespace Game.AI
             Machine.action = StateMachineUtils.LerpMove(Machine, targetPos, duration);
             Machine.StartCoroutine(Machine.action);
         }
-        private void StartCoroutineLerpRotate(Vector3 targetPos)
-        {
-            if (Machine.rotateToTargetPos != null)
-                Machine.StopCoroutine(Machine.rotateToTargetPos);
-            Machine.rotateToTargetPos = StateMachineUtils.LerpRotate(Machine, targetPos, Machine.rotationDuration);
-            Machine.StartCoroutine(Machine.rotateToTargetPos);
-        }
-
+        
         public void UpdateLeaf(Vector3 targetPosition)
         {
             targetTransformPos = targetPosition;
@@ -145,13 +139,14 @@ namespace Game.AI
             if (!isFirstUpdate)
             {
                 isFirstUpdate = true;
-                Machine.animX.StartAnimation(moveAnimData);
+                if (Machine.animX.CurrentAnim != moveAnimData.AnimName)
+                    Machine.animX.StartAnimation(moveAnimData);
             }
 
             if (isDirectMove)
             {
-                if (Vector3.Distance(targetDestination, targetTransformPos) < 3f)
-                    Machine.Rotate(targetTransformPos);
+                if (rotationType == RotationTypes.TARGET)
+                    Machine.SetRotationTargetPos(targetTransformPos);
             }
         }
 

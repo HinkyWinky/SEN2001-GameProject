@@ -22,7 +22,7 @@ namespace Game
 
         public void OpenDoor()
         {
-            Debug.Log("Open Door");
+            Debug.Log("Door is opening.");
             if (moving != null)
                 StopCoroutine(moving);
             moving = OpenDoorCor();
@@ -39,7 +39,7 @@ namespace Game
 
         public void CloseDoor()
         {
-            Debug.Log("Close Door");
+            Debug.Log("Door is closing.");
             if (moving != null)
                 StopCoroutine(moving);
             moving = CloseDoorCor();

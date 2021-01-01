@@ -8,7 +8,7 @@ namespace Game.AI
     {
         [SerializeField, Range(0f, 360f)] private float attackAngleRange = 180f;
         [SerializeField, Range(0.05f, 50f)] private float maxAttackDistance = 1f;
-        [SerializeField, Range(0.01f, 0.05f)] private float maxAttackDistanceTolerance = 0.025f;
+        [SerializeField, Range(0.01f, 1f)] private float maxAttackDistanceTolerance = 0.025f;
         [SerializeField] private AnimData animData = default;
 
         private Vector3 targetPos;
