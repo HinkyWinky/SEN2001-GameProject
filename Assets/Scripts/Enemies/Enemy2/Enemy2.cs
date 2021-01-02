@@ -1,13 +1,11 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using Game.AI;
+﻿using Game.AI;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.AI;
 
 namespace Game
 {
-    public class Enemy2 : StateMachine
+    public class Enemy2 : StateMachine, IHitable
     {
         [Title("Enemy")]
         public Sword sword;
@@ -32,7 +30,6 @@ namespace Game
         public Enemy2_TakeDamageState takeDamageState;
         public Enemy2_DeathState deathState;
         public Enemy2_ExecuteTreeState executeTreeState;
-        public Enemy2_FindTreeState findTreeState;
 
         private void Awake()
         {
@@ -52,7 +49,6 @@ namespace Game
             takeDamageState.BuildState(this);
             deathState.BuildState(this);
             executeTreeState.BuildBehaviourTree(this);
-            findTreeState.BuildBehaviourTree(this);
 
             GameManager.Cur.EventCtrl.onEnemyHealthChange?.Invoke(Health, maxHealth);
 

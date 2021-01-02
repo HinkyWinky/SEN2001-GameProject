@@ -8,7 +8,7 @@ namespace Game.AI
 
         protected List<Node> childNodes;
 
-        protected override void OnReset()
+        public override void OnReset()
         {
             curChildIndex = 0;
 

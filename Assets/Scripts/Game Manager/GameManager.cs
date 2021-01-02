@@ -1,4 +1,5 @@
-﻿using Game.IO;
+﻿using Game.AI;
+using Game.IO;
 using Game.UI;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -30,7 +31,7 @@ namespace Game
         public CanvasX Canvas { get; private set; }
         public CamCtrl CamCtrl { get; private set; }
         public Player Player { get; private set; }
-        public Enemy1 Enemy { get; private set; }
+        public StateMachine Enemy { get; private set; }
 
         public GameManagerCanvas GameManagerCanvas => gameManagerCanvas;
         public MainMenuCanvas MainMenuCanvas

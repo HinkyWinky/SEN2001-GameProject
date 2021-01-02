@@ -150,7 +150,7 @@ namespace Game.AI
             }
         }
 
-        protected override void OnReset()
+        public override void OnReset()
         {
             base.OnReset();
             Machine.movePath.ClearCorners();
@@ -161,6 +161,7 @@ namespace Game.AI
             targetDistance = 0;
             startCornerIndex = 0;
             endCornerIndex = 0;
+            isFirstDoor = false;
         }
     }
 }

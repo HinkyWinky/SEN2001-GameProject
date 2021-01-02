@@ -32,6 +32,6 @@ namespace Game.AI
             loopCount = 0;
             OnReset();
         }
-        protected abstract void OnReset();
+        public abstract void OnReset();
     }
 }

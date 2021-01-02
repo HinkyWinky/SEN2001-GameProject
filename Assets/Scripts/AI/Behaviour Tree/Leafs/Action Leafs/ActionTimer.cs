@@ -40,7 +40,7 @@ namespace Game.AI
             isWaiting = false;
         }
 
-        protected override void OnReset()
+        public override void OnReset()
         {
             base.OnReset();
             isWaiting = false;

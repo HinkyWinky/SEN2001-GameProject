@@ -8,6 +8,8 @@ namespace Game
     [RequireComponent(typeof(Animator))]
     public class AnimatorX : MonoBehaviour
     {
+        private readonly YieldInstruction waitForFixedUpdate = new WaitForFixedUpdate();
+
         [HideInInspector] public Animator anim;
 
         private IEnumerator animationCor;
@@ -79,8 +81,8 @@ namespace Game
                 while (percent < fadeDuration)
                 {
                     anim.CrossFade(animName, normalizedFadeDuration);
-                    percent += Time.deltaTime;
-                    yield return null;
+                    percent += Time.fixedDeltaTime;
+                    yield return waitForFixedUpdate;
                 }
 
                 anim.CrossFade(animName, normalizedFadeDuration);
@@ -90,7 +92,7 @@ namespace Game
                 anim.Play(animName, 0, 0);
             }
 
-            yield return null;
+            yield return waitForFixedUpdate;
 
             currentAnim = animName;
             isAnimPlaying = true;
@@ -101,11 +103,11 @@ namespace Game
             while (percent < fixedAnimationDuration)
             {
                 anim.SetFloat(currentAnim, percent / fixedAnimationDuration);
-                percent += Time.deltaTime;
+                percent += Time.fixedDeltaTime;
                 // if the loop is true, keep running the while loop
                 if (loop && (percent / fixedAnimationDuration >= 1f))
                     percent = 0f;
-                yield return null;
+                yield return waitForFixedUpdate;
             }
 
             anim.SetFloat(currentAnim, 1f);
@@ -155,8 +157,8 @@ namespace Game
                         while (percent < fadeDuration)
                         {
                             anim.CrossFade(curAnimData.AnimName, curAnimData.normalizedFadeDuration);
-                            percent += Time.deltaTime;
-                            yield return null;
+                            percent += Time.fixedDeltaTime;
+                            yield return waitForFixedUpdate;
                         }
 
                         anim.CrossFade(curAnimData.AnimName, curAnimData.normalizedFadeDuration);
@@ -164,7 +166,7 @@ namespace Game
                     else
                         anim.Play(curAnimData.AnimName, 0, 0);
 
-                    yield return null;
+                    yield return waitForFixedUpdate;
                 }
                 else
                     anim.Play(curAnimData.AnimName, 0, 0);
@@ -178,8 +180,8 @@ namespace Game
                 while (percent < fixedAnimationDuration)
                 {
                     anim.SetFloat(currentAnim, percent / fixedAnimationDuration);
-                    percent += Time.deltaTime;
-                    yield return null;
+                    percent += Time.fixedDeltaTime;
+                    yield return waitForFixedUpdate;
                 }
 
                 anim.SetFloat(currentAnim, 1f);
@@ -191,7 +193,7 @@ namespace Game
                     isAnimPlaying = false;
                 }
 
-                yield return null;
+                yield return waitForFixedUpdate;
             }
         }
 

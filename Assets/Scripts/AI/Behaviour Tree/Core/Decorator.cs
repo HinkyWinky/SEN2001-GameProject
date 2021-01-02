@@ -6,6 +6,6 @@ namespace Game.AI
     {
         [ShowInInspector, ReadOnly] protected Node childNode;
 
-        protected override void OnReset() { }
+        public override void OnReset() { }
     }
 }

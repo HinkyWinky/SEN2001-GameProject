@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using Game.AI;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -8,11 +9,11 @@ namespace Game
     {
         // Components of other game objects
         private InputCtrl InputCtrl => GameManager.Cur.InputCtrl;
-        private Enemy1 Enemy => GameManager.Cur.Enemy;
+        private StateMachine Enemy => GameManager.Cur.Enemy;
         private Vector3 EnemyPos => Enemy.transform.position;
         
         // Components of the player
-        private Rigidbody rig;
+        [HideInInspector] public Rigidbody rig;
         private Transform tra;
         private AnimatorX animX;
 
@@ -58,7 +59,7 @@ namespace Game
         private AnimData curAnimData;
         public YieldInstruction waitForFixedUpdate = new WaitForFixedUpdate();
 
-        private Vector3 AxisInputs => new Vector3(InputCtrl.AxisInputs.x, 0, InputCtrl.AxisInputs.y); // direct axis inputs
+        public Vector3 AxisInputs => new Vector3(InputCtrl.AxisInputs.x, 0, InputCtrl.AxisInputs.y); // direct axis inputs
         private Vector3 FixedAxisInputs => (AxisInputs.x * Vector3.Cross(Vector3.up,forward)) + (AxisInputs.z * forward); // axis inputs according to the player rotation
         private float JumpSpeedY => Mathf.Sqrt(-2f * Physics.gravity.y * jumpHeight);
         private float JumpDuration => -2f * JumpSpeedY / Physics.gravity.y;
@@ -420,13 +421,12 @@ namespace Game
         public void TakeDamage(int damageValue)
         {
             if (!isHitAble) return;
-            //isHitAble = false;
+            isHitAble = false;
 
             Health -= damageValue;
             GameManager.Cur.EventCtrl.onPlayerHealthChange?.Invoke(Health, maxHealth);
 
-            if (IsDeath || curPlayerState == PlayerStates.ROLL)
-                return;
+            if (IsDeath || curPlayerState == PlayerStates.ROLL) return;
 
             ChangeState(PlayerStates.TAKE_DAMAGE, true);
             LockAbilityInputs();

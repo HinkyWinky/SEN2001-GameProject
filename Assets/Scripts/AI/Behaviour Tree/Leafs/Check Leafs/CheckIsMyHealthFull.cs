@@ -8,7 +8,7 @@ namespace Game.AI
         private int curHealth;
         private int maxHealth;
 
-        protected override NodeStates Check()
+        public override NodeStates Check()
         {
             return curHealth == maxHealth ? NodeStates.SUCCESS : NodeStates.FAILURE;
         }

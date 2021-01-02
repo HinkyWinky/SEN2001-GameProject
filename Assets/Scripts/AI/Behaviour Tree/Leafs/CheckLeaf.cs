@@ -2,7 +2,7 @@
 {
     public abstract class CheckLeaf : Leaf
     {
-        protected abstract NodeStates Check();
+        public abstract NodeStates Check();
 
         public override NodeStates OnEvaluate()
         {

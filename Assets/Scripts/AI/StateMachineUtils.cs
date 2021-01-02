@@ -38,7 +38,7 @@ namespace Game.AI
             while (percent < fixedDuration)
             {
                 machine.rig.rotation = Quaternion.Slerp(startRot, targetRot, percent / fixedDuration); // Rotate the player to the target rotation value.
-                percent += Time.deltaTime;
+                percent += Time.fixedDeltaTime;
                 yield return waitForFixedUpdate;
             }
             machine.rig.rotation = targetRot;

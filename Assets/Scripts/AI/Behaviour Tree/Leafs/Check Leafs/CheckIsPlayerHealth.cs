@@ -9,7 +9,7 @@ namespace Game.AI
         [SerializeField, Min(0)] private int compareValue = 3;
         private int playerHealth;
 
-        protected override NodeStates Check()
+        public override NodeStates Check()
         {
             switch (checkType)
             {

@@ -8,7 +8,7 @@ namespace Game.AI
     {
         [SerializeField, Range(0, 100)] private int percentageOfSuccess = 100;
 
-        protected override NodeStates Check()
+        public override NodeStates Check()
         {
             int randomInt = UnityEngine.Random.Range(0, 101);
 

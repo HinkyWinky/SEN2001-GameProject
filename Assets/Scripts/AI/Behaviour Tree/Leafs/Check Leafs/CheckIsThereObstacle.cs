@@ -19,7 +19,7 @@ namespace Game.AI
 
         private Vector3 endPos;
 
-        protected override NodeStates Check()
+        public override NodeStates Check()
         {
             Vector3 startPos = Machine.rig.position + Vector3.up * stateMachineOffset;
             Vector3 destination = endPos + (startPos - endPos).normalized * stopDistance + Vector3.up * destinationOffset;

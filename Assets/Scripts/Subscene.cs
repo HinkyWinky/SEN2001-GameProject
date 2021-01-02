@@ -1,4 +1,5 @@
-﻿using Game.UI;
+﻿using Game.AI;
+using Game.UI;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -14,18 +15,15 @@ namespace Game
 
         [SerializeField, HideIf("sceneType", SceneTypes.MAINMENU)]
         private CamCtrl camCtrl = default;
-
         public CamCtrl CamCtrl => camCtrl;
 
         [SerializeField, HideIf("sceneType", SceneTypes.MAINMENU)]
         private Player player = default;
-
         public Player Player => player;
 
         [SerializeField, HideIf("sceneType", SceneTypes.MAINMENU)]
-        private Enemy1 enemy = default;
-
-        public Enemy1 Enemy => enemy;
+        private StateMachine enemy = default;
+        public StateMachine Enemy => enemy;
 
         private bool firstTime = false;
 

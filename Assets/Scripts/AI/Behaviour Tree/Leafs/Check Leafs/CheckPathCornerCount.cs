@@ -13,7 +13,7 @@ namespace Game.AI
         [SerializeField, Range(-50f, 50f)] private float stopDistance = 1f;
         private Vector3 targetPos;
 
-        protected override NodeStates Check()
+        public override NodeStates Check()
         {
             Vector3 startPos = Machine.rig.position;
             Vector3 destination = targetPos + (startPos - targetPos).normalized * stopDistance;

@@ -13,7 +13,7 @@ namespace Game.AI
         [SerializeField, Range(0.1f, 50f)] private float distanceValue = 4f;
         private Vector3 targetPos;
 
-        protected override  NodeStates Check()
+        public override  NodeStates Check()
         {
             float distanceToTargetPos = Vector3.Distance(Machine.rig.position, targetPos);
             switch (checkType)

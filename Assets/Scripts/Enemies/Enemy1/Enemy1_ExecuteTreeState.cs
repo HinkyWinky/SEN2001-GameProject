@@ -24,15 +24,15 @@ namespace Game
         public ActionTimer actionWaitAfterDash_1;
         [Title("CloseAttack_2")]
         [ShowInInspector, ReadOnly] private Selector closeAttack_2;
-        [Title("Attack_21")]
-        [ShowInInspector, ReadOnly] private Sequence attack_21;
-        public CheckRandom chechRandom_21;
-        public ActionAttack actionAttack_21;
-        public ActionTimer actionWaitAfterCloseAttack_21;
-        [Title("Attack_22")]
-        [ShowInInspector, ReadOnly] private Sequence attack_22;
-        public ActionAttack actionAttack_22;
-        public ActionTimer actionWaitAfterCloseAttack_22;
+            [Title("Attack_21")]
+            [ShowInInspector, ReadOnly] private Sequence attack_21;
+            public CheckRandom chechRandom_21;
+            public ActionAttack actionAttack_21;
+            public ActionTimer actionWaitAfterCloseAttack_21;
+            [Title("Attack_22")]
+            [ShowInInspector, ReadOnly] private Sequence attack_22;
+            public ActionAttack actionAttack_22;
+            public ActionTimer actionWaitAfterCloseAttack_22;
 
         public override void BuildBehaviourTree(StateMachine stateMachine)
         {
@@ -41,37 +41,37 @@ namespace Game
 
             waitTimeEvaluateDeltaTime = new WaitForSeconds(evaluateDeltaTime);
 
-            attack_22 = new Sequence(new List<Node>()
+                    attack_22 = new Sequence(new List<Node>()
+                    {
+                        actionAttack_22,
+                        actionWaitAfterCloseAttack_22
+                    });
+                    attack_21 = new Sequence(new List<Node>()
+                    {
+                        chechRandom_21,
+                        actionAttack_21,
+                        actionWaitAfterCloseAttack_21
+                    });
+                closeAttack_2 = new Selector(new List<Node>
                 {
-                    actionAttack_22,
-                    actionWaitAfterCloseAttack_22
+                    attack_21,
+                    attack_22
                 });
-            attack_21 = new Sequence(new List<Node>()
+                dashAttack_1 = new Sequence(new List<Node>
                 {
-                    chechRandom_21,
-                    actionAttack_21,
-                    actionWaitAfterCloseAttack_21
+                    checkIsDistance_1,
+                    checkIsThereObstacle_1,
+                    checkPathCornerCount_1,
+                    actionWaitBeforeDash_1,
+                    actionDash_1,
+                    actionPlayAnimation_1,
+                    actionWaitAfterDash_1
                 });
-            closeAttack_2 = new Selector(new List<Node>
-            {
-                attack_21,
-                attack_22
-            });
-            dashAttack_1 = new Sequence(new List<Node>
-            {
-                checkIsDistance_1,
-                checkIsThereObstacle_1,
-                checkPathCornerCount_1,
-                actionWaitBeforeDash_1,
-                actionDash_1,
-                actionPlayAnimation_1,
-                actionWaitAfterDash_1
-            });
             rootNode = new Selector(new List<Node>
-        {
-            dashAttack_1,
-            closeAttack_2
-        });
+            {
+                dashAttack_1,
+                closeAttack_2
+            });
 
             checkIsDistance_1.StartLeaf(this);
             checkIsThereObstacle_1.StartLeaf(this);

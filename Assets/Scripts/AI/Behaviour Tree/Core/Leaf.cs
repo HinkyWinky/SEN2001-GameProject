@@ -11,6 +11,6 @@ namespace Game.AI
         {
             btState = behaviourTreeState;
         }
-        protected override void OnReset() { }
+        public override void OnReset() { }
     }
 }
