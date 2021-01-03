@@ -17,11 +17,11 @@ namespace Game
         [HideInInspector] public UnityEventInt onLevelSceneLoadStarted;
         [HideInInspector] public UnityEventIntInt onPlayerHealthChange;
         [HideInInspector] public UnityEventIntInt onEnemyHealthChange;
-        [HideInInspector] public UnityEvent onPlayerDie;
-        [HideInInspector] public UnityEvent onEnemyDie;
+        [HideInInspector] public UnityEventLevelResult onPlayerDie;
+        [HideInInspector] public UnityEventLevelResult onEnemyDie;
         [HideInInspector] public UnityEvent onPausePanelOpened;
         [HideInInspector] public UnityEvent onPausePanelClosed;
-        [HideInInspector] public UnityEventLevelResult onEndLevelPanelOpened;
+        [HideInInspector] public UnityEventLevelResult onLevelEnd;
 
         private void Start()
         {
@@ -54,7 +54,7 @@ namespace Game
                 onEnemyDie.RemoveAllListeners();
                 onPausePanelOpened.RemoveAllListeners();
                 onPausePanelClosed.RemoveAllListeners();
-                onEndLevelPanelOpened.RemoveAllListeners();
+                onLevelEnd.RemoveAllListeners();
             }
         }
 
@@ -67,11 +67,11 @@ namespace Game
             {
                 onPlayerHealthChange.AddListener(Mng.LevelCanvas.inGamePanel.playerHealthBar.SetValue);
                 onEnemyHealthChange.AddListener(Mng.LevelCanvas.inGamePanel.enemyHealthBar.SetValue);
-                onPlayerDie.AddListener(Mng.LevelCanvas.OpenEndLevelPanelOnPlayerDie);
-                onEnemyDie.AddListener(Mng.LevelCanvas.OpenEndLevelPanelOnEnemyDie);
+                onPlayerDie.AddListener(Mng.OnLevelEnd);
+                onEnemyDie.AddListener(Mng.OnLevelEnd);
                 onPausePanelOpened.AddListener(Mng.OnPausePanelOpened);
                 onPausePanelClosed.AddListener(Mng.OnPausePanelClosed);
-                onEndLevelPanelOpened.AddListener(Mng.OnEndLevelPanelOpened);
+                onLevelEnd.AddListener(Mng.LevelCanvas.OpenEndLevelPanel);
             }
         }
     }

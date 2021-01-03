@@ -22,7 +22,7 @@ namespace Game
             enemy.col.isTrigger = true;
             machine.animX.StartAnimation(dieAnimData);
 
-            GameManager.Cur.EventCtrl.onEnemyDie?.Invoke();
+            GameManager.Cur.EventCtrl.onEnemyDie?.Invoke(LevelResults.VICTORY);
         }
 
         public override void StateExit()

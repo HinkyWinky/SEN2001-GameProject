@@ -15273,8 +15273,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 257833096}
-  m_LocalRotation: {x: -0.005360296, y: 0.9750197, z: -0.023671485, w: -0.2207886}
-  m_LocalPosition: {x: 13.411467, y: 2.3426366, z: 22.886925}
+  m_LocalRotation: {x: 0.003582495, y: 0.97517866, z: 0.01582058, w: -0.22082458}
+  m_LocalPosition: {x: 13.412868, y: 1.4378101, z: 22.889862}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1674907261}
@@ -50202,7 +50202,7 @@ MonoBehaviour:
       attackAngleRange: 100
       maxAttackDistance: 3
       maxAttackDistanceTolerance: 0.025
-      animData: {fileID: 11400000, guid: 9f62d265773391c4ab552346258b3af9, type: 2}
+      animData: {fileID: 11400000, guid: 8f368924d71f4994eb1d8c49cb8dba87, type: 2}
     actionPlayIdleAnimation_12:
       animData: {fileID: 11400000, guid: 0436d8ac5c0025c439da4f5c88f14abd, type: 2}
       waitUntilFinish: 0

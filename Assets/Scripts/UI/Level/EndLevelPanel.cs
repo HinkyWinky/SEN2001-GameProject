@@ -37,15 +37,14 @@ namespace Game.UI
             gameObject.SetActive(value);
         }
 
-        public IEnumerator OpenOnPlayerDieCor()
+        public IEnumerator OpenDefeatPanel()
         {
             if (nextLevelOrRestartButton.HasText)
                 nextLevelOrRestartButton.textMesh.SetText("Restart");
             levelResultText.SetText("DEFEAT");
-            GameManager.Cur.EventCtrl.onEndLevelPanelOpened?.Invoke(LevelResults.DEFEAT);
             yield return StartCoroutine(StartOpenAnimation(true));
         }
-        public IEnumerator OpenOnEnemyDieCor()
+        public IEnumerator OpenVictoryPanel()
         {
             if (nextLevelOrRestartButton.HasText)
             {
@@ -59,9 +58,7 @@ namespace Game.UI
                     nextLevelOrRestartButton.textMesh.SetText("Next Level");
                 }
             }
-
             levelResultText.SetText("VICTORY");
-            GameManager.Cur.EventCtrl.onEndLevelPanelOpened?.Invoke(LevelResults.VICTORY);
             yield return StartCoroutine(StartOpenAnimation(true));
         }
 

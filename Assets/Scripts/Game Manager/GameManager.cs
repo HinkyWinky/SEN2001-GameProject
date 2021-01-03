@@ -1,4 +1,5 @@
-﻿using Game.AI;
+﻿using System.Collections;
+using Game.AI;
 using Game.IO;
 using Game.UI;
 using Sirenix.OdinInspector;
@@ -180,11 +181,13 @@ namespace Game
 
         public void OnMainMenuSceneLoadStarted()
         {
+            InputCtrl.isInputsLocked = true;
             Database.Load(Database.LevelsFile);
         }
 
         public void OnLevelSceneLoadStarted(int levelNo)
         {
+            InputCtrl.isInputsLocked = false;
             Database.Load(Database.LevelsFile);
             if (levelNo > 1)
             {
@@ -207,12 +210,20 @@ namespace Game
             UnpauseFrameRate();
         }
 
-        public void OnEndLevelPanelOpened(LevelResults result)
+        public void OnLevelEnd(LevelResults result)
         {
+            InputCtrl.isInputsLocked = true;
             StateCtrl.ChangeGameState(GameState.ENDMENU);
             if (result == LevelResults.VICTORY)
                 Database.levelsCompletionStatue[SceneCtrl.CurrentLevelNo] = true; // complete current level, unlock next level.
             Database.Save(Database.LevelsFile);
+
+            StartCoroutine(OnLevelEndCor(result));
+        }
+        private IEnumerator OnLevelEndCor(LevelResults result)
+        {
+            yield return new WaitForSeconds(2f);
+            EventCtrl.onLevelEnd?.Invoke(result);
         }
     }
 }

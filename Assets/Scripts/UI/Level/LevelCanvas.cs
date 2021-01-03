@@ -13,15 +13,18 @@
         }
 
         #region End Level Panel
-        public void OpenEndLevelPanelOnPlayerDie()
+        public void OpenEndLevelPanel(LevelResults result)
         {
             endLevelPanel.Activate(true);
-            StartCoroutine(endLevelPanel.OpenOnPlayerDieCor());
-        }
-        public void OpenEndLevelPanelOnEnemyDie()
-        {
-            endLevelPanel.Activate(true);
-            StartCoroutine(endLevelPanel.OpenOnEnemyDieCor());
+            switch (result)
+            {
+                case LevelResults.DEFEAT:
+                    StartCoroutine(endLevelPanel.OpenDefeatPanel());
+                    break;
+                case LevelResults.VICTORY:
+                    StartCoroutine(endLevelPanel.OpenVictoryPanel());
+                    break;
+            }
         }
         #endregion
     }

@@ -5,6 +5,7 @@ namespace Game
 {
     public class InputCtrl : MonoBehaviour
     {
+        public bool isInputsLocked = false;
         private Vector2 axisInputs;
         public Vector2 AxisInputs => axisInputs;
         [HideInInspector] public bool jumpInput = false;
@@ -16,6 +17,8 @@ namespace Game
 
         private void Update()
         {
+            if (isInputsLocked) return;
+
             SetAxisInputs(); // Set axisInputs with the user input (wasd and controller`s analog).
             SetJumpInput();
             SetRollInput();

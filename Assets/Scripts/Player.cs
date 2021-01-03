@@ -379,7 +379,10 @@ namespace Game
         #region State Control Methods
         private void ChangeState(PlayerStates playerState, bool lockState)
         {
-            if (lockedPlayerState) return;
+            if (playerState != PlayerStates.TAKE_DAMAGE)
+            {
+                if (lockedPlayerState) return;
+            }
 
             curPlayerState = playerState;
             if (lockState == true)
@@ -430,6 +433,7 @@ namespace Game
 
             ChangeState(PlayerStates.TAKE_DAMAGE, true);
             LockAbilityInputs();
+            InputCtrl.attackInput = 0;
 
             if (abilityCor != null)
                 StopCoroutine(abilityCor);
@@ -468,7 +472,7 @@ namespace Game
             velocity = Vector3.zero;
             isHitAble = false;
 
-            GameManager.Cur.EventCtrl.onPlayerDie?.Invoke();
+            GameManager.Cur.EventCtrl.onPlayerDie?.Invoke(LevelResults.DEFEAT);
         }
         #endregion
 

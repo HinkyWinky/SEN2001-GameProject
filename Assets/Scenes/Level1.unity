@@ -125564,6 +125564,11 @@ PrefabInstance:
       propertyPath: executeTreeState.actionPlayAnimation_1.waitUntilFinish
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 1262496844118431940, guid: a1113cf94c1b0ee458eb1977137489e1,
+        type: 3}
+      propertyPath: findTreeState.actionMove_2.rotationType
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1262496844118431961, guid: a1113cf94c1b0ee458eb1977137489e1,
         type: 3}
       propertyPath: m_LocalPosition.x
