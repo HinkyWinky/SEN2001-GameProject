@@ -40,7 +40,7 @@ namespace Game
                 machine.isStateUpdatedFirstTime = true;
             }
 
-            if (GameManager.Cur.Player.IsDeath)
+            if (GameManager.Cur.Player.IsDead)
             {
                 machine.ChangeState(enemy.idleState);
                 return;

@@ -143,7 +143,7 @@ namespace Game
 
             machine.Rotate();
 
-            if (GameManager.Cur.Player.IsDeath)
+            if (GameManager.Cur.Player.IsDead)
             {
                 machine.ChangeState(enemy.idleState);
                 return;

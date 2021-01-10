@@ -75,7 +75,7 @@ namespace Game
                 else { health = value; }
             }
         }
-        public bool IsDeath => Health == 0;
+        public bool IsDead => Health == 0;
         public Vector3 Forward => forward;
 
         #region Mono
@@ -105,7 +105,7 @@ namespace Game
 
             MoveBlendTreeUpdate(); // Play move animations according to the input axis.
 
-            if (!isDieHappened && IsDeath)
+            if (!isDieHappened && IsDead)
                 Die();
         }
         private void FixedUpdate()
@@ -429,7 +429,7 @@ namespace Game
             Health -= damageValue;
             GameManager.Cur.EventCtrl.onPlayerHealthChange?.Invoke(Health, maxHealth);
 
-            if (IsDeath || curPlayerState == PlayerStates.ROLL) return;
+            if (IsDead || curPlayerState == PlayerStates.ROLL) return;
 
             ChangeState(PlayerStates.TAKE_DAMAGE, true);
             LockAbilityInputs();

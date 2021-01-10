@@ -42,6 +42,7 @@ namespace Game.UI
             if (nextLevelOrRestartButton.HasText)
                 nextLevelOrRestartButton.textMesh.SetText("Restart");
             levelResultText.SetText("DEFEAT");
+            levelResultText.color = Color.red;
             yield return StartCoroutine(StartOpenAnimation(true));
         }
         public IEnumerator OpenVictoryPanel()
@@ -59,6 +60,7 @@ namespace Game.UI
                 }
             }
             levelResultText.SetText("VICTORY");
+            levelResultText.color = Color.green;
             yield return StartCoroutine(StartOpenAnimation(true));
         }
 

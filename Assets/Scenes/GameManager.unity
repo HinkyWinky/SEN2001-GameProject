@@ -859,7 +859,7 @@ MonoBehaviour:
   onPausePanelClosed:
     m_PersistentCalls:
       m_Calls: []
-  onEndLevelPanelOpened:
+  onLevelEnd:
     m_PersistentCalls:
       m_Calls: []
 --- !u!114 &4657706661598815083
@@ -886,6 +886,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 98279d6a129194e4789f327c7831f5f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isInputsLocked: 0
   jumpInput: 0
   rollInput: 0
   attackInput: 0
@@ -974,4 +975,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 836c145d1decc5948973fcae4449c57a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  frameRateSetting: 3
+  frameRateSetting: 0

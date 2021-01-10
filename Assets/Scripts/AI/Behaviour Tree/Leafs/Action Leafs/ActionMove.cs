@@ -66,6 +66,7 @@ namespace Game.AI
                     }
                     else // else start following the path.
                     {
+                        targetDestination = destination;
                         isDirectMove = false;
                         Machine.movePath = Machine.checkPath;
                         startCornerIndex = 0;
@@ -105,6 +106,7 @@ namespace Game.AI
             if (isDirectMove) return NodeStates.RUNNING;
 
             if (endCornerIndex == Machine.movePath.corners.Length) return NodeStates.RUNNING;
+
             // If AI is following the path, then calculate the target path corner is near or not.
             // If the corner is near, then start moving to the next corner,
             // else keep moving to the current corner.

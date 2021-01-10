@@ -38,7 +38,7 @@ namespace Game
                 machine.isStateUpdatedFirstTime = true;
             }
 
-            if (!enemy.IsDeath)
+            if (!enemy.IsDead)
                 machine.ChangeState(enemy.idleState);
         }
     }

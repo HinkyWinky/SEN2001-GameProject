@@ -22,7 +22,7 @@ namespace Game
                 else { health = value; }
             }
         }
-        public bool IsDeath => Health == 0;
+        public bool IsDead => Health == 0;
         [HideInInspector] public bool isHitAble = true;
 
         [Title("States")]
@@ -73,7 +73,7 @@ namespace Game
             Health -= damageValue;
             GameManager.Cur.EventCtrl.onEnemyHealthChange?.Invoke(Health, maxHealth);
 
-            if (IsDeath)
+            if (IsDead)
             {
                 Die();
                 return;
@@ -84,6 +84,7 @@ namespace Game
 
         public void Die()
         {
+            isStateChangeAble = true;
             ChangeState(deathState);
         }
 

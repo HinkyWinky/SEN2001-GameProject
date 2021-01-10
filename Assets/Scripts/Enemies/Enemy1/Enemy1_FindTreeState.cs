@@ -42,10 +42,10 @@ namespace Game
                 actionMove_1
             });
             rootNode = new Selector(new List<Node>
-        {
-            goFarPos_1,
-            goClosePos_2
-        });
+            {
+                goFarPos_1,
+                goClosePos_2
+            });
 
             checkIsDistance_1.StartLeaf(this);
             checkIsThereObstacle_1.StartLeaf(this);
@@ -87,7 +87,7 @@ namespace Game
 
             machine.Rotate();
 
-            if (GameManager.Cur.Player.IsDeath)
+            if (GameManager.Cur.Player.IsDead)
             {
                 machine.ChangeState(enemy.idleState);
                 return;
